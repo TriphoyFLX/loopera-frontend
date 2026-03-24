@@ -1,0 +1,654 @@
+/* Profile.css - Современный дизайн в стиле Apple */
+
+.profile-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+}
+
+/* Стили для сетки лупов */
+.loops-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+@media (max-width: 768px) {
+  .loops-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .loops-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 12px;
+  }
+}
+
+/* Стили для подписок */
+.subscription-form {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.subscription-input {
+  flex: 1;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: white;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.subscription-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.subscription-input:focus {
+  outline: none;
+  border-color: #ff2a55;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.subscription-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.subscription-add-button {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #ff2a55, #ff6b8b);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.subscription-add-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 42, 85, 0.3);
+}
+
+.subscription-add-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.subscriptions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.subscription-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.subscription-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 42, 85, 0.3);
+}
+
+.subscription-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.subscription-hashtag {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ff2a55;
+}
+
+.subscription-date {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.subscription-remove-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  font-size: 16px;
+}
+
+.subscription-remove-button:hover {
+  background: rgba(255, 42, 85, 0.2);
+  border-color: rgba(255, 42, 85, 0.4);
+  color: #ff2a55;
+}
+
+/* Хедер профиля */
+.profile-header {
+  background: linear-gradient(135deg, #0f0f0f 0%, #1f1f1f 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 60px 60px 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at top right, rgba(255, 42, 85, 0.1), transparent 70%);
+  pointer-events: none;
+}
+
+.profile-header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.profile-avatar-large {
+  width: 120px;
+  height: 120px;
+  border-radius: 30px;
+  background: linear-gradient(135deg, #ff2a55, #ff6b8b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  font-weight: 600;
+  color: white;
+  box-shadow: 0 20px 40px rgba(255, 42, 85, 0.3);
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.profile-avatar-large:hover {
+  transform: scale(1.05);
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-info h1 {
+  font-size: 48px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  background: linear-gradient(135deg, #ffffff 0%, #ff2a55 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -1px;
+}
+
+.profile-email {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 8px 0;
+}
+
+.profile-join-date {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.profile-join-date::before {
+  content: '📅';
+  font-size: 14px;
+}
+
+/* Основной контент */
+.profile-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 60px;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 40px;
+}
+
+/* Секции профиля */
+.profile-section {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 24px;
+  margin-bottom: 24px;
+  transition: all 0.3s ease;
+}
+
+.profile-section:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 42, 85, 0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.profile-section:last-child {
+  margin-bottom: 0;
+}
+
+.profile-section-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 20px 0;
+  color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.profile-section-title svg {
+  width: 20px;
+  height: 20px;
+  color: #ff2a55;
+}
+
+/* Список лупов */
+.loops-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.loop-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.loop-item:hover {
+  background: rgba(255, 42, 85, 0.05);
+  border-color: rgba(255, 42, 85, 0.3);
+  transform: translateX(4px);
+}
+
+.loop-thumbnail {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ff2a55, #ff6b8b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 8px 16px rgba(255, 42, 85, 0.2);
+}
+
+.loop-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.loop-title {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 4px 0;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.loop-meta {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Пустое состояние */
+.empty-state {
+  text-align: center;
+  padding: 48px 20px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.empty-state svg {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  color: rgba(255, 255, 255, 0.2);
+  stroke: currentColor;
+}
+
+.empty-state p {
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Список настроек */
+.settings-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+}
+
+.settings-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.settings-item:last-child {
+  border-bottom: none;
+}
+
+.settings-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.settings-label svg {
+  width: 18px;
+  height: 18px;
+  color: #ff2a55;
+}
+
+/* Тоггл (переключатель) */
+.settings-toggle {
+  width: 48px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.settings-toggle::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 10px;
+  top: 1px;
+  left: 1px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.settings-toggle.active {
+  background: linear-gradient(135deg, #ff2a55, #ff6b8b);
+  border-color: transparent;
+}
+
+.settings-toggle.active::after {
+  left: 27px;
+}
+
+/* Кнопки действий */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-radius: 16px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.btn svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn:hover svg {
+  transform: scale(1.1);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #ff2a55, #ff6b8b);
+  border: none;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #ff3a65, #ff7b9b);
+  box-shadow: 0 10px 20px rgba(255, 42, 85, 0.3);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-danger {
+  background: rgba(220, 38, 38, 0.1);
+  border-color: rgba(220, 38, 38, 0.3);
+  color: #ff6b6b;
+}
+
+.btn-danger:hover {
+  background: rgba(220, 38, 38, 0.2);
+  border-color: #dc2626;
+  color: #ff8a8a;
+  box-shadow: 0 10px 20px rgba(220, 38, 38, 0.2);
+}
+
+/* Анимации */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-section {
+  animation: slideIn 0.5s ease forwards;
+}
+
+.profile-section:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+/* Адаптивность */
+@media (max-width: 1024px) {
+  .profile-content {
+    grid-template-columns: 1fr;
+    padding: 30px;
+  }
+  
+  .profile-header {
+    padding: 40px 30px;
+  }
+  
+  .profile-header-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+  
+  .profile-info h1 {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-header {
+    padding: 30px 20px;
+  }
+  
+  .profile-avatar-large {
+    width: 100px;
+    height: 100px;
+    font-size: 40px;
+  }
+  
+  .profile-info h1 {
+    font-size: 28px;
+  }
+  
+  .profile-email {
+    font-size: 16px;
+  }
+  
+  .profile-content {
+    padding: 20px;
+  }
+  
+  .profile-section {
+    padding: 20px;
+  }
+  
+  .loop-thumbnail {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+  
+  .loop-title {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-section-title {
+    font-size: 16px;
+  }
+  
+  .settings-label {
+    font-size: 14px;
+  }
+  
+  .btn {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+  
+  .settings-toggle {
+    width: 44px;
+    height: 22px;
+  }
+  
+  .settings-toggle::after {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .settings-toggle.active::after {
+    left: 24px;
+  }
+}
+
+/* Стили для скролла */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 42, 85, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 42, 85, 0.5);
+}
+
+/* Скелетон загрузки (опционально) */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}

@@ -1,0 +1,289 @@
+/* ArtistSearch.css - Современный поиск артистов в стиле Apple */
+
+.artist-search {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+}
+
+.artist-search-form {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.artist-search-input-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.artist-search-input {
+  width: 100%;
+  padding: 14px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.artist-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.artist-search-input:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #ff2a55;
+  box-shadow: 0 0 0 3px rgba(255, 42, 85, 0.1);
+}
+
+.artist-search-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.artist-search-loading {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top: 2px solid #ff2a55;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.artist-search-button {
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #ff2a55, #ff6b8b);
+  border: none;
+  border-radius: 16px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(255, 42, 85, 0.3);
+}
+
+.artist-search-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.4s, height 0.4s;
+}
+
+.artist-search-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(255, 42, 85, 0.4);
+}
+
+.artist-search-button:hover::before {
+  width: 100px;
+  height: 100px;
+}
+
+.artist-search-button:active {
+  transform: translateY(-1px);
+}
+
+.artist-search-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.artist-search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  max-height: 320px;
+  overflow-y: auto;
+  z-index: 1000;
+  animation: dropdownAppear 0.2s ease;
+}
+
+@keyframes dropdownAppear {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.artist-search-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.artist-search-item:last-child {
+  border-bottom: none;
+}
+
+.artist-search-item:hover,
+.artist-search-item.selected {
+  background: rgba(255, 42, 85, 0.1);
+}
+
+.artist-search-item.selected {
+  background: rgba(255, 42, 85, 0.15);
+}
+
+.artist-search-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ff2a55, #ff6b8b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  box-shadow: 0 4px 10px rgba(255, 42, 85, 0.3);
+  flex-shrink: 0;
+}
+
+.artist-search-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.artist-search-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.artist-search-hashtag {
+  font-size: 14px;
+  color: #ff2a55;
+  font-weight: 500;
+}
+
+.artist-search-meta {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Скроллбар */
+.artist-search-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.artist-search-dropdown::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.artist-search-dropdown::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.artist-search-dropdown::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .artist-search-form {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .artist-search-button {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .artist-search-item {
+    padding: 12px 16px;
+  }
+  
+  .artist-search-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+  
+  .artist-search-name {
+    font-size: 14px;
+  }
+  
+  .artist-search-hashtag {
+    font-size: 12px;
+  }
+  
+  .artist-search-meta {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .artist-search-input {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+  
+  .artist-search-button {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+  
+  .artist-search-dropdown {
+    margin-top: 6px;
+    max-height: 280px;
+  }
+  
+  .artist-search-item {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+}

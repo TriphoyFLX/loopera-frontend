@@ -1,0 +1,472 @@
+/* Header.module.css - Современный дизайн в стиле Apple */
+
+.header {
+  position: fixed;
+  top: 0;
+  right: 40px;
+  border-radius: 100px;
+  height: 80px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 1000;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+}
+
+.headerContainer {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 32px;
+  max-width: 100%;
+  margin: 0 auto;
+  gap: 16px;
+}
+
+/* Search Section */
+.searchSection {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.searchButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: none;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.8);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.searchButton::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 42, 85, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.4s, height 0.4s;
+}
+
+.searchButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ff2a55;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(255, 42, 85, 0.2);
+}
+
+.searchButton:hover::before {
+  width: 100px;
+  height: 100px;
+}
+
+.searchButton svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  transition: transform 0.3s ease;
+}
+
+.searchButton:hover svg {
+  transform: scale(1.1);
+}
+
+.searchForm {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  overflow: hidden;
+  animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  position: relative;
+}
+
+.searchForm::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #ff2a55, #ff6b8b);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.searchForm:focus-within {
+  border-color: transparent;
+  box-shadow: 0 0 0 2px #ff2a55;
+}
+
+.searchForm:focus-within::before {
+  opacity: 0.1;
+}
+
+.searchInput {
+  border: none;
+  background: transparent;
+  padding: 0 20px;
+  height: 48px;
+  width: 300px;
+  font-size: 15px;
+  outline: none;
+  color: white;
+  position: relative;
+  z-index: 1;
+}
+
+.searchInput::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+.searchInput:focus::placeholder {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.searchSubmitButton,
+.searchCancelButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.2s ease;
+  margin: 0 2px;
+  position: relative;
+  z-index: 1;
+  border-radius: 12px;
+}
+
+.searchSubmitButton {
+  color: #ff2a55;
+}
+
+.searchSubmitButton:hover {
+  background: rgba(255, 42, 85, 0.1);
+  color: #ff6b8b;
+  transform: scale(1.05);
+}
+
+.searchCancelButton:hover {
+  background: rgba(220, 38, 38, 0.1);
+  color: #ff6b6b;
+  transform: scale(1.05);
+}
+
+.searchSubmitButton svg,
+.searchCancelButton svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  transition: transform 0.2s ease;
+}
+
+.searchSubmitButton:hover svg {
+  transform: rotate(90deg);
+}
+
+.searchCancelButton:hover svg {
+  transform: rotate(90deg);
+}
+
+/* Profile Section */
+.profileSection {
+  display: flex;
+  align-items: center;
+}
+
+.profileButton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px 8px 12px;
+  border: none;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 100px;
+  cursor: pointer;
+  color: white;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.profileButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #ff2a55, #ff6b8b);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+.profileButton:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #ff2a55;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 42, 85, 0.3);
+}
+
+.profileButton:hover::before {
+  opacity: 0.1;
+}
+
+.profileButton > * {
+  position: relative;
+  z-index: 1;
+}
+
+.profileAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 100px;
+  background: linear-gradient(135deg, #ff2a55, #ff6b8b);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+  box-shadow: 0 4px 10px rgba(255, 42, 85, 0.3);
+  transition: all 0.3s ease;
+}
+
+.profileButton:hover .profileAvatar {
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(255, 42, 85, 0.4);
+}
+
+.profileName {
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profileButton svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  transition: transform 0.3s ease;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.profileButton:hover svg {
+  transform: rotate(180deg);
+  color: #ff2a55;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 42, 85, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(255, 42, 85, 0);
+  }
+}
+
+/* Активное состояние для поиска */
+.searchForm.active {
+  animation: pulse 2s infinite;
+}
+
+/* Индикатор уведомлений (опционально) */
+.notificationBadge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 8px;
+  height: 8px;
+  background: #ff2a55;
+  border-radius: 50%;
+  border: 2px solid rgba(10, 10, 10, 0.9);
+  animation: pulse 2s infinite;
+}
+
+/* Адаптивность */
+@media (max-width: 1200px) {
+  .header {
+    left: 0;
+  }
+  
+  .searchInput {
+    width: 250px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    height: 70px;
+  }
+  
+  .headerContainer {
+    padding: 0 20px;
+  }
+  
+  .searchButton {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+  }
+  
+  .searchInput {
+    width: 200px;
+    height: 42px;
+    padding: 0 16px;
+  }
+  
+  .searchSubmitButton,
+  .searchCancelButton {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .profileButton {
+    padding: 6px 12px 6px 8px;
+    gap: 8px;
+  }
+  
+  .profileAvatar {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+  
+  .profileName {
+    max-width: 100px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 576px) {
+  .headerContainer {
+    padding: 0 16px;
+  }
+  
+  .searchInput {
+    width: 160px;
+    font-size: 14px;
+  }
+  
+  .profileName {
+    display: none;
+  }
+  
+  .profileButton {
+    padding: 6px;
+  }
+  
+  .profileAvatar {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .profileButton svg {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .searchForm {
+    position: fixed;
+    top: 80px;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    background: rgba(10, 10, 10, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  }
+  
+  .searchInput {
+    width: 100%;
+    padding: 0 16px;
+  }
+  
+  .searchSection {
+    position: static;
+  }
+  
+  .header {
+    height: 70px;
+  }
+}
+
+
+/* Стили для скролла */
+.header.scrolled {
+  height: 70px;
+  background: rgba(10, 10, 10, 0.95);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Анимация загрузки для поиска */
+@keyframes searchLoading {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.searchLoading {
+  animation: searchLoading 1s linear infinite;
+}
+
+/* Дополнительные эффекты */
+.glowEffect {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #ff2a55, transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.searchButton:hover .glowEffect,
+.profileButton:hover .glowEffect {
+  opacity: 1;
+}

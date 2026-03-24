@@ -1,0 +1,254 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { api } from '../utils/api';
+import { chatApi } from '../utils/chatApi';
+import { useAuth } from '../hooks/useAuth';
+import LoopCard from '../components/LoopCard';
+import './UserProfile.css';
+
+interface User {
+  id: number;
+  username: string;
+  email?: string;
+  first_name?: string;
+  last_name?: string;
+  role?: string;
+  created_at: string;
+}
+
+interface Loop {
+  id: number;
+  title: string;
+  filename: string;
+  original_name: string;
+  file_size: number;
+  bpm?: number;
+  key?: string;
+  genre?: string;
+  tags?: string[];
+  user_id: number;
+  author?: string;
+  created_at: string;
+}
+
+const UserProfile: React.FC = () => {
+  const { userId } = useParams<{ userId: string }>();
+  const navigate = useNavigate();
+  const { user: currentUser } = useAuth();
+  const [user, setUser] = useState<User | null>(null);
+  const [loops, setLoops] = useState<Loop[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const handleStartChat = async () => {
+    try {
+      if (!currentUser) {
+        console.error('User not authenticated');
+        return;
+      }
+
+      // Создаем или получаем существующий чат
+      await chatApi.createOrGetChat(parseInt(userId || ''));
+      
+      // Переходим к чатам
+      navigate('/chats');
+    } catch (error) {
+      console.error('Error creating chat:', error);
+      // Можно показать ошибку пользователю
+    }
+  };
+
+  useEffect(() => {
+    if (userId) {
+      fetchUserProfile();
+      fetchUserLoops();
+    }
+  }, [userId]);
+
+  const fetchUserProfile = async () => {
+    try {
+      // Временное решение - получаем информацию о пользователе из его лупов
+      // В будущем нужно добавить эндпоинт /api/users/:id
+      const response = await api.getAllLoops(1, 100);
+      const userLoops = response.loops.filter((loop: Loop) => loop.user_id === parseInt(userId || ''));
+      
+      if (userLoops.length > 0) {
+        const userInfo = {
+          id: parseInt(userId || ''),
+          username: userLoops[0].author || 'Unknown',
+          created_at: userLoops[0].created_at || ''
+        };
+        setUser(userInfo);
+      }
+    } catch (err) {
+      console.error('Error fetching user profile:', err);
+      setError(err instanceof Error ? err.message : 'Ошибка загрузки профиля');
+    }
+  };
+
+  const fetchUserLoops = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const response = await api.getAllLoops(1, 100);
+      const userLoops = response.loops.filter((loop: Loop) => loop.user_id === parseInt(userId || ''));
+      setLoops(userLoops);
+    } catch (err) {
+      console.error('Error fetching user loops:', err);
+      setError(err instanceof Error ? err.message : 'Ошибка загрузки лупов');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = '';
+      }
+    };
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="user-profile-page">
+        <div className="user-profile-header">
+          <div className="user-profile-header-content">
+            <div className="loading-spinner">
+              <div className="spinner"></div>
+              <p>Загрузка профиля...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="user-profile-page">
+        <div className="user-profile-header">
+          <div className="user-profile-header-content">
+            <div className="error-message">
+              <p>❌ {error}</p>
+              <button onClick={() => window.location.reload()} className="retry-button">
+                🔄 Попробовать снова
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="user-profile-page">
+        <div className="user-profile-header">
+          <div className="user-profile-header-content">
+            <div className="not-found">
+              <h2>👤 Пользователь не найден</h2>
+              <p>Пользователь с ID {userId} не существует</p>
+              <button onClick={() => navigate('/loops')} className="user-profile-button secondary">
+                ← Вернуться к лупам
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="user-profile-page">
+      <div className="user-profile-header">
+        <div className="user-profile-header-content">
+          <div className="user-profile-avatar">
+            {user.first_name ? user.first_name[0].toUpperCase() : user.username[0].toUpperCase()}
+          </div>
+          <div className="user-profile-info">
+            <h1 className="user-profile-name">{user.username}</h1>
+            <div className="user-profile-stats">
+              <div className="user-profile-stat">
+                <div className="user-profile-stat-value">{loops.length}</div>
+                <div className="user-profile-stat-label">Лупов</div>
+              </div>
+              <div className="user-profile-stat">
+                <div className="user-profile-stat-value">
+                  {new Date(user.created_at).toLocaleDateString('ru-RU', { month: 'short', year: 'numeric' })}
+                </div>
+                <div className="user-profile-stat-label">На платформе</div>
+              </div>
+            </div>
+            <div className="user-profile-join-date">
+              На платформе с {new Date(user.created_at).toLocaleDateString('ru-RU')}
+            </div>
+            
+            <div className="user-profile-actions">
+              <button onClick={handleStartChat} className="user-profile-button primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                Начать чат
+              </button>
+              <button onClick={() => navigate('/loops')} className="user-profile-button secondary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M19 12H5M12 19l-7-7 7-7"></path>
+                </svg>
+                Все лупы
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="user-profile-content">
+        <div className="user-loops-section">
+          <div className="user-loops-header">
+            <h2 className="user-loops-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 18V5l12-2v13"></path>
+                <circle cx="6" cy="18" r="3"></circle>
+                <circle cx="18" cy="16" r="3"></circle>
+              </svg>
+              Лупы пользователя {user.username}
+            </h2>
+            <div className="user-loops-count">{loops.length} лупов</div>
+          </div>
+          
+          {loops.length === 0 ? (
+            <div className="user-loops-empty">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 6v6l4 2"></path>
+              </svg>
+              <h3>У этого пользователя пока нет лупов</h3>
+              <p>Возможно, он скоро что-нибудь загрузит!</p>
+            </div>
+          ) : (
+            <div className="user-loops-grid">
+              {loops.map((loop) => (
+                <LoopCard
+                  key={loop.id}
+                  loop={{
+                    ...loop,
+                    author: user?.username || 'Unknown',
+                    created_at: loop.created_at,
+                    tags: loop.tags || []
+                  }}
+                  currentUserId={currentUser?.id}
+                  showLike={true}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default UserProfile;

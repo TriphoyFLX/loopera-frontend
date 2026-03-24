@@ -1,0 +1,83 @@
+.sidebar {
+  position: fixed;
+  left: 28px;
+  top: 120px; /* 28px + 78px (logo button) + 14px gap */
+
+  width: 78px;
+  padding: 18px 0;
+
+  background: #2c2c2c;
+  border-radius: 40px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.04);
+
+  z-index: 999;
+}
+
+/* Скрытие на мобильных устройствах */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+}
+
+/* ===== MENU ===== */
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ===== BUTTON ===== */
+
+.item {
+  width: 54px;
+  height: 54px;
+
+  border-radius: 50%;
+  background: #242424;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: 0.25s;
+}
+
+.item svg {
+  width: 22px;
+  height: 22px;
+
+  stroke: #a5a5a5;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  transition: 0.25s;
+}
+
+.item:hover {
+  background: #2f2f2f;
+}
+
+.item:hover svg {
+  stroke: #ffffff;
+}
+
+/* ACTIVE */
+
+.active {
+  background: #1f1f1f;
+}
+
+.active svg {
+  stroke: white;
+}

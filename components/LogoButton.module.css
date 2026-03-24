@@ -1,0 +1,41 @@
+.logoButton {
+  position: fixed;
+  left: 28px;
+  top: 28px;
+
+  width: 78px; /* Как у сайдбара */
+  height: 78px; /* Квадратный как у сайдбара */
+
+  border-radius: 40px; /* Как у сайдбара */
+  background: #2c2c2c;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+
+  z-index: 1000;
+}
+
+.logoButton:hover {
+  background: #2f2f2f;
+  transform: scale(1.05);
+}
+
+.logoImage {
+  width: 32px; /* Увеличим логотип */
+  height: 16px;
+  object-fit: contain;
+}
+
+/* Скрытие на мобильных устройствах */
+@media (max-width: 768px) {
+  .logoButton {
+    display: none;
+  }
+}

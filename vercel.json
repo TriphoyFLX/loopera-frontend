@@ -9,6 +9,9 @@
       }
     }
   ],
+  "env": {
+    "VITE_API_URL": "http://45.83.140.152:5001"
+  },
   "rewrites": [
     {
       "source": "/api/:path*",

@@ -1,6 +1,6 @@
-const { createProxyMiddleware } = require('http-proxy-middleware');
+import { createProxyMiddleware } from 'http-proxy-middleware';
 
-module.exports = (req, res) => {
+export default async function handler(req, res) {
   const target = 'http://45.83.140.152:5001';
   
   const proxy = createProxyMiddleware({
@@ -22,5 +22,10 @@ module.exports = (req, res) => {
     }
   });
 
-  return proxy(req, res);
-};
+  return new Promise((resolve, reject) => {
+    proxy(req, res, (err) => {
+      if (err) reject(err);
+      else resolve();
+    });
+  });
+}

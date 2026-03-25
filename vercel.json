@@ -16,11 +16,11 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/proxy"
+      "destination": "http://45.83.140.152:5001/api/proxy"
     },
     {
       "source": "/uploads/(.*)",
-      "destination": "/api/proxy"
+      "destination": "http://45.83.140.152:5001/api/proxy"
     },
     {
       "source": "/((?!api|uploads).*)",

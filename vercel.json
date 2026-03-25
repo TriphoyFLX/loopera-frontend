@@ -7,20 +7,16 @@
       "config": {
         "distDir": "dist"
       }
-    },
-    {
-      "src": "api/proxy.js",
-      "use": "@vercel/node"
     }
   ],
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/proxy"
+      "source": "/api/:path*",
+      "destination": "http://45.83.140.152:5001/api/:path*"
     },
     {
-      "source": "/uploads/(.*)",
-      "destination": "/api/proxy"
+      "source": "/uploads/:path*",
+      "destination": "http://45.83.140.152:5001/uploads/:path*"
     },
     {
       "source": "/((?!api|uploads).*)",

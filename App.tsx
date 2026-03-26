@@ -10,14 +10,12 @@ import Chats from './pages/Chats'
 import LoopUpload from './pages/LoopUpload'
 import Search from './pages/Search'
 import Profile from './pages/Profile'
-import AuthDebug from './components/AuthDebug'
 import './App.css'
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <AuthDebug />
         <Routes>
           <Route path="/auth" element={<Auth />} />
           <Route path="/" element={

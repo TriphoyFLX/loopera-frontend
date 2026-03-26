@@ -31,16 +31,22 @@ export default async function handler(req, res) {
     responseHeaders['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, PATCH, OPTIONS';
     responseHeaders['Access-Control-Allow-Headers'] = 'X-Requested-With, Content-Type, Authorization';
     
-    return new Response(response.body, {
-      status: response.status,
-      statusText: response.statusText,
-      headers: responseHeaders
+    // Устанавливаем заголовки и статус
+    Object.entries(responseHeaders).forEach(([key, value]) => {
+      res.setHeader(key, value);
     });
     
+    res.status(response.status);
+    
+    // Отправляем тело ответа
+    if (response.body) {
+      response.body.pipe(res);
+    } else {
+      res.end();
+    }
+    
   } catch (error) {
-    return new Response(JSON.stringify({ error: 'Proxy error' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    console.error('Proxy error:', error);
+    res.status(500).json({ error: 'Proxy error' });
   }
 }

@@ -39,3 +39,18 @@
     display: none;
   }
 }
+
+/* Исправление для планшетов и маленьких экранов */
+@media (max-width: 900px) {
+  .logoButton {
+    left: 16px;
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+  }
+  
+  .logoImage {
+    width: 24px;
+    height: 12px;
+  }
+}

@@ -27,6 +27,24 @@
   }
 }
 
+/* Исправление для планшетов и маленьких экранов */
+@media (max-width: 900px) {
+  .sidebar {
+    left: 16px;
+    width: 60px;
+  }
+  
+  .item {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .item svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
 /* ===== MENU ===== */
 
 .menu {

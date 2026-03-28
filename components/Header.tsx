@@ -7,7 +7,7 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const navigate = useNavigate()
-  const { user } = useAuth()
+  const { user, isAdmin } = useAuth()
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -30,6 +30,10 @@ const Header = () => {
 
   const handleProfileClick = () => {
     navigate('/profile')
+  }
+
+  const handleAdminClick = () => {
+    navigate('/admin')
   }
 
   return (
@@ -86,6 +90,22 @@ const Header = () => {
 
         {/* Profile Section */}
         <div className={styles.profileSection}>
+          {isAdmin && (
+            <button
+              className={styles.profileButton}
+              onClick={handleAdminClick}
+              aria-label="Админ панель"
+              style={{ marginRight: '10px', backgroundColor: '#dc2626' }}
+            >
+              <span className={styles.profileName}>
+                Admin
+              </span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+              <span className={styles.glowEffect}></span>
+            </button>
+          )}
           <button
             className={styles.profileButton}
             onClick={handleProfileClick}

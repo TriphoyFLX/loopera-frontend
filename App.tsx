@@ -10,6 +10,7 @@ import Chats from './pages/Chats'
 import LoopUpload from './pages/LoopUpload'
 import Search from './pages/Search'
 import Profile from './pages/Profile'
+import Admin from './pages/Admin'
 import './App.css'
 
 function App() {
@@ -64,6 +65,13 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <Profile />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin" element={
+            <ProtectedRoute>
+              <Layout>
+                <Admin />
               </Layout>
             </ProtectedRoute>
           } />

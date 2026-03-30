@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [react(), jsxDevFix()],
   define: {
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
-    __DEV__: process.env.NODE_ENV !== 'production',
+    __DEV__: false, // Принудительно отключаем dev режим
   },
   build: {
     outDir: 'dist',

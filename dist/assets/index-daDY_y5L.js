@@ -53,7 +53,7 @@ function requireReactJsxDevRuntime_production () {
 	hasRequiredReactJsxDevRuntime_production = 1;
 	var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
 	reactJsxDevRuntime_production.Fragment = REACT_FRAGMENT_TYPE;
-	reactJsxDevRuntime_production.jsxDEV = void 0;
+	reactJsxDevRuntime_production.jsxDEV = function(type, config, maybeKey, isStaticChildren, debugStack, debugTask) { return { $typeof: Symbol.for("react.transitional.element"), type: type, key: maybeKey, ref: config.ref || null, props: config, _owner: null }; };
 	return reactJsxDevRuntime_production;
 }
 

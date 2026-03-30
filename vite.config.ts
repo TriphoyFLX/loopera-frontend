@@ -1,15 +1,10 @@
 // @ts-nocheck
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
-import jsxDevFix from './vite-plugin-jsx-fix.js'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), jsxDevFix()],
-  define: {
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
-    __DEV__: false, // Принудительно отключаем dev режим
-  },
+  plugins: [react()],
   build: {
     outDir: 'dist',
     sourcemap: false,

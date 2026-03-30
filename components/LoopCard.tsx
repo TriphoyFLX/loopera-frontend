@@ -170,8 +170,8 @@ const LoopCard: React.FC<LoopCardProps> = ({
         
         <div className="loop-tags">
           {loop.tags?.length > 0 ? (
-            loop.tags.map((tag: string) => (
-              <span key={tag} className="loop-tag">#{tag}</span>
+            loop.tags.map((tag: string, index: number) => (
+              <span key={index} className="loop-tag">#{tag}</span>
             ))
           ) : (
             <>

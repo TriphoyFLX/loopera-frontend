@@ -21796,10 +21796,10 @@ const LoopCard = ({
         lineNumber: 169,
         columnNumber: 9
       }, undefined),
-      /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { className: "loop-tags", children: loop.tags?.length > 0 ? loop.tags.map((tag) => /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("span", { className: "loop-tag", children: [
+      /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("div", { className: "loop-tags", children: loop.tags?.length > 0 ? loop.tags.map((tag, index) => /* @__PURE__ */ jsxDevRuntimeExports.jsxDEV("span", { className: "loop-tag", children: [
         "#",
         tag
-      ] }, tag, true, {
+      ] }, index, true, {
         fileName: "/Users/matveevdima/loopera — копия 2/loopera/frontend-repo/components/LoopCard.tsx",
         lineNumber: 174,
         columnNumber: 15

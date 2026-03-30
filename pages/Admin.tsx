@@ -106,7 +106,7 @@ const Admin: React.FC = () => {
     if (!confirm('Вы уверены, что хотите удалить этот луп?')) return;
     
     try {
-      const response = await fetch(`http://localhost:5001/api/admin/loops/${loopId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/loops/${loopId}`, {
         method: 'DELETE',
       });
 
@@ -122,7 +122,7 @@ const Admin: React.FC = () => {
 
   const banUser = async (userId: number, reason: string) => {
     try {
-      const response = await fetch(`http://localhost:5001/api/admin/users/${userId}/ban`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}/ban`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -142,7 +142,7 @@ const Admin: React.FC = () => {
 
   const unbanUser = async (userId: number) => {
     try {
-      const response = await fetch(`http://localhost:5001/api/admin/users/${userId}/unban`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}/unban`, {
         method: 'POST',
       });
 

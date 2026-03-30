@@ -1,7 +1,9 @@
 export const getApiUrl = () => {
-  return import.meta.env.VITE_API_URL;
+  const apiURL = import.meta.env.VITE_API_URL;
+  return apiURL || '';
 };
 
 export const getUploadsUrl = (filename: string) => {
-  return `${import.meta.env.VITE_API_URL}/uploads/loops/${filename}`;
+  const apiURL = import.meta.env.VITE_API_URL;
+  return apiURL ? `${apiURL}/uploads/loops/${filename}` : `/uploads/loops/${filename}`;
 };

@@ -1,6 +1,9 @@
 import { tokenStorage } from './tokenStorage';
 
-const baseURL = `${import.meta.env.VITE_API_URL}/api`;
+const getBaseURL = () => {
+  const apiURL = import.meta.env.VITE_API_URL;
+  return apiURL ? `${apiURL}/api` : '/api';
+};
 
 interface Chat {
   id: number;
@@ -46,7 +49,7 @@ class ChatApi {
   }
 
   private async request(endpoint: string, options: RequestInit = {}) {
-    const url = `${baseURL}${endpoint}`;
+    const url = `${getBaseURL()}${endpoint}`;
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };

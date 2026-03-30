@@ -2,7 +2,8 @@ class API {
   private baseURL: string;
 
   constructor() {
-    this.baseURL = `${import.meta.env.VITE_API_URL}/api`;
+    const apiURL = import.meta.env.VITE_API_URL;
+    this.baseURL = apiURL ? `${apiURL}/api` : '/api';
   }
 
   private async handleResponse(response: Response) {

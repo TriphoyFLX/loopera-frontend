@@ -20121,7 +20121,7 @@ const ProtectedRoute = ({ children }) => {
 class API {
   baseURL;
   constructor() {
-    this.baseURL = `${"http://45.83.140.152:5001"}/api`;
+    this.baseURL = "/api";
   }
   async handleResponse(response) {
     const contentType = response.headers.get("content-type");
@@ -20701,7 +20701,7 @@ const Auth = () => {
 };
 
 const getUploadsUrl = (filename) => {
-  return `${"http://45.83.140.152:5001"}/uploads/loops/${filename}`;
+  return `/uploads/loops/${filename}`;
 };
 
 const useInfiniteScroll = ({
@@ -20737,7 +20737,7 @@ const useInfiniteScroll = ({
   return { observerRef, isIntersecting };
 };
 
-const API_BASE_URL$1 = `${"http://45.83.140.152:5001"}/api`;
+const API_BASE_URL$1 = `${""}/api`;
 class LikeApi {
   async request(endpoint, options = {}) {
     const token = tokenStorage.getToken();
@@ -21164,12 +21164,15 @@ const RecentLoops = ({
   ] });
 };
 
-const baseURL$1 = `${"http://45.83.140.152:5001"}/api`;
+const getBaseURL$1 = () => {
+  const apiURL = "";
+  return apiURL ? `${apiURL}/api` : "/api";
+};
 class SubscriptionApi {
   constructor() {
   }
   async request(endpoint, options = {}) {
-    const url = `${baseURL$1}${endpoint}`;
+    const url = `${getBaseURL$1()}${endpoint}`;
     const headers = {
       "Content-Type": "application/json"
     };
@@ -21373,7 +21376,7 @@ const SubscribedLoops = ({
   ] });
 };
 
-const API_BASE_URL = `${"http://45.83.140.152:5001"}/api`;
+const API_BASE_URL = `${""}/api`;
 class TopUsersApi {
   async request(endpoint, options = {}) {
     const token = tokenStorage.getToken();
@@ -21683,12 +21686,15 @@ const Loops = () => {
   ] });
 };
 
-const baseURL = `${"http://45.83.140.152:5001"}/api`;
+const getBaseURL = () => {
+  const apiURL = "";
+  return apiURL ? `${apiURL}/api` : "/api";
+};
 class ChatApi {
   constructor() {
   }
   async request(endpoint, options = {}) {
-    const url = `${baseURL}${endpoint}`;
+    const url = `${getBaseURL()}${endpoint}`;
     const headers = {
       "Content-Type": "application/json"
     };
@@ -22827,7 +22833,7 @@ const LikedLoops = ({
 class SearchApi {
   baseURL;
   constructor() {
-    this.baseURL = `${"http://45.83.140.152:5001"}/api`;
+    this.baseURL = "/api";
   }
   async request(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`;
@@ -23247,7 +23253,7 @@ const Admin = () => {
   const [totalUsers, setTotalUsers] = reactExports.useState(0);
   const [totalLoops, setTotalLoops] = reactExports.useState(0);
   const apiRequest = async (url) => {
-    const response = await fetch(`${"http://45.83.140.152:5001"}/api${url}`);
+    const response = await fetch(`${""}/api${url}`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -23290,7 +23296,7 @@ const Admin = () => {
   const deleteLoop = async (loopId) => {
     if (!confirm("Вы уверены, что хотите удалить этот луп?")) return;
     try {
-      const response = await fetch(`${"http://45.83.140.152:5001"}/api/admin/loops/${loopId}`, {
+      const response = await fetch(`${""}/api/admin/loops/${loopId}`, {
         method: "DELETE"
       });
       if (!response.ok) throw new Error("Failed to delete loop");
@@ -23302,7 +23308,7 @@ const Admin = () => {
   };
   const banUser = async (userId, reason) => {
     try {
-      const response = await fetch(`${"http://45.83.140.152:5001"}/api/admin/users/${userId}/ban`, {
+      const response = await fetch(`${""}/api/admin/users/${userId}/ban`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -23318,7 +23324,7 @@ const Admin = () => {
   };
   const unbanUser = async (userId) => {
     try {
-      const response = await fetch(`${"http://45.83.140.152:5001"}/api/admin/users/${userId}/unban`, {
+      const response = await fetch(`${""}/api/admin/users/${userId}/unban`, {
         method: "POST"
       });
       if (!response.ok) throw new Error("Failed to unban user");

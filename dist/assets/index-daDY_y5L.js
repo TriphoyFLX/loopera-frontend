@@ -53,11 +53,55 @@ function requireReactJsxDevRuntime_production () {
 	hasRequiredReactJsxDevRuntime_production = 1;
 	var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
 	reactJsxDevRuntime_production.Fragment = REACT_FRAGMENT_TYPE;
-	reactJsxDevRuntime_production.jsxDEV = function(type, config, maybeKey, isStaticChildren, debugStack, debugTask) { return { $typeof: Symbol.for("react.transitional.element"), type: type, key: maybeKey, ref: config.ref || null, props: config, _owner: null }; };
+	reactJsxDevRuntime_production.jsxDEV = function(type, config, maybeKey, isStaticChildren, debugStack, debugTask) {
+              var children = config.children;
+              if (void 0 !== children) {
+                if (isStaticChildren) {
+                  if (Array.isArray(children)) {
+                    for (var i = 0; i < children.length; i++) {
+                      if (typeof children[i] === 'object' && children[i] !== null) {
+                        // Validate child keys
+                      }
+                    }
+                    Object.freeze && Object.freeze(children);
+                  }
+                }
+              }
+              var key = null;
+              if (void 0 !== maybeKey) {
+                key = String(maybeKey);
+              }
+              if (hasValidKey(config)) {
+                key = String(config.key);
+              }
+              var props = config;
+              if ('key' in config) {
+                props = {};
+                for (var propName in config) {
+                  if (propName !== 'key') {
+                    props[propName] = config[propName];
+                  }
+                }
+              }
+              return {
+                $typeof: Symbol.for("react.transitional.element"),
+                type: type,
+                key: key,
+                ref: config.ref || null,
+                props: props,
+                _owner: null
+              };
+            };
 	return reactJsxDevRuntime_production;
 }
 
-var hasRequiredJsxDevRuntime;
+function hasValidKey(config) {
+              if (hasOwnProperty.call(config, 'key')) {
+                return void 0 !== config.key;
+              }
+              return false;
+            }
+            var hasRequiredJsxDevRuntime;
 
 function requireJsxDevRuntime () {
 	if (hasRequiredJsxDevRuntime) return jsxDevRuntime.exports;

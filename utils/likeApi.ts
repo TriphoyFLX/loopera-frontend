@@ -1,3 +1,5 @@
+import { tokenStorage } from './tokenStorage';
+
 const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
 
 export interface LikeResponse {
@@ -24,7 +26,7 @@ export interface LikedLoop {
 
 class LikeApi {
   private async request(endpoint: string, options: RequestInit = {}): Promise<Response> {
-    const token = localStorage.getItem('token');
+    const token = tokenStorage.getToken();
     
     const config: RequestInit = {
       headers: {

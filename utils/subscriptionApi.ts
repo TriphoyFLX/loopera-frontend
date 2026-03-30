@@ -1,3 +1,5 @@
+import { tokenStorage } from './tokenStorage';
+
 const baseURL = `${import.meta.env.VITE_API_URL}/api`;
 
 interface Subscription {
@@ -30,7 +32,7 @@ interface PaginationInfo {
 
 class SubscriptionApi {
   constructor() {
-    // Токен теперь берется напрямую из localStorage в каждом запросе
+    // Токен теперь берется через tokenStorage в каждом запросе
   }
 
   private async request(endpoint: string, options: RequestInit = {}) {
@@ -39,8 +41,8 @@ class SubscriptionApi {
       'Content-Type': 'application/json',
     };
 
-    // Всегда берем актуальный токен из localStorage
-    const currentToken = localStorage.getItem('token');
+    // Всегда берем актуальный токен через tokenStorage
+    const currentToken = tokenStorage.getToken();
     if (currentToken) {
       headers.Authorization = `Bearer ${currentToken}`;
     }

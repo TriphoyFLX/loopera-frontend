@@ -1,3 +1,5 @@
+import { tokenStorage } from './tokenStorage';
+
 export interface LoopArtist {
   id: number;
   username: string;
@@ -18,8 +20,8 @@ class SearchApi {
       'Content-Type': 'application/json',
     };
 
-    // Всегда берем актуальный токен из localStorage
-    const currentToken = localStorage.getItem('token');
+    // Всегда берем актуальный токен через tokenStorage
+    const currentToken = tokenStorage.getToken();
     if (currentToken) {
       headers.Authorization = `Bearer ${currentToken}`;
     }

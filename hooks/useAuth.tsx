@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
 import type { ReactNode } from 'react';
 import type { User } from '../types/auth';
+import { tokenStorage } from '../utils/tokenStorage';
 
 interface AuthContextType {
   user: User | null;
@@ -24,21 +25,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const savedToken = localStorage.getItem('token');
-    const savedUser = localStorage.getItem('user');
+    const savedToken = tokenStorage.getToken();
+    const savedUser = tokenStorage.getUser();
 
     console.log('AuthProvider useEffect - savedToken:', savedToken, 'savedUser:', savedUser);
 
     if (savedToken && savedUser) {
       try {
-        const parsedUser = JSON.parse(savedUser);
-        console.log('AuthProvider - setting user from localStorage:', parsedUser);
+        console.log('AuthProvider - setting user from tokenStorage:', savedUser);
         setToken(savedToken);
-        setUser(parsedUser);
+        setUser(savedUser);
       } catch (error) {
         console.error('AuthProvider - error parsing saved user:', error);
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        tokenStorage.removeToken();
+        tokenStorage.removeUser();
       }
     }
     setIsLoading(false);
@@ -48,16 +48,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     console.log('useAuth login called with:', { newToken, newUser });
     setToken(newToken);
     setUser(newUser);
-    localStorage.setItem('token', newToken);
-    localStorage.setItem('user', JSON.stringify(newUser));
+    tokenStorage.setToken(newToken);
+    tokenStorage.setUser(newUser);
     console.log('useAuth login completed');
   };
 
   const logout = () => {
     setToken(null);
     setUser(null);
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    tokenStorage.removeToken();
+    tokenStorage.removeUser();
   };
 
   const value: AuthContextType = useMemo(() => ({

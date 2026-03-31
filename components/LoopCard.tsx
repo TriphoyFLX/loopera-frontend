@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getUploadsUrl } from '../utils/urls';
 import { likeApi } from '../utils/likeApi';
 import './LoopCard.css';
@@ -25,6 +25,9 @@ const LoopCard: React.FC<LoopCardProps> = ({
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [isLikeLoading, setIsLikeLoading] = useState(false);
+  const [showAllTags, setShowAllTags] = useState(false);
+  const [hasOverflow, setHasOverflow] = useState(false);
+  const tagsContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const loadLikeStatus = async () => {
@@ -41,6 +44,21 @@ const LoopCard: React.FC<LoopCardProps> = ({
 
     loadLikeStatus();
   }, [loop.id, currentUserId, showLike]);
+
+  // Проверка на переполнение тегов
+  useEffect(() => {
+    const checkOverflow = () => {
+      if (tagsContainerRef.current) {
+        const container = tagsContainerRef.current;
+        const isOverflowing = container.scrollHeight > container.clientHeight;
+        setHasOverflow(isOverflowing);
+      }
+    };
+
+    checkOverflow();
+    window.addEventListener('resize', checkOverflow);
+    return () => window.removeEventListener('resize', checkOverflow);
+  }, [loop.tags]);
 
   const handleLike = async () => {
     if (!currentUserId || isLikeLoading) return;
@@ -70,6 +88,11 @@ const LoopCard: React.FC<LoopCardProps> = ({
   const formatKey = (key: string) => {
     return key || '—';
   };
+
+  // Получаем теги для отображения
+  const allTags = loop.tags?.length > 0 ? loop.tags : ['osamason', 'tyloop', 'trap'];
+  const visibleTags = showAllTags ? allTags : allTags.slice(0, 3);
+  const hasMoreTags = allTags.length > 3;
 
   return (
     <div className="loop-card">
@@ -166,24 +189,47 @@ const LoopCard: React.FC<LoopCardProps> = ({
       </div>
 
       <div className="loop-details">
-        <h4 className="loop-title">{loop.title || 'Без названия'}</h4>
+        <h4 className="loop-title" title={loop.title || 'Без названия'}>
+          {loop.title || 'Без названия'}
+        </h4>
         
-        <div className="loop-tags">
-          {loop.tags?.length > 0 ? (
-            loop.tags.map((tag: string, index: number) => (
-              <span key={index} className="loop-tag">#{tag}</span>
-            ))
-          ) : (
-            <>
-              <span className="loop-tag">#osamason</span>
-              <span className="loop-tag">#tyloop</span>
-              <span className="loop-tag">#trap</span>
-            </>
+        <div 
+          className={`loop-tags ${hasOverflow ? 'has-overflow' : ''}`}
+          ref={tagsContainerRef}
+        >
+          {visibleTags.map((tag: string, index: number) => (
+            <span key={index} className="loop-tag">#{tag}</span>
+          ))}
+          
+          {!showAllTags && hasMoreTags && (
+            <span 
+              className="more-tags-indicator"
+              onClick={() => setShowAllTags(true)}
+              title={`Показать все теги (${allTags.length})`}
+            >
+              +{allTags.length - 3}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </span>
+          )}
+          
+          {showAllTags && hasMoreTags && (
+            <span 
+              className="more-tags-indicator"
+              onClick={() => setShowAllTags(false)}
+              title="Свернуть"
+            >
+              Свернуть
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ transform: 'rotate(180deg)' }}>
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </span>
           )}
         </div>
 
         <div className="loop-metadata">
-          <div className="metadata-item">
+          <div className="metadata-item" title={loop.bpm ? `${loop.bpm} BPM` : 'BPM не указан'}>
             <svg className="metadata-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="12" cy="12" r="10"/>
               <polyline points="12 6 12 12 16 14"/>
@@ -191,7 +237,7 @@ const LoopCard: React.FC<LoopCardProps> = ({
             <span className="metadata-value">{formatBpm(loop.bpm)}</span>
           </div>
           
-          <div className="metadata-item">
+          <div className="metadata-item" title={loop.key || 'Тональность не указана'}>
             <svg className="metadata-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M12 2a3 3 0 0 0-3 3c0 5 3 8 3 8s3-3 3-8a3 3 0 0 0-3-3z"/>
               <circle cx="12" cy="9" r="1"/>

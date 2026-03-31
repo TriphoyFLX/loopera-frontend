@@ -22,23 +22,22 @@ const Auth = () => {
 
         <div className="brand-middle">
           <h2 className="brand-tagline">
-            Музыка, которая<br />
-            <em>живёт в тебе.</em>
+            Сочные лупы<br />
+            <em>это факт.</em>
           </h2>
           <p className="brand-desc">
-            Стриминг нового поколения. Умные плейлисты,
-            миллионы треков и звук, который ты чувствуешь.
+            Современная платформа для размещения мелодий, создавай коллабарируй, делись.
           </p>
         </div>
 
         <div className="brand-stats">
           <div className="brand-stat">
             <span className="brand-stat-num">80M+</span>
-            <span className="brand-stat-label">Треков</span>
+            <span className="brand-stat-label">Лупов</span>
           </div>
           <div className="brand-stat">
-            <span className="brand-stat-num">5M+</span>
-            <span className="brand-stat-label">Слушателей</span>
+            <span className="brand-stat-num">5М+</span>
+            <span className="brand-stat-label">Юзеров</span>
           </div>
           <div className="brand-stat">
             <span className="brand-stat-num">320kbps</span>

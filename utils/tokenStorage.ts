@@ -1,51 +1,55 @@
-// Утилита для работы с токеном через переменные окружения
-// В production используем переменные окружения, в development - localStorage
-
-const isDevelopment = import.meta.env.DEV;
+// Утилита для работы с токеном
+// Используем localStorage для хранения токена и данных пользователя
 
 export const tokenStorage = {
   getToken: (): string | null => {
-    if (isDevelopment) {
+    try {
       return localStorage.getItem('token');
+    } catch (error) {
+      console.error('Error getting token from localStorage:', error);
+      return null;
     }
-    // В production токен будет передаваться через HTTP-only cookies или заголовки
-    return null; // Будет заменено на получение из cookies/headers
   },
 
   setToken: (token: string): void => {
-    if (isDevelopment) {
+    try {
       localStorage.setItem('token', token);
+    } catch (error) {
+      console.error('Error setting token to localStorage:', error);
     }
-    // В production токен устанавливается через HTTP-only cookies
   },
 
   removeToken: (): void => {
-    if (isDevelopment) {
+    try {
       localStorage.removeItem('token');
+    } catch (error) {
+      console.error('Error removing token from localStorage:', error);
     }
-    // В production токен удаляется через HTTP-only cookies
   },
 
   getUser: (): any => {
-    if (isDevelopment) {
+    try {
       const user = localStorage.getItem('user');
       return user ? JSON.parse(user) : null;
+    } catch (error) {
+      console.error('Error getting user from localStorage:', error);
+      return null;
     }
-    // В production данные пользователя получаются из API
-    return null;
   },
 
   setUser: (user: any): void => {
-    if (isDevelopment) {
+    try {
       localStorage.setItem('user', JSON.stringify(user));
+    } catch (error) {
+      console.error('Error setting user to localStorage:', error);
     }
-    // В production данные пользователя не хранятся на клиенте
   },
 
   removeUser: (): void => {
-    if (isDevelopment) {
+    try {
       localStorage.removeItem('user');
+    } catch (error) {
+      console.error('Error removing user from localStorage:', error);
     }
-    // В production данные пользователя не хранятся на клиенте
   }
 };

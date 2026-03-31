@@ -19757,18 +19757,49 @@ function useViewTransitionState(to, { relative } = {}) {
 
 const tokenStorage = {
   getToken: () => {
-    return null;
+    try {
+      return localStorage.getItem("token");
+    } catch (error) {
+      console.error("Error getting token from localStorage:", error);
+      return null;
+    }
   },
   setToken: (token) => {
+    try {
+      localStorage.setItem("token", token);
+    } catch (error) {
+      console.error("Error setting token to localStorage:", error);
+    }
   },
   removeToken: () => {
+    try {
+      localStorage.removeItem("token");
+    } catch (error) {
+      console.error("Error removing token from localStorage:", error);
+    }
   },
   getUser: () => {
-    return null;
+    try {
+      const user = localStorage.getItem("user");
+      return user ? JSON.parse(user) : null;
+    } catch (error) {
+      console.error("Error getting user from localStorage:", error);
+      return null;
+    }
   },
   setUser: (user) => {
+    try {
+      localStorage.setItem("user", JSON.stringify(user));
+    } catch (error) {
+      console.error("Error setting user to localStorage:", error);
+    }
   },
   removeUser: () => {
+    try {
+      localStorage.removeItem("user");
+    } catch (error) {
+      console.error("Error removing user from localStorage:", error);
+    }
   }
 };
 
@@ -19788,6 +19819,8 @@ const AuthProvider = ({ children }) => {
         setUser(savedUser);
       } catch (error) {
         console.error("AuthProvider - error parsing saved user:", error);
+        tokenStorage.removeToken();
+        tokenStorage.removeUser();
       }
     }
     setIsLoading(false);
@@ -19796,11 +19829,15 @@ const AuthProvider = ({ children }) => {
     console.log("useAuth login called with:", { newToken, newUser });
     setToken(newToken);
     setUser(newUser);
+    tokenStorage.setToken(newToken);
+    tokenStorage.setUser(newUser);
     console.log("useAuth login completed");
   };
   const logout = () => {
     setToken(null);
     setUser(null);
+    tokenStorage.removeToken();
+    tokenStorage.removeUser();
   };
   const value = reactExports.useMemo(() => ({
     user,
@@ -20673,31 +20710,62 @@ const RegisterForm = () => {
 
 const Auth = () => {
   const [isLogin, setIsLogin] = reactExports.useState(true);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "auth-page", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "auth-container", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "auth-logo", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: looperaLogo, alt: "Loopera", className: "logo-image" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "logo-text", children: "Loopera" })
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "auth-page", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "auth-branding", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "brand-grid" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "brand-top", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "brand-logo-mark", children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: looperaLogo, alt: "Loopera" }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "brand-logo-name", children: "Loopera" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "brand-middle", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: "brand-tagline", children: [
+          "Сочные лупы",
+          /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("em", { children: "это факт." })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "brand-desc", children: "Современная платформа для размещения мелодий, создавай коллабарируй, делись." })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "brand-stats", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "brand-stat", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "brand-stat-num", children: "80M+" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "brand-stat-label", children: "Лупов" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "brand-stat", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "brand-stat-num", children: "5М+" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "brand-stat-label", children: "Юзеров" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "brand-stat", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "brand-stat-num", children: "320kbps" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "brand-stat-label", children: "Качество" })
+        ] })
+      ] })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "auth-toggle", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "button",
-        {
-          className: `toggle-btn ${isLogin ? "active" : ""}`,
-          onClick: () => setIsLogin(true),
-          children: "Вход"
-        }
-      ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "button",
-        {
-          className: `toggle-btn ${!isLogin ? "active" : ""}`,
-          onClick: () => setIsLogin(false),
-          children: "Регистрация"
-        }
-      )
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "auth-forms", children: isLogin ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoginForm, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx(RegisterForm, {}) })
-  ] }) });
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "auth-right", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "auth-container", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "auth-logo", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: looperaLogo, alt: "Loopera", className: "logo-image" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "logo-text", children: "Loopera" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "auth-toggle", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            className: `toggle-btn ${isLogin ? "active" : ""}`,
+            onClick: () => setIsLogin(true),
+            children: "Вход"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            className: `toggle-btn ${!isLogin ? "active" : ""}`,
+            onClick: () => setIsLogin(false),
+            children: "Регистрация"
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "auth-forms", children: isLogin ? /* @__PURE__ */ jsxRuntimeExports.jsx(LoginForm, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx(RegisterForm, {}) })
+    ] }) })
+  ] });
 };
 
 const getUploadsUrl = (filename) => {
@@ -20805,6 +20873,9 @@ const LoopCard = ({
   const [isLiked, setIsLiked] = reactExports.useState(false);
   const [likesCount, setLikesCount] = reactExports.useState(0);
   const [isLikeLoading, setIsLikeLoading] = reactExports.useState(false);
+  const [showAllTags, setShowAllTags] = reactExports.useState(false);
+  const [hasOverflow, setHasOverflow] = reactExports.useState(false);
+  const tagsContainerRef = reactExports.useRef(null);
   reactExports.useEffect(() => {
     const loadLikeStatus = async () => {
       if (currentUserId && showLike) {
@@ -20819,6 +20890,18 @@ const LoopCard = ({
     };
     loadLikeStatus();
   }, [loop.id, currentUserId, showLike]);
+  reactExports.useEffect(() => {
+    const checkOverflow = () => {
+      if (tagsContainerRef.current) {
+        const container = tagsContainerRef.current;
+        const isOverflowing = container.scrollHeight > container.clientHeight;
+        setHasOverflow(isOverflowing);
+      }
+    };
+    checkOverflow();
+    window.addEventListener("resize", checkOverflow);
+    return () => window.removeEventListener("resize", checkOverflow);
+  }, [loop.tags]);
   const handleLike = async () => {
     if (!currentUserId || isLikeLoading) return;
     setIsLikeLoading(true);
@@ -20842,6 +20925,9 @@ const LoopCard = ({
   const formatKey = (key) => {
     return key || "—";
   };
+  const allTags = loop.tags?.length > 0 ? loop.tags : ["osamason", "tyloop", "trap"];
+  const visibleTags = showAllTags ? allTags : allTags.slice(0, 3);
+  const hasMoreTags = allTags.length > 3;
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loop-card", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loop-card-header", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loop-user", onClick: () => window.location.href = `/user/${loop.user_id}`, children: [
@@ -20911,24 +20997,54 @@ const LoopCard = ({
       ] })
     ] }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loop-details", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "loop-title", children: loop.title || "Без названия" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "loop-tags", children: loop.tags?.length > 0 ? loop.tags.map((tag, index) => /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "loop-tag", children: [
-        "#",
-        tag
-      ] }, index)) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "loop-tag", children: "#osamason" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "loop-tag", children: "#tyloop" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "loop-tag", children: "#trap" })
-      ] }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "loop-title", title: loop.title || "Без названия", children: loop.title || "Без названия" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        "div",
+        {
+          className: `loop-tags ${hasOverflow ? "has-overflow" : ""}`,
+          ref: tagsContainerRef,
+          children: [
+            visibleTags.map((tag, index) => /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "loop-tag", children: [
+              "#",
+              tag
+            ] }, index)),
+            !showAllTags && hasMoreTags && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "span",
+              {
+                className: "more-tags-indicator",
+                onClick: () => setShowAllTags(true),
+                title: `Показать все теги (${allTags.length})`,
+                children: [
+                  "+",
+                  allTags.length - 3,
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("polyline", { points: "6 9 12 15 18 9" }) })
+                ]
+              }
+            ),
+            showAllTags && hasMoreTags && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "span",
+              {
+                className: "more-tags-indicator",
+                onClick: () => setShowAllTags(false),
+                title: "Свернуть",
+                children: [
+                  "Свернуть",
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", style: { transform: "rotate(180deg)" }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("polyline", { points: "6 9 12 15 18 9" }) })
+                ]
+              }
+            )
+          ]
+        }
+      ),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loop-metadata", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "metadata-item", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "metadata-item", title: loop.bpm ? `${loop.bpm} BPM` : "BPM не указан", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { className: "metadata-icon", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "12", cy: "12", r: "10" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("polyline", { points: "12 6 12 12 16 14" })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "metadata-value", children: formatBpm(loop.bpm) })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "metadata-item", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "metadata-item", title: loop.key || "Тональность не указана", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { className: "metadata-icon", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M12 2a3 3 0 0 0-3 3c0 5 3 8 3 8s3-3 3-8a3 3 0 0 0-3-3z" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "12", cy: "9", r: "1" })
@@ -23368,6 +23484,8 @@ const Admin = () => {
           "button",
           {
             onClick: () => {
+              tokenStorage.removeToken();
+              tokenStorage.removeUser();
               window.location.reload();
             },
             className: "btn-logout",

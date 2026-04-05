@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  const target = 'http://45.83.140.152:5001';
+  const target = 'http://77.73.238.154:5001';
   
   // Получаем URL запроса
   const url = new URL(req.url, `http://${req.headers.host}`);

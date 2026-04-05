@@ -39,13 +39,13 @@ class SubscriptionApi {
   }
 
   private async request(endpoint: string, options: RequestInit = {}) {
-    const url = `${getBaseURL()}${endpoint}`;
+    const currentToken = tokenStorage.getToken();
+    const url = `${getBaseURL()}${endpoint}${currentToken ? (endpoint.includes('?') ? '&token=' : '?token=') + currentToken : ''}`;
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
 
     // Всегда берем актуальный токен через tokenStorage
-    const currentToken = tokenStorage.getToken();
     if (currentToken) {
       headers.Authorization = `Bearer ${currentToken}`;
     }

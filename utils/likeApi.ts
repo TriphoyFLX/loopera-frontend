@@ -28,6 +28,9 @@ class LikeApi {
   private async request(endpoint: string, options: RequestInit = {}): Promise<Response> {
     const token = tokenStorage.getToken();
     
+    // Добавляем токен в query parameter
+    const url = `${API_BASE_URL}${endpoint}${token ? (endpoint.includes('?') ? '&token=' : '?token=') + token : ''}`;
+    
     const config: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
@@ -36,7 +39,7 @@ class LikeApi {
       ...options,
     };
 
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+    const response = await fetch(url, config);
     
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));

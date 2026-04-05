@@ -113,7 +113,8 @@ class API {
 
   async getUserLoops(token: string) {
     try {
-      const response = await fetch(`${this.baseURL}/loops/my`, {
+      const url = `${this.baseURL}/loops/my?token=${token}`;
+      const response = await fetch(url, {
         headers: this.getHeaders(token)
       });
       return this.handleResponse(response);

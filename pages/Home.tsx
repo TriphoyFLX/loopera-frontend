@@ -37,9 +37,36 @@ const Home = () => {
     <div className={styles.promoRight}>
       
       <div className={styles.uiCard}>
-        <span className={styles.uiTitle}>Top Loop</span>
-        <div className={styles.uiWave}></div>
-      </div>
+  <div className={styles.trackHeader}>
+    <div className={styles.trackCover}></div>
+
+    <div>
+      <p className={styles.trackName}>@triphoymp3</p>
+      <span className={styles.trackAuthor}>Telegram Channel</span>
+    </div>
+  </div>
+
+  <div className={styles.waveform}>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+
+  <div className={styles.trackFooter}>
+    <a 
+      href="https://t.me/triphoymp3" 
+      target="_blank" 
+      rel="noreferrer"
+      className={styles.playBtn}
+    >
+      ↗
+    </a>
+    <span className={styles.trackTime}>join</span>
+  </div>
+</div>
 
       <div className={styles.uiStats}>
         <div>

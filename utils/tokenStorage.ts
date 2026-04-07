@@ -30,7 +30,10 @@ export const tokenStorage = {
   getUser: (): any => {
     try {
       const user = localStorage.getItem('user');
-      return user ? JSON.parse(user) : null;
+      if (!user || user === 'undefined') {
+        return null;
+      }
+      return JSON.parse(user);
     } catch (error) {
       console.error('Error getting user from localStorage:', error);
       return null;

@@ -1,283 +1,556 @@
-/* Home.module.css - Современный дизайн главной страницы с CSS модулями */
+/* Home.module.css — Redesigned PromoSection + all sections */
 
+/* ─── Google Fonts ─────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+/* ─── Base ─────────────────────────────────────────────────── */
 .homePage {
   min-height: 100vh;
   width: 100%;
   background: transparent;
   color: #ffffff;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   overflow-x: hidden;
   position: relative;
 }
 
-/* Hero секция */
-.homeHero {
+/* ═══════════════════════════════════════════════════════════
+   PROMO SECTION
+═══════════════════════════════════════════════════════════ */
+
+.promoSection {
+  position: relative;
+  width: 100%;
   min-height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  position: relative;
-  background: transparent;
+  justify-content: center;
+  padding: 100px 40px 80px;
   overflow: hidden;
 }
 
-.promoSection {
-  width: 100%;
-  padding: 80px 40px;
-  display: flex;
-  justify-content: center;
+/* Шум-текстура (SVG-encoded, без внешних запросов) */
+.promoNoise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
 }
 
-/* ОСНОВНОЙ БЛОК */
-.promoCard {
-  width: 100%;
-  max-width: 1400px;
-  border-radius: 28px;
-  padding: 60px;
-  display: flex;
-  justify-content: space-between;
-  gap: 40px;
-
-  background: linear-gradient(
-    135deg,
-    rgba(255,255,255,0.08),
-    rgba(255,255,255,0.02)
-  );
-
-  backdrop-filter: blur(30px);
-  border: 1px solid rgba(255,255,255,0.15);
-  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+/* Декоративные сферы */
+.promoOrb1 {
+  position: absolute;
+  top: -120px;
+  right: -80px;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 42, 85, 0.18) 0%, transparent 70%);
+  animation: orbFloat 8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
 }
 
-/* ЛЕВО */
+.promoOrb2 {
+  position: absolute;
+  bottom: -100px;
+  left: -60px;
+  width: 380px;
+  height: 380px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 42, 85, 0.10) 0%, transparent 70%);
+  animation: orbFloat 10s ease-in-out infinite reverse;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes orbFloat {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50%       { transform: translateY(-30px) scale(1.04); }
+}
+
+/* Внутренний layout */
+.promoInner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1360px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+  animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Левая колонка ────────────────────────────────────────── */
 .promoLeft {
-  max-width: 500px;
-}
-
-.promoTitle {
-  font-size: clamp(2.5rem, 4vw, 4rem);
-  font-weight: 800;
-  line-height: 1.1;
-  margin-bottom: 20px;
-
-  background: linear-gradient(180deg, #fff, #aaa);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.promoSubtitle {
-  color: rgba(255,255,255,0.6);
-  font-size: 1.1rem;
-  margin-bottom: 30px;
-}
-
-/* КНОПКИ */
-.promoButtons {
-  display: flex;
-  gap: 16px;
-}
-
-.promoPrimary {
-  background: white;
-  color: black;
-  padding: 12px 26px;
-  border-radius: 999px;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.promoSecondary {
-  border: 1px solid rgba(255,255,255,0.3);
-  padding: 12px 26px;
-  border-radius: 999px;
-  text-decoration: none;
-  color: white;
-}
-
-/* ПРАВО */
-.promoRight {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 0;
 }
 
-/* UI карточка */
-.uiCard {
-  background: rgba(255,255,255,0.05);
-  border-radius: 20px;
-  padding: 20px;
-  border: 1px solid rgba(255,255,255,0.1);
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-}
-
-.uiCard:hover {
-  background: rgba(255,255,255,0.08);
-  border-color: rgba(255,42,85,0.3);
-  transform: translateY(-2px);
-}
-
-.uiTitle {
-  font-size: 14px;
-  color: rgba(255,255,255,0.5);
-}
-
-/* Track header layout */
-.trackHeader {
-  display: flex;
+/* Бейдж */
+.promoBadge {
+  display: inline-flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
+  gap: 8px;
+  padding: 6px 14px 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 42, 85, 0.35);
+  background: rgba(255, 42, 85, 0.08);
+  font-size: 12px;
+  font-weight: 600;
+  color: #ff2a55;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+  width: fit-content;
+  animation: fadeUp 0.8s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* Фейковая волна - более детальная */
-.waveform {
-  height: 48px;
+.promoBadgeDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff2a55;
+  animation: pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* Заголовок */
+.promoTitle {
   display: flex;
-  align-items: center;
-  gap: 3px;
-  margin: 16px 0;
-  padding: 8px 0;
+  flex-direction: column;
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(3.2rem, 5.5vw, 5.5rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  margin: 0 0 28px 0;
+  animation: fadeUp 0.8s 0.15s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.waveform div {
-  flex: 1;
-  background: linear-gradient(180deg, #ff2a55, #ff0055);
-  border-radius: 2px;
-  transition: all 0.2s ease;
-}
-
-.waveform div:nth-child(1) { height: 35%; }
-.waveform div:nth-child(2) { height: 60%; }
-.waveform div:nth-child(3) { height: 45%; }
-.waveform div:nth-child(4) { height: 80%; }
-.waveform div:nth-child(5) { height: 55%; }
-.waveform div:nth-child(6) { height: 40%; }
-
-.uiCard:hover .waveform div {
-  animation: wave 1.2s ease-in-out infinite;
-}
-
-.uiCard:hover .waveform div:nth-child(2) { animation-delay: 0.1s; }
-.uiCard:hover .waveform div:nth-child(3) { animation-delay: 0.2s; }
-.uiCard:hover .waveform div:nth-child(4) { animation-delay: 0.3s; }
-.uiCard:hover .waveform div:nth-child(5) { animation-delay: 0.4s; }
-.uiCard:hover .waveform div:nth-child(6) { animation-delay: 0.5s; }
-
-@keyframes wave {
-  0%, 100% { transform: scaleY(1); }
-  50% { transform: scaleY(1.3); }
-}
-
-/* Track footer layout */
-.trackFooter {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 16px;
-}
-
-/* Статы */
-.uiStats {
-  display: flex;
-  gap: 20px;
-}
-
-.uiStats > div {
-  flex: 1;
-  background: rgba(255,255,255,0.05);
-  padding: 20px;
-  border-radius: 20px;
-  border: 1px solid rgba(255,255,255,0.1);
-}
-
-.statBig {
-  display: block;
-  font-size: 1.8rem;
-  font-weight: 700;
-}
-
-.statSmall {
-  color: rgba(255,255,255,0.5);
-  font-size: 0.9rem;
-}
-
-/* АДАПТИВ */
-@media (max-width: 900px) {
-  .promoCard {
-    flex-direction: column;
-    padding: 40px;
-  }
-}
-.trackName {
-  font-size: 15px;
-  font-weight: 700;
-  margin: 0;
+.promoTitleLine {
   color: #fff;
 }
 
-.trackAuthor {
+.promoTitleAccent {
+  color: #ff2a55;
+  -webkit-text-stroke: 0px transparent;
+  position: relative;
+}
+
+/* Подзаголовок */
+.promoSubtitle {
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.65;
+  margin: 0 0 36px 0;
+  max-width: 400px;
+  animation: fadeUp 0.8s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Кнопки */
+.promoButtons {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 48px;
+  animation: fadeUp 0.8s 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.promoPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 999px;
+  background: #ff2a55;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  box-shadow: 0 0 0 0 rgba(255, 42, 85, 0);
+}
+
+.promoPrimary:hover {
+  background: #ff0044;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(255, 42, 85, 0.45);
+}
+
+.promoPrimary:active {
+  transform: translateY(0);
+}
+
+.promoSecondary {
+  display: inline-flex;
+  align-items: center;
+  padding: 14px 28px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.2s;
+}
+
+.promoSecondary:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+/* Статистика */
+.promoStats {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  animation: fadeUp 0.8s 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.promoStat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.promoStatNum {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+.promoStatLabel {
   font-size: 12px;
-  color: rgba(255,255,255,0.4);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-/* Обложку делаем как бренд */
-.trackCover {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: radial-gradient(circle at 30% 30%, #ff2a55, #000);
-  box-shadow: 0 0 25px rgba(255,42,85,0.6);
+.promoStatDivider {
+  width: 1px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.12);
+  flex-shrink: 0;
 }
 
-/* Кнопка как "перейти" */
-.playBtn {
-  width: 40px;
-  height: 40px;
+/* ─── Правая колонка ───────────────────────────────────────── */
+.promoRight {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  animation: fadeUp 0.8s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Плавающий тег */
+.floatingTag {
+  position: absolute;
+  top: -18px;
+  right: 20px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(20, 20, 25, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+  animation: tagPop 0.6s 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes tagPop {
+  from { opacity: 0; transform: scale(0.8) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.floatingTagDot {
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  border: none;
-  background: linear-gradient(135deg, #ff2a55, #ff0055);
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
+  background: #22c55e;
+  animation: pulse 1.8s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+/* ─── Player card ──────────────────────────────────────────── */
+.playerCard {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 24px;
+  backdrop-filter: blur(24px);
+  transition: border-color 0.3s, background 0.3s, transform 0.3s;
+}
+
+.playerCard:hover {
+  border-color: rgba(255, 42, 85, 0.3);
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-3px);
+}
+
+.playerTop {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.playerCover {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: radial-gradient(circle at 30% 30%, #ff2a55, #1a0010);
+  box-shadow: 0 0 20px rgba(255, 42, 85, 0.45);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.playerCoverInner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.5);
+  position: relative;
+}
+
+.playerMeta {
+  flex: 1;
+  min-width: 0;
+}
+
+.playerName {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 3px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.playerSub {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.playerGenre {
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(255, 42, 85, 0.12);
+  border: 1px solid rgba(255, 42, 85, 0.25);
+  font-size: 11px;
+  font-weight: 600;
+  color: #ff2a55;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+/* Waveform */
+.playerWaveform {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 0;
+  margin-bottom: 20px;
+}
+
+.playerBar {
+  flex: 1;
+  height: var(--bar-h, 50%);
+  border-radius: 2px;
+  background: linear-gradient(180deg, #ff2a55 0%, rgba(255, 42, 85, 0.3) 100%);
+  transition: height 0.15s ease;
+}
+
+.playerCard:hover .playerBar {
+  animation: barWave 1.4s ease-in-out infinite;
+  animation-delay: var(--bar-delay, 0s);
+}
+
+@keyframes barWave {
+  0%, 100% { transform: scaleY(1); }
+  50%       { transform: scaleY(1.4); }
+}
+
+/* Footer плеера */
+.playerFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.playerControls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.playerBtnSm {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.playerBtnSm:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.playerBtnMain {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff2a55, #ff0044);
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(255,42,85,0.3);
+  box-shadow: 0 4px 16px rgba(255, 42, 85, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.playBtn:hover {
-  transform: scale(1.1) rotate(45deg);
-  box-shadow: 0 6px 20px rgba(255,42,85,0.5);
-  background: linear-gradient(135deg, #ff0055, #ff2a55);
+.playerBtnMain:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 24px rgba(255, 42, 85, 0.6);
 }
 
-/* Track time styling */
-.trackTime {
+.playerDuration {
   font-size: 13px;
-  color: rgba(255,255,255,0.6);
   font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 6px 12px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255, 255, 255, 0.4);
+  font-variant-numeric: tabular-nums;
 }
-/* Секции */
+
+/* ─── Activity card ────────────────────────────────────────── */
+.activityCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 20px 24px;
+  backdrop-filter: blur(16px);
+  transition: border-color 0.3s, transform 0.3s;
+}
+
+.activityCard:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+  transform: translateY(-2px);
+}
+
+.activityTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin: 0 0 14px 0;
+}
+
+.activityBars {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 36px;
+  margin-bottom: 14px;
+}
+
+.activityBar {
+  flex: 1;
+  height: var(--ab-h, 50%);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.12);
+  animation: barActivity 2s ease-in-out infinite;
+  animation-delay: var(--ab-delay, 0s);
+}
+
+@keyframes barActivity {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1; background: rgba(255, 42, 85, 0.6); }
+}
+
+.activityFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.activityOnline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.activityDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.activityCount {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ОСТАЛЬНЫЕ СЕКЦИИ (не трогались по смыслу, улучшены детали)
+═══════════════════════════════════════════════════════════ */
+
 .homeSection {
   padding: 80px 40px;
   position: relative;
-  margin: 0 auto;
   max-width: 100%;
   overflow: hidden;
 }
 
 .sectionHeader {
-
   margin-bottom: 60px;
 }
 
@@ -300,280 +573,495 @@
 }
 
 .sectionTitle {
+  font-family: 'Syne', sans-serif;
   font-size: clamp(2rem, 5vw, 3rem);
   font-weight: 800;
   margin: 0;
-  background: linear-gradient(135deg, #ffffff, #ff2a55);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  line-height: 1.2;
+  color: #fff;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
 .titleAccent {
   color: #ff2a55;
-  -webkit-text-fill-color: #ff2a55;
 }
 
 .sectionDescription {
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.55);
   margin: 0;
-  line-height: 1.6;
+  line-height: 1.65;
+  font-weight: 300;
 }
 
-/* Features Grid */
-.featuresGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 30px;
-  margin-top: 60px;
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-}
+/* ═══════════════════════════════════════════════════════════
+   ПРОКАЧАННАЯ СЕКЦИЯ ВОЗМОЖНОСТЕЙ
+═══════════════════════════════════════════════════════════ */
 
-.featureCard {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 40px 30px;
-  text-align: center;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-}
-
-.featureCard:hover {
-  transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 42, 92, 0.3);
-}
-
-.featureIcon {
-  font-size: 48px;
-  margin-bottom: 20px;
-  display: block;
-}
-
-.featureTitle {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: white;
-  margin: 0 0 16px 0;
-}
-
-.featureDescription {
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.7);
-  line-height: 1.6;
-  margin: 0;
-}
-
-/* CTA секция */
-.homeCta {
+.featuresEnhancedSection {
+  position: relative;
   padding: 100px 40px;
-  text-align: center;
-  background: linear-gradient(135deg, rgba(255, 42, 92, 0.1), rgba(255, 42, 92, 0.05));
-  border-radius: 30px;
-  margin: 80px auto;
-  border: 1px solid rgba(255, 42, 92, 0.2);
-  max-width: 1400px;
+  overflow: hidden;
+  isolation: isolate;
 }
 
-.ctaContent {
-  max-width: 600px;
+/* Декоративные фоны */
+.featuresBgGlow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 42, 85, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.featuresGridPattern {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Улучшенный бейдж секции */
+.badgeIcon {
+  margin-right: 6px;
+  font-size: 14px;
+}
+
+/* Сетка карточек */
+.featuresGridEnhanced {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+  max-width: 1300px;
   margin: 0 auto;
 }
 
-.ctaTitle {
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 800;
-  margin: 0 0 20px 0;
-  background: linear-gradient(135deg, #ffffff, #ff2a55);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.ctaSubtitle {
-  font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.8);
-  margin: 0 0 40px 0;
-  line-height: 1.6;
-}
-
-.ctaActions {
+/* Улучшенная карточка */
+.featureCardEnhanced {
+  position: relative;
+  background: rgba(20, 20, 28, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  padding: 32px;
+  backdrop-filter: blur(20px);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
   display: flex;
-  gap: 20px;
+  gap: 24px;
+  cursor: default;
+}
+
+.featureCardEnhanced:hover {
+  transform: translateY(-8px);
+  border-color: rgba(255, 42, 85, 0.3);
+  background: rgba(30, 30, 40, 0.8);
+  box-shadow: 0 20px 40px -10px rgba(255, 42, 85, 0.2);
+}
+
+.featureCardGlow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+    rgba(255, 42, 85, 0.15) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.featureCardEnhanced:hover .featureCardGlow {
+  opacity: 1;
+}
+
+/* Обертка иконки */
+.featureIconWrapper {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
   justify-content: center;
+}
+
+.featureIconGlow {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 42, 85, 0.3), transparent);
+  filter: blur(8px);
+  animation: iconPulse 3s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+.featureEmoji {
+  position: relative;
+  font-size: 36px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  z-index: 1;
+}
+
+/* Контент карточки */
+.featureContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.featureHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.featureTitleEnhanced {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.featureBadge {
+  padding: 4px 10px;
+  background: rgba(255, 42, 85, 0.15);
+  border: 1px solid rgba(255, 42, 85, 0.3);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ff2a55;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.featureDescriptionEnhanced {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Теги жанров */
+.featureTags {
+  display: flex;
   flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
 }
 
-.btnLarge {
-  padding: 16px 32px;
-  font-size: 18px;
-  font-weight: 600;
-  border-radius: 12px;
+.featureTags span {
+  padding: 5px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  transition: all 0.2s ease;
 }
 
-/* Адаптивность */
-@media (max-width: 768px) {
-  .homeHero {
-    padding: 0 40px;
-    min-height: 90vh;
-  }
-  
-  .heroContent {
-    text-align: center;
-    padding: 20px 0;
-  }
-  
-  .heroTitle {
-    font-size: clamp(2.5rem, 10vw, 4rem);
-    text-align: center;
-    margin-bottom: 16px;
-  }
-  
-  .heroSubtitle {
-    font-size: clamp(1rem, 3vw, 1.2rem);
-    text-align: center;
-    margin-bottom: 32px;
-    padding: 0 10px;
-  }
-  
-  .heroStats {
-    flex-direction: row;
-    gap: 30px;
-    align-items: center;
-    justify-content: center;
-    margin: 40px 0;
-    padding: 0 20px;
-  }
-  
-  .statItem {
-    width: auto;
-    min-width: 80px;
-    text-align: center;
-  }
-  
-  .statValue {
-    font-size: 1.8rem;
-    margin-bottom: 4px;
-  }
-  
-  .statLabel {
-    font-size: 0.7rem;
-    margin-top: 4px;
-  }
-  
-  .heroActions {
-    flex-direction: column;
-    gap: 16px;
-    align-items: center;
-    width: 100%;
-    max-width: 300px;
-    margin: 0 auto;
-  }
-  
-  .btn {
-    width: 100%;
-    padding: 14px 20px;
-    font-size: 15px;
-  }
-  
-  .homeSection {
-    padding: 60px 20px;
-  }
-  
-  .featuresGrid {
+.featureTags span:hover {
+  background: rgba(255, 42, 85, 0.15);
+  border-color: rgba(255, 42, 85, 0.3);
+  color: #ff2a55;
+}
+
+/* Статистика в карточке */
+.featureStats {
+  display: flex;
+  gap: 24px;
+  margin-top: auto;
+}
+
+.featureStatItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.statValue {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Активность */
+.featureActivity {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.activityIndicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.activityDotPulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.activityToday {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Информация о загрузке */
+.featureUploadInfo {
+  display: flex;
+  gap: 16px;
+  margin-top: auto;
+}
+
+.featureUploadInfo span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Декоративная линия внизу */
+.featuresBottomLine {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 60px;
+}
+
+.featuresBottomLine span {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 42, 85, 0.5), transparent);
+  border-radius: 2px;
+}
+
+.featuresBottomLine span:nth-child(2) {
+  width: 100px;
+  background: linear-gradient(90deg, transparent, #ff2a55, transparent);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   АДАПТИВНОСТЬ
+═══════════════════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  .featuresGridEnhanced {
     grid-template-columns: 1fr;
+    max-width: 600px;
+  }
+  
+  .featuresEnhancedSection {
+    padding: 80px 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .featuresEnhancedSection {
+    padding: 60px 24px;
+  }
+  
+  .featureCardEnhanced {
+    padding: 24px;
+    flex-direction: column;
     gap: 20px;
   }
   
-  .homeCta {
-    padding: 60px 20px;
-    margin: 60px 20px;
+  .featureIconWrapper {
+    width: 56px;
+    height: 56px;
   }
   
-  .ctaActions {
-    flex-direction: column;
-    align-items: flex-start;
+  .featureEmoji {
+    font-size: 32px;
+  }
+  
+  .featureTitleEnhanced {
+    font-size: 1.3rem;
+  }
+  
+  .featureHeader {
+    flex-wrap: wrap;
   }
 }
 
 @media (max-width: 480px) {
-  .homeHero {
-    padding: 0 20px;
-    min-height: 85vh;
+  .featuresEnhancedSection {
+    padding: 50px 20px;
   }
   
-  .heroContent {
-    text-align: center;
-    padding: 15px 0;
+  .featureCardEnhanced {
+    padding: 20px;
   }
   
-  .heroTitle {
-    font-size: clamp(2rem, 12vw, 3rem);
-    text-align: center;
-    margin-bottom: 12px;
-    line-height: 1.1;
-  }
-  
-  .heroSubtitle {
-    font-size: clamp(0.9rem, 4vw, 1.1rem);
-    text-align: center;
-    margin-bottom: 28px;
-    padding: 0 5px;
-    line-height: 1.5;
-  }
-  
-  .heroStats {
-    flex-direction: row;
-    gap: 20px;
-    align-items: center;
-    justify-content: center;
-    margin: 32px 0;
-    padding: 0 15px;
-  }
-  
-  .statItem {
-    width: auto;
-    min-width: 70px;
-    text-align: center;
-  }
-  
-  .statValue {
-    font-size: 1.6rem;
-    margin-bottom: 2px;
-  }
-  
-  .statLabel {
-    font-size: 0.65rem;
-    margin-top: 2px;
-  }
-  
-  .heroActions {
+  .featureStats {
     flex-direction: column;
     gap: 12px;
+  }
+  
+  .featureActivity {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .featureUploadInfo {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .featuresBottomLine {
+    margin-top: 40px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   АДАПТАЦИЯ
+═══════════════════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  .promoInner {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    max-width: 640px;
+  }
+
+  .promoLeft {
+    text-align: center;
     align-items: center;
-    width: 100%;
-    max-width: 280px;
-    margin: 0 auto;
   }
-  
-  .btn {
-    width: 100%;
-    padding: 12px 16px;
-    font-size: 14px;
-    border-radius: 10px;
+
+  .promoSubtitle {
+    max-width: 100%;
   }
-  
+
+  .promoButtons {
+    justify-content: center;
+  }
+
+  .promoStats {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .promoSection {
+    padding: 80px 24px 60px;
+    min-height: auto;
+  }
+
+  .promoTitle {
+    font-size: clamp(2.8rem, 12vw, 4rem);
+  }
+
+  .promoSubtitle {
+    font-size: 1rem;
+  }
+
+  .promoButtons {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .promoPrimary,
+  .promoSecondary {
+    width: 100%;
+    max-width: 320px;
+    justify-content: center;
+  }
+
+  .promoStats {
+    gap: 16px;
+  }
+
+  .promoStatNum {
+    font-size: 1.3rem;
+  }
+
+  .homeSection {
+    padding: 60px 24px;
+  }
+
+  .homeCta {
+    margin: 40px 24px 60px;
+    padding: 60px 24px;
+  }
+
+  .ctaActions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .floatingTag {
+    right: 0;
+    top: -14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .promoSection {
+    padding: 70px 20px 50px;
+  }
+
+  .promoTitle {
+    font-size: clamp(2.4rem, 14vw, 3.2rem);
+  }
+
+  .promoStats {
+    gap: 12px;
+  }
+
+  .promoStatDivider {
+    height: 28px;
+  }
+
+  .featuresGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .playerCard {
+    padding: 20px;
+  }
+
+  .activityCard {
+    padding: 16px 20px;
+  }
+
+  .homeCta {
+    margin: 30px 16px 40px;
+  }
+
   .homeSection {
     padding: 40px 20px;
-  }
-  
-  .homeCta {
-    padding: 40px 20px;
-    margin: 40px 20px;
   }
 }

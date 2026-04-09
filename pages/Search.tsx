@@ -5,6 +5,7 @@ import { getUploadsUrl } from '../utils/urls';
 import LoopCard from '../components/LoopCard';
 import './Search.css';
 
+
 interface Loop {
   id: number;
   title: string;
@@ -128,6 +129,7 @@ const Search: React.FC = () => {
 
   const handlePlay = async (loop: Loop) => {
     try {
+      // Если уже воспроизводим этот же луп, ставим на паузу
       if (currentlyPlaying === loop.id && isPlaying) {
         if (audioRef.current) {
           audioRef.current.pause();
@@ -136,41 +138,71 @@ const Search: React.FC = () => {
         return;
       }
 
+      // Очищаем предыдущий аудио элемент
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.src = '';
+        // Удаляем все обработчики событий
+        const prevAudio = audioRef.current as any;
+        if (prevAudio._handleLoadStart) {
+          prevAudio.removeEventListener('loadstart', prevAudio._handleLoadStart);
+        }
+        if (prevAudio._handleCanPlay) {
+          prevAudio.removeEventListener('canplay', prevAudio._handleCanPlay);
+        }
+        if (prevAudio._handleEnded) {
+          prevAudio.removeEventListener('ended', prevAudio._handleEnded);
+        }
+        if (prevAudio._handleError) {
+          prevAudio.removeEventListener('error', prevAudio._handleError);
+        }
       }
 
+      // Устанавливаем состояние загрузки
       setAudioLoading(loop.id);
 
+      // Создаем новый аудио элемент
       const audio = new Audio(getUploadsUrl(loop.filename));
       audioRef.current = audio;
 
-      audio.addEventListener('loadstart', () => {
+      // Создаем именованные обработчики событий
+      const handleLoadStart = () => {
         console.log('Loading audio:', loop.filename);
-      });
+      };
 
-      audio.addEventListener('canplay', () => {
+      const handleCanPlay = () => {
         audio.play();
         setCurrentlyPlaying(loop.id);
         setIsPlaying(true);
         setAudioLoading(null);
         console.log('Playing loop:', loop.title);
-      });
+      };
 
-      audio.addEventListener('ended', () => {
+      const handleEnded = () => {
         setCurrentlyPlaying(null);
         setIsPlaying(false);
         setAudioLoading(null);
-      });
+      };
 
-      audio.addEventListener('error', (e) => {
+      const handleError = (e: Event) => {
         console.error('Audio error:', e);
         setCurrentlyPlaying(null);
         setIsPlaying(false);
         setAudioLoading(null);
         alert('Ошибка воспроизведения аудио файла');
-      });
+      };
+
+      // Сохраняем обработчики в аудио элементе для последующего удаления
+      (audio as any)._handleLoadStart = handleLoadStart;
+      (audio as any)._handleCanPlay = handleCanPlay;
+      (audio as any)._handleEnded = handleEnded;
+      (audio as any)._handleError = handleError;
+
+      // Добавляем обработчики событий
+      audio.addEventListener('loadstart', handleLoadStart);
+      audio.addEventListener('canplay', handleCanPlay);
+      audio.addEventListener('ended', handleEnded);
+      audio.addEventListener('error', handleError);
 
       audio.load();
     } catch (error) {

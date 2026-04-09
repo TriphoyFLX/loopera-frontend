@@ -4,6 +4,7 @@ export const getApiUrl = () => {
 };
 
 export const getUploadsUrl = (filename: string) => {
+  // Используем переменную окружения или fallback для разработки
   const apiURL = import.meta.env.VITE_API_URL;
-  return apiURL ? `${apiURL}/uploads/loops/${filename}` : `/uploads/loops/${filename}`;
+  return `${apiURL}/uploads/loops/${filename}`;
 };

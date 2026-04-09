@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../utils/api';
 import { chatApi } from '../utils/chatApi';
 import { useAuth } from '../hooks/useAuth';
+import { getUploadsUrl } from '../utils/urls';
 import LoopCard from '../components/LoopCard';
 import './UserProfile.css';
 
@@ -39,6 +40,9 @@ const UserProfile: React.FC = () => {
   const [loops, setLoops] = useState<Loop[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [audioLoading, setAudioLoading] = useState<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handleStartChat = async () => {
@@ -56,6 +60,92 @@ const UserProfile: React.FC = () => {
     } catch (error) {
       console.error('Error creating chat:', error);
       // Можно показать ошибку пользователю
+    }
+  };
+
+  const handlePlay = async (loop: Loop) => {
+    try {
+      // Если уже воспроизводим этот же луп, ставим на паузу
+      if (currentlyPlaying === loop.id && isPlaying) {
+        if (audioRef.current) {
+          audioRef.current.pause();
+          setIsPlaying(false);
+        }
+        return;
+      }
+
+      // Очищаем предыдущий аудио элемент
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = '';
+        // Удаляем все обработчики событий
+        const prevAudio = audioRef.current as any;
+        if (prevAudio._handleLoadStart) {
+          prevAudio.removeEventListener('loadstart', prevAudio._handleLoadStart);
+        }
+        if (prevAudio._handleCanPlay) {
+          prevAudio.removeEventListener('canplay', prevAudio._handleCanPlay);
+        }
+        if (prevAudio._handleEnded) {
+          prevAudio.removeEventListener('ended', prevAudio._handleEnded);
+        }
+        if (prevAudio._handleError) {
+          prevAudio.removeEventListener('error', prevAudio._handleError);
+        }
+      }
+
+      // Устанавливаем состояние загрузки
+      setAudioLoading(loop.id);
+
+      // Создаем новый аудио элемент
+      const audio = new Audio(getUploadsUrl(loop.filename));
+      audioRef.current = audio;
+
+      // Создаем именованные обработчики событий
+      const handleLoadStart = () => {
+        console.log('Loading audio:', loop.filename);
+      };
+
+      const handleCanPlay = () => {
+        audio.play();
+        setCurrentlyPlaying(loop.id);
+        setIsPlaying(true);
+        setAudioLoading(null);
+        console.log('Playing loop:', loop.title);
+      };
+
+      const handleEnded = () => {
+        setCurrentlyPlaying(null);
+        setIsPlaying(false);
+        setAudioLoading(null);
+      };
+
+      const handleError = (e: Event) => {
+        console.error('Audio error:', e);
+        setCurrentlyPlaying(null);
+        setIsPlaying(false);
+        setAudioLoading(null);
+        alert('Ошибка воспроизведения аудио файла');
+      };
+
+      // Добавляем обработчики событий
+      audio.addEventListener('loadstart', handleLoadStart);
+      audio.addEventListener('canplay', handleCanPlay);
+      audio.addEventListener('ended', handleEnded);
+      audio.addEventListener('error', handleError);
+
+      // Сохраняем обработчики для последующего удаления
+      (audio as any)._handleLoadStart = handleLoadStart;
+      (audio as any)._handleCanPlay = handleCanPlay;
+      (audio as any)._handleEnded = handleEnded;
+      (audio as any)._handleError = handleError;
+
+      // Загружаем аудио
+      audio.load();
+    } catch (error) {
+      console.error('Error playing loop:', error);
+      setAudioLoading(null);
+      alert('Ошибка воспроизведения лупа');
     }
   };
 
@@ -108,6 +198,20 @@ const UserProfile: React.FC = () => {
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.src = '';
+        // Удаляем все обработчики событий
+        const audio = audioRef.current as any;
+        if (audio._handleLoadStart) {
+          audio.removeEventListener('loadstart', audio._handleLoadStart);
+        }
+        if (audio._handleCanPlay) {
+          audio.removeEventListener('canplay', audio._handleCanPlay);
+        }
+        if (audio._handleEnded) {
+          audio.removeEventListener('ended', audio._handleEnded);
+        }
+        if (audio._handleError) {
+          audio.removeEventListener('error', audio._handleError);
+        }
       }
     };
   }, []);
@@ -240,6 +344,9 @@ const UserProfile: React.FC = () => {
                     tags: loop.tags || []
                   }}
                   currentUserId={currentUser?.id}
+                  onPlay={handlePlay}
+                  isPlaying={currentlyPlaying === loop.id && isPlaying}
+                  isLoading={audioLoading === loop.id}
                   showLike={true}
                 />
               ))}

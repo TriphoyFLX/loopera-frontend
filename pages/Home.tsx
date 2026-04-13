@@ -1,6 +1,7 @@
 import RecentLoops from '../components/RecentLoops';
 import SubscribedLoops from '../components/SubscribedLoops';
 import TopLoopmakers from '../components/TopLoopmakers';
+import Add from '../components/Add';
 import { useAuth } from '../hooks/useAuth';
 import styles from './Home.module.css';
 
@@ -171,6 +172,9 @@ const Home = () => {
         </div>
         <RecentLoops limit={6} showAllButton={true} type="all" title="" />
       </section>
+
+      {/* Рекламный блок */}
+      <Add />
 
       {user && (
         <section className={styles.homeSection}>

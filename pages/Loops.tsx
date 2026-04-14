@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import RecentLoops from '../components/RecentLoops';
 import SubscribedLoops from '../components/SubscribedLoops';
 import './Loops.css';
 
 const Loops: React.FC = () => {
+  // лимиты
+  const [recentLimit, setRecentLimit] = useState(8);
+  const [subLimit, setSubLimit] = useState(8);
+
   return (
     <div className="loops-page">
-      {/* Hero секция */}
+      {/* Hero */}
       <section className="loops-hero">
         <div className="hero-content">
           <h1 className="hero-title">
@@ -15,6 +19,7 @@ const Loops: React.FC = () => {
           <p className="hero-subtitle">
             Откройте для себя тысячи профессиональных лупов от лучших продюсеров
           </p>
+
           <div className="hero-stats">
             <div className="stat-item">
               <span className="stat-value">10k+</span>
@@ -30,6 +35,7 @@ const Loops: React.FC = () => {
             </div>
           </div>
         </div>
+
         <div className="hero-decoration">
           <div className="decoration-circle"></div>
           <div className="decoration-circle"></div>
@@ -37,8 +43,10 @@ const Loops: React.FC = () => {
         </div>
       </section>
 
-      {/* Основной контент */}
+      {/* Контент */}
       <div className="loops-content">
+
+        {/* Популярные */}
         <section className="loops-section">
           <div className="section-header">
             <div className="section-title-wrapper">
@@ -51,9 +59,23 @@ const Loops: React.FC = () => {
               Самые скачиваемые лупы этой недели
             </p>
           </div>
-          <RecentLoops limit={4} showAllButton={false} type="all" title="" />
+
+          <RecentLoops
+            limit={recentLimit}
+            showAllButton={false}
+            type="all"
+            title=""
+          />
+
+          <button
+            className="load-more"
+            onClick={() => setRecentLimit(prev => prev + 8)}
+          >
+            Загрузить ещё
+          </button>
         </section>
 
+        {/* Подписки */}
         <section className="loops-section">
           <div className="section-header">
             <div className="section-title-wrapper">
@@ -66,8 +88,20 @@ const Loops: React.FC = () => {
               Лупы от артистов, на которых вы подписаны
             </p>
           </div>
-          <SubscribedLoops limit={4} showAllButton={false} />
+
+          <SubscribedLoops
+            limit={subLimit}
+            showAllButton={false}
+          />
+
+          <button
+            className="load-more"
+            onClick={() => setSubLimit(prev => prev + 8)}
+          >
+            Загрузить ещё
+          </button>
         </section>
+
       </div>
     </div>
   );

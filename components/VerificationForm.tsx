@@ -3,14 +3,12 @@ import { api } from '../utils/api';
 
 interface VerificationFormProps {
   email: string;
-  tempData: any;
   onSuccess: (token: string, user: any) => void;
   onBack: () => void;
 }
 
 const VerificationForm: React.FC<VerificationFormProps> = ({ 
   email, 
-  tempData, 
   onSuccess, 
   onBack 
 }) => {
@@ -42,7 +40,7 @@ const VerificationForm: React.FC<VerificationFormProps> = ({
     setIsLoading(true);
 
     try {
-      const response = await api.verifyEmail(email, code, tempData);
+      const response = await api.verifyEmail(email, code);
       
       if (response.token && response.user) {
         onSuccess(response.token, response.user);
@@ -59,17 +57,9 @@ const VerificationForm: React.FC<VerificationFormProps> = ({
       setError('');
       setIsLoading(true);
       
-      const response = await api.register({
-        username: tempData.username,
-        email: email,
-        password: tempData.password
-      });
-      
-      if (response.requiresVerification) {
-        setTimeLeft(600);
-        setCanResend(false);
-        setCode('');
-      }
+      // Для повторной отправки кода нужно создать новый эндпоинт
+      // Пока просто показываем сообщение что нужно зарегистрироваться заново
+      throw new Error('Для повторной отправки кода вернитесь к регистрации');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ошибка отправки кода');
     } finally {

@@ -18,8 +18,7 @@ const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showVerification, setShowVerification] = useState(false);
   const [verificationEmail, setVerificationEmail] = useState('');
-  const [tempData, setTempData] = useState<any>(null);
-  const { login } = useAuth();
+    const { login } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCredentials({
@@ -45,12 +44,21 @@ const RegisterForm = () => {
         throw new Error('Пароль должен содержать минимум 6 символов');
       }
 
-      if (!credentials.email.includes('@')) {
-        throw new Error('Введите корректный email');
+      if (credentials.password.length > 128) {
+        throw new Error('Пароль не должен превышать 128 символов');
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(credentials.email)) {
+        throw new Error('Введите корректный email адрес');
       }
 
       if (credentials.username.length < 3) {
         throw new Error('Имя пользователя должно содержать минимум 3 символа');
+      }
+
+      if (credentials.username.length > 50) {
+        throw new Error('Имя пользователя не должно превышать 50 символов');
       }
       
       const response = await api.register(credentials);
@@ -58,9 +66,8 @@ const RegisterForm = () => {
       console.log('Register response:', response);
       
       if (response.requiresVerification) {
-        // Показываем форму верификации
-        setVerificationEmail(response.email);
-        setTempData(response.tempData);
+        // Показываем форму верификации для новых пользователей
+        setVerificationEmail(credentials.email);
         setShowVerification(true);
         return;
       }
@@ -83,7 +90,6 @@ const RegisterForm = () => {
       {showVerification ? (
         <VerificationForm
           email={verificationEmail}
-          tempData={tempData}
           onSuccess={(token, user) => {
             login(token, user);
             navigate('/');
@@ -91,7 +97,6 @@ const RegisterForm = () => {
           onBack={() => {
             setShowVerification(false);
             setVerificationEmail('');
-            setTempData(null);
           }}
         />
       ) : (

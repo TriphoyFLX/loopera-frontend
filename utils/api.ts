@@ -75,19 +75,36 @@ class API {
     }
   }
 
-  async verifyEmail(email: string, code: string, tempData: any) {
+  async verifyEmail(email: string, code: string) {
     try {
       console.log('API verifyEmail called with:', { email, code: '***' });
       
       const response = await fetch(`${this.baseURL}/auth/verify-email`, {
         method: 'POST',
         headers: this.getHeaders(),
-        body: JSON.stringify({ email, code, tempData })
+        body: JSON.stringify({ email, code })
       });
       
       return this.handleResponse(response);
     } catch (error) {
       console.error('Verify email API error:', error);
+      throw error;
+    }
+  }
+
+  async resendVerificationCode(email: string) {
+    try {
+      console.log('API resendVerificationCode called with:', { email });
+      
+      const response = await fetch(`${this.baseURL}/auth/resend-verification`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        body: JSON.stringify({ email })
+      });
+      
+      return this.handleResponse(response);
+    } catch (error) {
+      console.error('Resend verification code API error:', error);
       throw error;
     }
   }

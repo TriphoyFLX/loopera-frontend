@@ -116,6 +116,18 @@ const LoginForm = () => {
 
   return (
     <>
+      {/* Debug информация */}
+      <div style={{ 
+        backgroundColor: '#ffeb3b', 
+        padding: '10px', 
+        fontSize: '14px', 
+        margin: '10px 0',
+        borderRadius: '4px',
+        border: '2px solid #fbc02d'
+      }}>
+        🐛 DEBUG: showVerification = {showVerification.toString()}, verificationEmail = {verificationEmail}
+      </div>
+
       {/* Modal для верификации кода */}
       {showVerification && (
         <div style={{
@@ -323,6 +335,21 @@ const LoginForm = () => {
 
         <button type="submit" disabled={isLoading} className="auth-button">
         {isLoading ? 'Вход...' : 'Войти'}
+      </button>
+
+      {/* Кнопка для принудительного показа модального окна */}
+      <button 
+        type="button" 
+        onClick={() => {
+          console.log('🔧 Принудительный показ модального окна');
+          setVerificationEmail('test@example.com');
+          setShowVerification(true);
+        }} 
+        disabled={isLoading} 
+        className="auth-button secondary"
+        style={{ marginTop: '10px', backgroundColor: '#ff5722' }}
+      >
+        🔧 Показать окно верификации
       </button>
 
               </form>

@@ -30,11 +30,15 @@ export interface LikedLoop {
 class LikeApi {
   private async request(endpoint: string, options: RequestInit = {}): Promise<Response> {
     const token = tokenStorage.getToken();
-    console.log('LikeApi.request(): token =', token ? 'exists' : 'missing');
+    const baseURL = getBaseURL();
+    const url = `${baseURL}${endpoint}`;
     
-    // Не добавляем токен в query parameter, только в заголовок
-    const url = `${getBaseURL()}${endpoint}`;
-    console.log('LikeApi.request(): url =', url);
+    console.log('LikeApi.request():');
+    console.log('  baseURL =', baseURL);
+    console.log('  endpoint =', endpoint);
+    console.log('  token =', token ? 'exists' : 'missing');
+    console.log('  full url =', url);
+    console.log('  Authorization header =', token ? `Bearer ${token.substring(0, 20)}...` : 'missing');
     
     const config: RequestInit = {
       headers: {

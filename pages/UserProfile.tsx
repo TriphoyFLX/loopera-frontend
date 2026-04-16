@@ -35,7 +35,7 @@ interface Loop {
 const UserProfile: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
-  const { user: currentUser } = useAuth();
+  const { token, user: currentUser } = useAuth();
   const [user, setUser] = useState<User | null>(null);
   const [loops, setLoops] = useState<Loop[]>([]);
   const [loading, setLoading] = useState(true);
@@ -160,7 +160,7 @@ const UserProfile: React.FC = () => {
     try {
       // Временное решение - получаем информацию о пользователе из его лупов
       // В будущем нужно добавить эндпоинт /api/users/:id
-      const response = await api.getAllLoops(1, 100);
+      const response = await api.getAllLoops(1, 100, token || undefined);
       const userLoops = response.loops.filter((loop: Loop) => loop.user_id === parseInt(userId || ''));
       
       if (userLoops.length > 0) {
@@ -182,7 +182,7 @@ const UserProfile: React.FC = () => {
       setLoading(true);
       setError(null);
       
-      const response = await api.getAllLoops(1, 100);
+      const response = await api.getAllLoops(1, 100, token || undefined);
       const userLoops = response.loops.filter((loop: Loop) => loop.user_id === parseInt(userId || ''));
       setLoops(userLoops);
     } catch (err) {

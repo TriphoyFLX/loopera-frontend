@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { api } from '../utils/api';
 import { getUploadsUrl } from '../utils/urls';
+import { useAuth } from '../hooks/useAuth';
 import LoopCard from '../components/LoopCard';
 import './Search.css';
 
@@ -32,6 +33,7 @@ interface User {
 }
 
 const Search: React.FC = () => {
+  const { token } = useAuth();
   const [searchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [searchType, setSearchType] = useState<'loops' | 'users'>('loops');
@@ -53,7 +55,7 @@ const Search: React.FC = () => {
 
   const fetchTags = async () => {
     try {
-      const response = await api.getAllLoops(1, 1000);
+      const response = await api.getAllLoops(1, 1000, token || undefined);
       const allTags = response.loops.flatMap((loop: any) => loop.tags || []);
       const uniqueTags = Array.from(new Set(allTags)) as string[];
       setSuggestions(uniqueTags);
@@ -82,7 +84,7 @@ const Search: React.FC = () => {
 
     try {
       if (searchType === 'loops') {
-        const response = await api.getAllLoops(1, 100);
+        const response = await api.getAllLoops(1, 100, token || undefined);
         const filteredLoops = response.loops.filter((loop: any) => {
           const titleMatch = loop.title?.toLowerCase().includes(searchQuery.toLowerCase());
           const genreMatch = loop.genre?.toLowerCase().includes(searchQuery.toLowerCase());
@@ -95,7 +97,7 @@ const Search: React.FC = () => {
         setUsers([]);
       } else {
         // Поиск пользователей (временно по именам из лупов)
-        const response = await api.getAllLoops(1, 1000);
+        const response = await api.getAllLoops(1, 1000, token || undefined);
         const userMap = new Map<number, User>();
         
         response.loops.forEach((loop: any) => {

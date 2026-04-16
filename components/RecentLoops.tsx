@@ -193,7 +193,7 @@ const RecentLoops: React.FC<RecentLoopsProps> = ({
         response = await api.getUserLoops(token);
         setLoops(append ? [...loops, ...response.loops] : response.loops);
       } else {
-        response = await api.getAllLoops(pageNum, limit);
+        response = await api.getAllLoops(pageNum, limit, token || undefined);
         const newLoops = append ? [...loops, ...response.loops] : response.loops;
         setLoops(newLoops);
         

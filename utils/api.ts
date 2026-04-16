@@ -2,8 +2,8 @@ class API {
   private baseURL: string;
 
   constructor() {
-    const apiURL = import.meta.env.VITE_API_URL;
-    this.baseURL = apiURL ? `${apiURL}/api` : '/api';
+    // Жестко задаем URL бэкенда для обхода проблем с env
+    this.baseURL = 'https://loopera-lpr.vercel.app/api';
   }
 
   private async handleResponse(response: Response) {

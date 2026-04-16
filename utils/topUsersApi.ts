@@ -1,6 +1,6 @@
 import { tokenStorage } from './tokenStorage';
 
-const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
+const API_BASE_URL = 'https://loopera-lpr.vercel.app/api';
 
 export interface TopUser {
   id: number;

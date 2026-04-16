@@ -1,5 +1,10 @@
 import { tokenStorage } from './tokenStorage';
 
+const getBaseURL = () => {
+  // Жестко задаем URL бэкенда для обхода проблем с env
+  return 'https://loopera-lpr.vercel.app/api';
+};
+
 export interface LoopArtist {
   id: number;
   username: string;
@@ -8,12 +13,10 @@ export interface LoopArtist {
 }
 
 class SearchApi {
-  private baseURL: string;
-
   constructor() {
-    const apiURL = import.meta.env.VITE_API_URL;
-    this.baseURL = apiURL ? `${apiURL}/api` : '/api';
+    this.baseURL = getBaseURL();
   }
+  private baseURL: string;
 
   private async request(endpoint: string, options: RequestInit = {}) {
     const url = `${this.baseURL}${endpoint}`;

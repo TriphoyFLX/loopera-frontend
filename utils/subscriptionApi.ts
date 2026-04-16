@@ -1,8 +1,8 @@
 import { tokenStorage } from './tokenStorage';
 
 const getBaseURL = () => {
-  const apiURL = import.meta.env.VITE_API_URL;
-  return apiURL ? `${apiURL}/api` : '/api';
+  // Жестко задаем URL бэкенда для обхода проблем с env
+  return 'https://loopera-lpr.vercel.app/api';
 };
 
 interface Subscription {

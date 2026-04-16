@@ -43,17 +43,29 @@ class API {
 
   async login(username: string, password: string) {
     try {
-      console.log('API login called with:', { username, password: '***' });
-      
       const response = await fetch(`${this.baseURL}/auth/login`, {
         method: 'POST',
-        headers: this.getHeaders(),
-        body: JSON.stringify({ username, password })
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
       });
-      
-      return this.handleResponse(response);
+
+      const data = await response.json();
+
+      // Если сервер возвращает requiresVerification (даже со статусом 403), возвращаем данные как есть
+      if (data.requiresVerification) {
+        return data;
+      }
+
+      // Если нет requiresVerification, но статус не OK - выбрасываем ошибку
+      if (!response.ok) {
+        throw new Error(data.message || 'Ошибка входа');
+      }
+
+      return data;
     } catch (error) {
-      console.error('Login API error:', error);
+      console.error('Login error:', error);
       throw error;
     }
   }
@@ -67,86 +79,69 @@ class API {
         headers: this.getHeaders(),
         body: JSON.stringify(credentials)
       });
-      
-      return this.handleResponse(response);
+
+      return await this.handleResponse(response);
     } catch (error) {
-      console.error('Register API error:', error);
+      console.error('Register error:', error);
       throw error;
     }
   }
 
   async verifyEmail(email: string, code: string) {
     try {
-      console.log('API verifyEmail called with:', { email, code: '***' });
-      
       const response = await fetch(`${this.baseURL}/auth/verify-email`, {
         method: 'POST',
         headers: this.getHeaders(),
         body: JSON.stringify({ email, code })
       });
-      
-      return this.handleResponse(response);
+
+      return await this.handleResponse(response);
     } catch (error) {
-      console.error('Verify email API error:', error);
+      console.error('Verify email error:', error);
       throw error;
     }
   }
 
   async resendVerificationCode(email: string) {
     try {
-      console.log('API resendVerificationCode called with:', { email });
-      
       const response = await fetch(`${this.baseURL}/auth/resend-verification`, {
         method: 'POST',
         headers: this.getHeaders(),
         body: JSON.stringify({ email })
       });
-      
-      return this.handleResponse(response);
+
+      return await this.handleResponse(response);
     } catch (error) {
-      console.error('Resend verification code API error:', error);
+      console.error('Resend verification code error:', error);
       throw error;
     }
   }
 
   async uploadLoop(formData: FormData, token: string) {
     try {
-      console.log('Uploading loop...');
-      
-      const response = await fetch(`${this.baseURL}/loops/upload`, {
+      const response = await fetch(`${this.baseURL}/loops`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
+        headers: this.getHeaders(token),
         body: formData
       });
 
-      return this.handleResponse(response);
+      return await this.handleResponse(response);
     } catch (error) {
       console.error('Upload loop error:', error);
       throw error;
     }
   }
 
-  async getUserLoops(token: string) {
+  async getUserLoops(token: string, page: number = 1, limit: number = 6) {
     try {
-      const url = `${this.baseURL}/loops/my?token=${token}`;
-      const response = await fetch(url, {
+      const response = await fetch(`${this.baseURL}/loops?page=${page}&limit=${limit}`, {
+        method: 'GET',
         headers: this.getHeaders(token)
       });
-      return this.handleResponse(response);
+
+      return await this.handleResponse(response);
     } catch (error) {
       console.error('Get user loops error:', error);
-      throw error;
-    }
-  }
-
-  async getAllLoops(page: number = 1, limit: number = 20) {
-    try {
-      const response = await fetch(`${this.baseURL}/loops?page=${page}&limit=${limit}`);
-      return this.handleResponse(response);
-    } catch (error) {
-      console.error('Get all loops error:', error);
       throw error;
     }
   }
@@ -157,9 +152,28 @@ class API {
         method: 'DELETE',
         headers: this.getHeaders(token)
       });
-      return this.handleResponse(response);
+
+      return await this.handleResponse(response);
     } catch (error) {
       console.error('Delete loop error:', error);
+      throw error;
+    }
+  }
+
+  async getAllLoops(page: number = 1, limit: number = 6, token?: string) {
+    try {
+      const url = token 
+        ? `${this.baseURL}/loops?page=${page}&limit=${limit}`
+        : `${this.baseURL}/loops/public?page=${page}&limit=${limit}`;
+      
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: this.getHeaders(token)
+      });
+
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Get all loops error:', error);
       throw error;
     }
   }

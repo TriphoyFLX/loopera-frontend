@@ -40,31 +40,17 @@ const LoginForm = () => {
       const response = await api.login(credentials.username, credentials.password);
       
       console.log('📦 Full login response:', JSON.stringify(response, null, 2));
-      console.log('🔑 requiresVerification:', response.requiresVerification);
-      console.log('📧 response.email:', response.email);
-      console.log('👤 response.user:', response.user);
-      console.log('🎫 response.token:', response.token ? 'exists' : 'missing');
       
-      // ПРОВЕРКА: Если ответ содержит email, но не требует верификации
-      // ВРЕМЕННОЕ РЕШЕНИЕ для тестирования
-      if (response.email && !response.token) {
-        console.log('⚠️ Server returned email but no token - forcing verification');
-        setVerificationEmail(response.email);
-        setShowVerification(true);
-        setIsLoading(false);
-        return;
-      }
-      
+      // Проверяем, требует ли сервер верификацию
       if (response.requiresVerification === true) {
         console.log('✅ Verification required, showing form');
-        const email = response.email || credentials.username;
-        console.log('📧 Setting verification email to:', email);
-        setVerificationEmail(email);
+        setVerificationEmail(response.email || credentials.username);
         setShowVerification(true);
         setIsLoading(false);
         return;
       }
       
+      // Если нет токена, но и нет requiresVerification - что-то не так
       if (!response.token || !response.user) {
         console.error('❌ Invalid response structure:', response);
         throw new Error('Неверный ответ от сервера');
@@ -75,17 +61,31 @@ const LoginForm = () => {
       navigate('/');
     } catch (err) {
       console.error('❌ Login form error:', err);
-      setError(err instanceof Error ? err.message : 'Ошибка входа');
+      
+      // ВАЖНО: Проверяем текст ошибки на "Введите код верификации"
+      const errorMessage = err instanceof Error ? err.message : 'Ошибка входа';
+      
+      if (errorMessage.includes('код верификации') || 
+          errorMessage.includes('verification') || 
+          errorMessage.includes('verify')) {
+        // Сервер требует верификацию, показываем форму
+        console.log('✅ Server requires verification (detected from error message)');
+        setVerificationEmail(credentials.username); // Используем username как email
+        setShowVerification(true);
+        setError(`Введите код верификации, отправленный на ${credentials.username}`);
+      } else {
+        setError(errorMessage);
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Временная функция для принудительного показа верификации (для теста)
-  const forceShowVerification = () => {
-    console.log('🔧 Manually showing verification form');
-    setVerificationEmail(credentials.username || 'test@example.com');
-    setShowVerification(true);
+  // Функция для логина с кодом верификации
+  const handleVerificationSuccess = async (token: string, user: any) => {
+    console.log('✅ Verification successful, logging in');
+    login(token, user);
+    navigate('/');
   };
 
   return (
@@ -107,35 +107,17 @@ const LoginForm = () => {
       }}>
         <div>showVerification: {showVerification ? '✅ YES' : '❌ NO'}</div>
         <div>email: {verificationEmail || 'не задан'}</div>
-        <button 
-          onClick={forceShowVerification}
-          style={{
-            marginTop: '5px',
-            padding: '4px 8px',
-            fontSize: '11px',
-            backgroundColor: '#ff5722',
-            color: 'white',
-            border: 'none',
-            borderRadius: '3px',
-            cursor: 'pointer'
-          }}
-        >
-          🔧 Показать окно верификации
-        </button>
       </div>
 
       {showVerification ? (
         <VerificationForm
           email={verificationEmail}
-          onSuccess={(token, user) => {
-            console.log('✅ Verification successful, logging in');
-            login(token, user);
-            navigate('/');
-          }}
+          onSuccess={handleVerificationSuccess}
           onBack={() => {
             console.log('⬅️ Back from verification');
             setShowVerification(false);
             setVerificationEmail('');
+            setError('');
           }}
         />
       ) : (
@@ -183,8 +165,10 @@ const LoginForm = () => {
           </div>
 
           {error && (
-            <div className="error-message">
-              ❌ {error}
+            <div className="error-message" style={{
+              color: error.includes('код верификации') ? '#ff9800' : '#dc3545'
+            }}>
+              {error}
             </div>
           )}
 

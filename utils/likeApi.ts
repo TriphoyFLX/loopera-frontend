@@ -29,8 +29,8 @@ class LikeApi {
     const token = tokenStorage.getToken();
     console.log('LikeApi.request(): token =', token ? 'exists' : 'missing');
     
-    // Добавляем токен в query parameter
-    const url = `${API_BASE_URL}${endpoint}${token ? (endpoint.includes('?') ? '&token=' : '?token=') + token : ''}`;
+    // Не добавляем токен в query parameter, только в заголовок
+    const url = `${API_BASE_URL}${endpoint}`;
     console.log('LikeApi.request(): url =', url);
     
     const config: RequestInit = {

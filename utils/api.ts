@@ -117,6 +117,36 @@ class API {
     }
   }
 
+  async forgotPassword(email: string) {
+    try {
+      const response = await fetch(`${this.baseURL}/auth/forgot-password`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        body: JSON.stringify({ email })
+      });
+
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Forgot password error:', error);
+      throw error;
+    }
+  }
+
+  async resetPassword(email: string, code: string, newPassword: string) {
+    try {
+      const response = await fetch(`${this.baseURL}/auth/reset-password`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        body: JSON.stringify({ email, code, newPassword })
+      });
+
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Reset password error:', error);
+      throw error;
+    }
+  }
+
   async uploadLoop(formData: FormData, token: string) {
     try {
       const response = await fetch(`${this.baseURL}/loops`, {

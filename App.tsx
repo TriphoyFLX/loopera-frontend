@@ -11,6 +11,7 @@ import LoopUpload from './pages/LoopUpload'
 import Search from './pages/Search'
 import Profile from './pages/Profile'
 import Admin from './pages/Admin'
+import ForgotPassword from './components/ForgotPasswordForm'
 import './App.css'
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/auth" element={<Auth />} />
+          <Route path="/forgot-password" element={<ForgotPassword onBack={() => window.history.back()} />} />
           <Route path="/" element={
             <ProtectedRoute>
               <Layout>
@@ -33,7 +35,7 @@ function App() {
               </Layout>
             </ProtectedRoute>
           } />
-          <Route path="/user/:userId" element={
+          <Route path="/profile" element={
             <ProtectedRoute>
               <Layout>
                 <UserProfile />
@@ -47,7 +49,7 @@ function App() {
               </Layout>
             </ProtectedRoute>
           } />
-          <Route path="/loop-upload" element={
+          <Route path="/upload" element={
             <ProtectedRoute>
               <Layout>
                 <LoopUpload />
@@ -61,17 +63,12 @@ function App() {
               </Layout>
             </ProtectedRoute>
           } />
-          <Route path="/profile" element={
+          <Route path="/admin" element={
             <ProtectedRoute>
               <Layout>
-                <Profile />
+                <Admin />
               </Layout>
             </ProtectedRoute>
-          } />
-          <Route path="/admin" element={
-            <Layout>
-              <Admin />
-            </Layout>
           } />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

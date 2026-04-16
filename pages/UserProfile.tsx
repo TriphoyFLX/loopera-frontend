@@ -52,8 +52,14 @@ const UserProfile: React.FC = () => {
         return;
       }
 
+      const targetUserId = userId || currentUser?.id?.toString();
+      if (!targetUserId) {
+        console.error('No user ID available');
+        return;
+      }
+
       // Создаем или получаем существующий чат
-      await chatApi.createOrGetChat(parseInt(userId || ''));
+      await chatApi.createOrGetChat(parseInt(targetUserId));
       
       // Переходим к чатам
       navigate('/chats');
@@ -150,22 +156,23 @@ const UserProfile: React.FC = () => {
   };
 
   useEffect(() => {
-    if (userId) {
-      fetchUserProfile();
-      fetchUserLoops();
+    const targetUserId = userId || currentUser?.id?.toString();
+    if (targetUserId) {
+      fetchUserProfile(targetUserId);
+      fetchUserLoops(targetUserId);
     }
-  }, [userId]);
+  }, [userId, currentUser]);
 
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = async (targetUserId: string) => {
     try {
       // Временное решение - получаем информацию о пользователе из его лупов
       // В будущем нужно добавить эндпоинт /api/users/:id
       const response = await api.getAllLoops(1, 100, token || undefined);
-      const userLoops = response.loops.filter((loop: Loop) => loop.user_id === parseInt(userId || ''));
+      const userLoops = response.loops.filter((loop: Loop) => loop.user_id === parseInt(targetUserId || ''));
       
       if (userLoops.length > 0) {
         const userInfo = {
-          id: parseInt(userId || ''),
+          id: parseInt(targetUserId || ''),
           username: userLoops[0].author || 'Unknown',
           created_at: userLoops[0].created_at || ''
         };
@@ -177,13 +184,13 @@ const UserProfile: React.FC = () => {
     }
   };
 
-  const fetchUserLoops = async () => {
+  const fetchUserLoops = async (targetUserId: string) => {
     try {
       setLoading(true);
       setError(null);
       
       const response = await api.getAllLoops(1, 100, token || undefined);
-      const userLoops = response.loops.filter((loop: Loop) => loop.user_id === parseInt(userId || ''));
+      const userLoops = response.loops.filter((loop: Loop) => loop.user_id === parseInt(targetUserId || ''));
       setLoops(userLoops);
     } catch (err) {
       console.error('Error fetching user loops:', err);

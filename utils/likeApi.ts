@@ -54,7 +54,7 @@ class LikeApi {
 
   // Лайкнуть/дизлайкнуть луп
   async toggleLike(loopId: number): Promise<LikeResponse> {
-    const response = await this.request(`/loops/loops/${loopId}/like`, {
+    const response = await this.request(`/loops/${loopId}/like`, {
       method: 'POST',
     });
     
@@ -63,7 +63,7 @@ class LikeApi {
 
   // Получить статус лайка для лупа
   async getLikeStatus(loopId: number): Promise<{ liked: boolean; likes_count: number }> {
-    const response = await this.request(`/loops/loops/${loopId}/like-status`);
+    const response = await this.request(`/loops/${loopId}/like-status`);
     return response.json();
   }
 
@@ -77,7 +77,7 @@ class LikeApi {
       totalPages: number;
     };
   }> {
-    const response = await this.request(`/loops/loops/liked?page=${page}&limit=${limit}`);
+    const response = await this.request(`/loops/liked?page=${page}&limit=${limit}`);
     return response.json();
   }
 

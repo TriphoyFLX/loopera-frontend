@@ -87,15 +87,15 @@ const LoginForm = () => {
       console.log('Response email:', response.email);
       
       if (response.requiresVerification) {
-        // Если требуется верификация email, показываем форму верификации
-        console.log('DEBUG: requiresVerification = true, showing verification form');
+        // Если требуется верификация email, показываем модальное окно
+        console.log('✅ DEBUG: requiresVerification = true, showing verification modal');
         const email = response.email || credentials.username;
-        console.log('DEBUG: Setting verificationEmail to:', email);
+        console.log('✅ DEBUG: Setting verificationEmail to:', email);
         setVerificationEmail(email);
         setError(`Введите код верификации из письма, отправленного на ${email}`);
-        console.log('DEBUG: About to set showVerification to true');
+        console.log('✅ DEBUG: About to set showVerification to true');
         setShowVerification(true);
-        console.log('DEBUG: showVerification set to true');
+        console.log('✅ DEBUG: showVerification set to true');
         return;
       }
       
@@ -116,17 +116,6 @@ const LoginForm = () => {
 
   return (
     <>
-      {/* Debug информация */}
-      <div style={{ 
-        backgroundColor: '#f0f0f0', 
-        padding: '5px', 
-        fontSize: '12px', 
-        margin: '5px 0',
-        borderRadius: '4px'
-      }}>
-        DEBUG: showVerification = {showVerification.toString()}, verificationEmail = {verificationEmail}
-      </div>
-
       {/* Modal для верификации кода */}
       {showVerification && (
         <div style={{
@@ -333,23 +322,8 @@ const LoginForm = () => {
         )}
 
         <button type="submit" disabled={isLoading} className="auth-button">
-          {isLoading ? 'Вход...' : 'Войти'}
-        </button>
-
-        {/* Временная кнопка для тестирования модального окна */}
-        <button 
-          type="button" 
-          onClick={() => {
-            console.log('Тест: показ модального окна верификации');
-            setVerificationEmail('test@example.com');
-            setShowVerification(true);
-          }} 
-          disabled={isLoading} 
-          className="auth-button secondary"
-          style={{ marginTop: '10px', backgroundColor: '#ff6b6b' }}
-        >
-          🧪 Тест: Показать окно верификации
-        </button>
+        {isLoading ? 'Вход...' : 'Войти'}
+      </button>
 
               </form>
     </>

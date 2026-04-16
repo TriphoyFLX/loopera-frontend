@@ -56,7 +56,12 @@ class LikeApi {
     
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      console.error('LikeApi.request() error:', errorData);
+      console.error('LikeApi.request() error:', {
+        status: response.status,
+        statusText: response.statusText,
+        url: url,
+        errorData
+      });
       throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
     }
     
@@ -65,7 +70,7 @@ class LikeApi {
 
   // Лайкнуть/дизлайкнуть луп
   async toggleLike(loopId: number): Promise<LikeResponse> {
-    const response = await this.request(`/loops/${loopId}/like`, {
+    const response = await this.request(`/likes/${loopId}/like`, {
       method: 'POST',
     });
     
@@ -74,7 +79,7 @@ class LikeApi {
 
   // Получить статус лайка для лупа
   async getLikeStatus(loopId: number): Promise<{ liked: boolean; likes_count: number }> {
-    const response = await this.request(`/loops/${loopId}/like-status`);
+    const response = await this.request(`/likes/${loopId}/like-status`);
     return response.json();
   }
 
@@ -88,7 +93,7 @@ class LikeApi {
       totalPages: number;
     };
   }> {
-    const response = await this.request(`/loops/liked?page=${page}&limit=${limit}`);
+    const response = await this.request(`/likes/liked?page=${page}&limit=${limit}`);
     return response.json();
   }
 

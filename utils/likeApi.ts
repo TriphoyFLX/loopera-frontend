@@ -1,6 +1,9 @@
 import { tokenStorage } from './tokenStorage';
 
-const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
+const getBaseURL = () => {
+  const apiURL = import.meta.env.VITE_API_URL;
+  return apiURL ? `${apiURL}/api` : '/api';
+};
 
 export interface LikeResponse {
   message: string;
@@ -30,7 +33,7 @@ class LikeApi {
     console.log('LikeApi.request(): token =', token ? 'exists' : 'missing');
     
     // Не добавляем токен в query parameter, только в заголовок
-    const url = `${API_BASE_URL}${endpoint}`;
+    const url = `${getBaseURL()}${endpoint}`;
     console.log('LikeApi.request(): url =', url);
     
     const config: RequestInit = {

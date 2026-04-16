@@ -40,12 +40,18 @@ const VerificationForm: React.FC<VerificationFormProps> = ({
     setIsLoading(true);
 
     try {
+      console.log('🔐 Verifying email:', email, 'with code:', code);
       const response = await api.verifyEmail(email, code);
+      
+      console.log('✅ Verification response:', response);
       
       if (response.token && response.user) {
         onSuccess(response.token, response.user);
+      } else {
+        throw new Error('Неверный ответ от сервера');
       }
     } catch (err) {
+      console.error('❌ Verification error:', err);
       setError(err instanceof Error ? err.message : 'Ошибка верификации');
     } finally {
       setIsLoading(false);
@@ -57,10 +63,17 @@ const VerificationForm: React.FC<VerificationFormProps> = ({
       setError('');
       setIsLoading(true);
       
-      // Для повторной отправки кода нужно создать новый эндпоинт
-      // Пока просто показываем сообщение что нужно зарегистрироваться заново
-      throw new Error('Для повторной отправки кода вернитесь к регистрации');
+      console.log('📧 Resending verification code to:', email);
+      
+      // Исправлено: используем правильный метод API
+      await api.resendVerificationCode(email);
+      
+      // Сбрасываем таймер
+      setTimeLeft(600);
+      setCanResend(false);
+      setError('✅ Код отправлен повторно на ' + email);
     } catch (err) {
+      console.error('❌ Resend code error:', err);
       setError(err instanceof Error ? err.message : 'Ошибка отправки кода');
     } finally {
       setIsLoading(false);
@@ -98,12 +111,15 @@ const VerificationForm: React.FC<VerificationFormProps> = ({
               textAlign: 'center',
               fontFamily: 'monospace'
             }}
+            autoFocus
           />
         </div>
 
         {error && (
-          <div className="error-message">
-            ❌ {error}
+          <div className="error-message" style={{ 
+            color: error.startsWith('✅') ? '#28a745' : '#dc3545' 
+          }}>
+            {error}
           </div>
         )}
 
@@ -111,7 +127,7 @@ const VerificationForm: React.FC<VerificationFormProps> = ({
           {timeLeft > 0 ? (
             <p>Код истечет через: {formatTime(timeLeft)}</p>
           ) : (
-            <p>Код истек. Вы можете отправить новый.</p>
+            <p style={{ color: '#dc3545' }}>Код истек. Отправьте новый.</p>
           )}
         </div>
 
@@ -134,19 +150,20 @@ const VerificationForm: React.FC<VerificationFormProps> = ({
           </button>
         </div>
 
-        {canResend && (
-          <div className="resend-section">
-            <p>Не получили код?</p>
-            <button
-              type="button"
-              onClick={handleResendCode}
-              disabled={isLoading}
-              className="btn btn-link"
-            >
-              Отправить повторно
-            </button>
-          </div>
-        )}
+        <div className="resend-section" style={{ marginTop: '20px', textAlign: 'center' }}>
+          <button
+            type="button"
+            onClick={handleResendCode}
+            disabled={isLoading || !canResend}
+            className="btn btn-link"
+            style={{
+              opacity: canResend ? 1 : 0.5,
+              cursor: canResend ? 'pointer' : 'not-allowed'
+            }}
+          >
+            {canResend ? '📧 Отправить код повторно' : `Повторная отправка через ${formatTime(timeLeft)}`}
+          </button>
+        </div>
       </form>
     </div>
   );

@@ -32,46 +32,108 @@ const LoginForm = () => {
     setIsLoading(true);
 
     try {
-      console.log('Submitting login form with:', { 
+      console.log('🔐 Submitting login form with:', { 
         username: credentials.username, 
         password: '***' 
       });
       
       const response = await api.login(credentials.username, credentials.password);
       
-      console.log('Login response:', response);
+      console.log('📦 Full login response:', JSON.stringify(response, null, 2));
+      console.log('🔑 requiresVerification:', response.requiresVerification);
+      console.log('📧 response.email:', response.email);
+      console.log('👤 response.user:', response.user);
+      console.log('🎫 response.token:', response.token ? 'exists' : 'missing');
       
-      if (response.requiresVerification) {
-        // Показываем форму верификации
-        setVerificationEmail(response.email || credentials.username);
+      // ПРОВЕРКА: Если ответ содержит email, но не требует верификации
+      // ВРЕМЕННОЕ РЕШЕНИЕ для тестирования
+      if (response.email && !response.token) {
+        console.log('⚠️ Server returned email but no token - forcing verification');
+        setVerificationEmail(response.email);
         setShowVerification(true);
+        setIsLoading(false);
+        return;
+      }
+      
+      if (response.requiresVerification === true) {
+        console.log('✅ Verification required, showing form');
+        const email = response.email || credentials.username;
+        console.log('📧 Setting verification email to:', email);
+        setVerificationEmail(email);
+        setShowVerification(true);
+        setIsLoading(false);
         return;
       }
       
       if (!response.token || !response.user) {
+        console.error('❌ Invalid response structure:', response);
         throw new Error('Неверный ответ от сервера');
       }
       
+      console.log('✅ Login successful, saving token and user');
       login(response.token, response.user);
       navigate('/');
     } catch (err) {
-      console.error('Login form error:', err);
+      console.error('❌ Login form error:', err);
       setError(err instanceof Error ? err.message : 'Ошибка входа');
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Временная функция для принудительного показа верификации (для теста)
+  const forceShowVerification = () => {
+    console.log('🔧 Manually showing verification form');
+    setVerificationEmail(credentials.username || 'test@example.com');
+    setShowVerification(true);
+  };
+
   return (
     <>
+      {/* Debug панель */}
+      <div style={{
+        position: 'fixed',
+        bottom: '10px',
+        right: '10px',
+        backgroundColor: '#333',
+        color: '#0f0',
+        padding: '10px',
+        fontSize: '12px',
+        fontFamily: 'monospace',
+        zIndex: 9999,
+        maxWidth: '300px',
+        borderRadius: '4px',
+        opacity: 0.9
+      }}>
+        <div>showVerification: {showVerification ? '✅ YES' : '❌ NO'}</div>
+        <div>email: {verificationEmail || 'не задан'}</div>
+        <button 
+          onClick={forceShowVerification}
+          style={{
+            marginTop: '5px',
+            padding: '4px 8px',
+            fontSize: '11px',
+            backgroundColor: '#ff5722',
+            color: 'white',
+            border: 'none',
+            borderRadius: '3px',
+            cursor: 'pointer'
+          }}
+        >
+          🔧 Показать окно верификации
+        </button>
+      </div>
+
       {showVerification ? (
         <VerificationForm
           email={verificationEmail}
           onSuccess={(token, user) => {
+            console.log('✅ Verification successful, logging in');
             login(token, user);
             navigate('/');
           }}
           onBack={() => {
+            console.log('⬅️ Back from verification');
             setShowVerification(false);
             setVerificationEmail('');
           }}

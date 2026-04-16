@@ -40,7 +40,9 @@ class SubscriptionApi {
 
   private async request(endpoint: string, options: RequestInit = {}) {
     const currentToken = tokenStorage.getToken();
+    console.log('SubscriptionApi.request(): token =', currentToken ? 'exists' : 'missing');
     const url = `${getBaseURL()}${endpoint}${currentToken ? (endpoint.includes('?') ? '&token=' : '?token=') + currentToken : ''}`;
+    console.log('SubscriptionApi.request(): url =', url);
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
@@ -57,6 +59,7 @@ class SubscriptionApi {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
+      console.error('SubscriptionApi.request() error:', errorData);
       throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
     }
 

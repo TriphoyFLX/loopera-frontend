@@ -27,9 +27,11 @@ export interface LikedLoop {
 class LikeApi {
   private async request(endpoint: string, options: RequestInit = {}): Promise<Response> {
     const token = tokenStorage.getToken();
+    console.log('LikeApi.request(): token =', token ? 'exists' : 'missing');
     
     // Добавляем токен в query parameter
     const url = `${API_BASE_URL}${endpoint}${token ? (endpoint.includes('?') ? '&token=' : '?token=') + token : ''}`;
+    console.log('LikeApi.request(): url =', url);
     
     const config: RequestInit = {
       headers: {
@@ -43,6 +45,7 @@ class LikeApi {
     
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
+      console.error('LikeApi.request() error:', errorData);
       throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
     }
     

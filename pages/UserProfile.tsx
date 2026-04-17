@@ -189,8 +189,23 @@ const UserProfile: React.FC = () => {
       setLoading(true);
       setError(null);
       
+      // Сначала получаем ID пользователя из API
+      const userResponse = await fetch(`https://loopera-lpr.vercel.app/api/chats/user/${targetUserId}`, {
+        headers: {
+          ...(token && { Authorization: `Bearer ${token}` })
+        }
+      });
+      
+      if (!userResponse.ok) {
+        throw new Error('Пользователь не найден');
+      }
+      
+      const userData = await userResponse.json();
+      const userId = userData.user.id;
+      
+      // Затем получаем все лупы и фильтруем по ID пользователя
       const response = await api.getAllLoops(1, 100, token || undefined);
-      const userLoops = response.loops.filter((loop: Loop) => loop.user_id === parseInt(targetUserId || ''));
+      const userLoops = response.loops.filter((loop: Loop) => loop.user_id === userId);
       setLoops(userLoops);
     } catch (err) {
       console.error('Error fetching user loops:', err);

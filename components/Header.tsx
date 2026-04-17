@@ -36,11 +36,6 @@ const Header = () => {
     navigate('/admin')
   }
 
-  const handleLogout = () => {
-    logout()
-    navigate('/')
-  }
-
   return (
     <header className={styles.header}>
       <div className={styles.headerContainer}>

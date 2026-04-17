@@ -36,7 +36,7 @@ interface Loop {
 const UserProfile: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
-  const { token, user: currentUser } = useAuth();
+  const { token, user: currentUser, logout } = useAuth();
   const [user, setUser] = useState<User | null>(null);
   const [loops, setLoops] = useState<Loop[]>([]);
   const [likedLoops, setLikedLoops] = useState<Loop[]>([]);
@@ -370,6 +370,19 @@ const UserProfile: React.FC = () => {
                 </svg>
                 Все лупы
               </button>
+              {currentUser && currentUser.id === user.id && (
+                <button onClick={() => {
+                  logout();
+                  navigate('/');
+                }} className="user-profile-button" style={{ background: 'rgba(220, 38, 38, 0.2)', borderColor: 'rgba(220, 38, 38, 0.3)' }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                  </svg>
+                  Выйти
+                </button>
+              )}
             </div>
           </div>
         </div>

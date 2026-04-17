@@ -7,7 +7,7 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const navigate = useNavigate()
-  const { user, isAdmin, logout } = useAuth()
+  const { user, isAdmin } = useAuth()
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -124,26 +124,6 @@ const Header = () => {
           </button>
         </div>
       </div>
-      
-      {/* Logout Section */}
-      {user && (
-        <div className={styles.profileSection}>
-          <button
-            className={styles.profileButton}
-            onClick={handleLogout}
-            aria-label="Выход"
-            style={{ marginLeft: '10px', backgroundColor: '#dc2626' }}
-          >
-            <span className={styles.profileName}>
-              Выход
-            </span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M9 21H5a2 2 0 01-2-2v-4a2 2 0 01-2 2H7l-4-4v4a2 2 0 012 2zm3-12h8a2 2 0 012 2v4a2 2 0 01-2-2h-8a2 2 0 00-2-2z"/>
-            </svg>
-            <span className={styles.glowEffect}></span>
-          </button>
-        </div>
-      )}
     </header>
   )
 }

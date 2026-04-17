@@ -165,19 +165,19 @@ const UserProfile: React.FC = () => {
 
   const fetchUserProfile = async (targetUserId: string) => {
     try {
-      // Временное решение - получаем информацию о пользователе из его лупов
-      // В будущем нужно добавить эндпоинт /api/users/:id
-      const response = await api.getAllLoops(1, 100, token || undefined);
-      const userLoops = response.loops.filter((loop: Loop) => loop.user_id === parseInt(targetUserId || ''));
+      // Используем API для получения информации о пользователе
+      const response = await fetch(`${api.baseURL}/chats/user/${targetUserId}`, {
+        headers: {
+          ...(token && { Authorization: `Bearer ${token}` })
+        }
+      });
       
-      if (userLoops.length > 0) {
-        const userInfo = {
-          id: parseInt(targetUserId || ''),
-          username: userLoops[0].author || 'Unknown',
-          created_at: userLoops[0].created_at || ''
-        };
-        setUser(userInfo);
+      if (!response.ok) {
+        throw new Error('Пользователь не найден');
       }
+      
+      const data = await response.json();
+      setUser(data.user);
     } catch (err) {
       console.error('Error fetching user profile:', err);
       setError(err instanceof Error ? err.message : 'Ошибка загрузки профиля');

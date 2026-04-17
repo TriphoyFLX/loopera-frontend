@@ -1,13 +1,12 @@
-import { Link, useLocation, Navigate } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import styles from './Sidebar.module.css'
 
 const Sidebar = () => {
   const location = useLocation()
-  const { isAuthenticated, isLoading } = useAuth()
+  const { isLoading } = useAuth()
 
   if (isLoading) return null
-  if (!isAuthenticated) return <Navigate to="/auth" replace />
 
   const items = [
     {

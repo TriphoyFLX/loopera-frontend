@@ -67,7 +67,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     isAuthenticated: !!token,
     isLoading,
-    isAdmin: user?.email === 'roomop86@gmail.com',
+    isAdmin: user?.role === 'admin',
   }), [user, token, isLoading]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

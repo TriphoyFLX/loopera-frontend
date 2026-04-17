@@ -149,9 +149,12 @@ class API {
 
   async uploadLoop(formData: FormData, token: string) {
     try {
-      const response = await fetch(`${this.baseURL}/loops`, {
+      // Используем прямой IP бэкенда для загрузки файлов (Vercel имеет лимит 4.5MB)
+      const response = await fetch(`http://77.73.238.154:5001/api/loops/upload`, {
         method: 'POST',
-        headers: this.getHeaders(token),
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
         body: formData
       });
 

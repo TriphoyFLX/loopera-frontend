@@ -195,11 +195,7 @@ class API {
 
   async getAllLoops(page: number = 1, limit: number = 6, token?: string) {
     try {
-      const url = token 
-        ? `${this.baseURL}/loops?page=${page}&limit=${limit}`
-        : `${this.baseURL}/loops/public?page=${page}&limit=${limit}`;
-      
-      const response = await fetch(url, {
+      const response = await fetch(`${this.baseURL}/loops?page=${page}&limit=${limit}`, {
         method: 'GET',
         headers: this.getHeaders(token)
       });

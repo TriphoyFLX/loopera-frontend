@@ -151,7 +151,10 @@ class API {
     try {
       const response = await fetch(`${this.baseURL}/loops/upload`, {
         method: 'POST',
-        headers: this.getHeaders(token),
+        headers: {
+          'Authorization': `Bearer ${token}`
+          // Не устанавливаем Content-Type для FormData - браузер сделает это автоматически
+        },
         body: formData
       });
 

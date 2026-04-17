@@ -149,12 +149,9 @@ class API {
 
   async uploadLoop(formData: FormData, token: string) {
     try {
-      // Используем HTTPS для загрузки файлов (чтобы избежать mixed content error)
-      const response = await fetch(`https://77.73.238.154:5001/api/loops/upload`, {
+      const response = await fetch(`${this.baseURL}/loops/upload`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
+        headers: this.getHeaders(token),
         body: formData
       });
 

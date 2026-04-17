@@ -53,7 +53,7 @@ function App() {
               </Layout>
             </ProtectedRoute>
           } />
-          <Route path="/upload" element={
+          <Route path="/loop-upload" element={
             <Layout>
               <LoopUpload />
             </Layout>

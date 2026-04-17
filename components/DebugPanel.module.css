@@ -1,0 +1,45 @@
+.debugPanel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.9);
+  color: #00ff00;
+  font-family: monospace;
+  font-size: 12px;
+  padding: 10px;
+  z-index: 9999;
+  border-top: 2px solid #00ff00;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.debugHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #00ff00;
+}
+
+.clearButton {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 2px 8px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.clearButton:hover {
+  background: #b91c1c;
+}
+
+.debugContent {
+  line-height: 1.6;
+}
+
+.debugContent div {
+  margin: 2px 0;
+}

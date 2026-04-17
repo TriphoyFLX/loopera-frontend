@@ -54,11 +54,9 @@ function App() {
             </ProtectedRoute>
           } />
           <Route path="/upload" element={
-            <ProtectedRoute>
-              <Layout>
-                <LoopUpload />
-              </Layout>
-            </ProtectedRoute>
+            <Layout>
+              <LoopUpload />
+            </Layout>
           } />
           <Route path="/search" element={
             <ProtectedRoute>

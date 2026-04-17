@@ -10,6 +10,7 @@ import Chats from './pages/Chats'
 import LoopUpload from './pages/LoopUpload'
 import Search from './pages/Search'
 import Admin from './pages/Admin'
+import AdminRoute from './components/AdminRoute'
 import ForgotPassword from './components/ForgotPasswordForm'
 import './App.css'
 
@@ -66,11 +67,11 @@ function App() {
             </ProtectedRoute>
           } />
           <Route path="/admin" element={
-            <ProtectedRoute>
+            <AdminRoute>
               <Layout>
                 <Admin />
               </Layout>
-            </ProtectedRoute>
+            </AdminRoute>
           } />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

@@ -47,33 +47,41 @@ const UserProfile: React.FC = () => {
 
   const handleStartChat = async () => {
     try {
+      console.log('handleStartChat called');
       if (!currentUser) {
         console.error('User not authenticated');
         return;
       }
 
       const targetUserId = userId || currentUser?.id?.toString();
+      console.log('targetUserId:', targetUserId);
       if (!targetUserId) {
         console.error('No user ID available');
         return;
       }
 
       // Сначала получаем ID пользователя из API (если targetUserId это username)
+      console.log('Fetching user info for:', targetUserId);
       const userResponse = await fetch(`https://loopera-lpr.vercel.app/api/chats/user/${targetUserId}`, {
         headers: {
           ...(token && { Authorization: `Bearer ${token}` })
         }
       });
       
+      console.log('User response status:', userResponse.status);
       if (!userResponse.ok) {
         throw new Error('Пользователь не найден');
       }
       
       const userData = await userResponse.json();
+      console.log('User data:', userData);
       const actualUserId = userData.user.id;
+      console.log('Actual user ID:', actualUserId);
 
       // Создаем или получаем существующий чат
+      console.log('Creating chat with user ID:', actualUserId);
       await chatApi.createOrGetChat(actualUserId);
+      console.log('Chat created successfully');
       
       // Переходим к чатам
       navigate('/chats');

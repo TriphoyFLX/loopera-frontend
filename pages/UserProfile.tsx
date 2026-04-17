@@ -166,7 +166,7 @@ const UserProfile: React.FC = () => {
   const fetchUserProfile = async (targetUserId: string) => {
     try {
       // Используем API для получения информации о пользователе
-      const response = await fetch(`${api.baseURL}/chats/user/${targetUserId}`, {
+      const response = await fetch(`https://loopera-lpr.vercel.app/api/chats/user/${targetUserId}`, {
         headers: {
           ...(token && { Authorization: `Bearer ${token}` })
         }

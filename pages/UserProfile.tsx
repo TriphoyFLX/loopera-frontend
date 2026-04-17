@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../utils/api';
 import { chatApi } from '../utils/chatApi';
+import { likeApi } from '../utils/likeApi';
 import { useAuth } from '../hooks/useAuth';
 import { getUploadsUrl } from '../utils/urls';
 import LoopCard from '../components/LoopCard';
@@ -38,7 +39,10 @@ const UserProfile: React.FC = () => {
   const { token, user: currentUser } = useAuth();
   const [user, setUser] = useState<User | null>(null);
   const [loops, setLoops] = useState<Loop[]>([]);
+  const [likedLoops, setLikedLoops] = useState<Loop[]>([]);
+  const [activeTab, setActiveTab] = useState<'loops' | 'liked'>('loops');
   const [loading, setLoading] = useState(true);
+  const [likedLoading, setLikedLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -185,6 +189,12 @@ const UserProfile: React.FC = () => {
     }
   }, [userId, currentUser]);
 
+  useEffect(() => {
+    if (activeTab === 'liked' && currentUser) {
+      fetchLikedLoops();
+    }
+  }, [activeTab, currentUser]);
+
   const fetchUserProfile = async (targetUserId: string) => {
     try {
       // Используем API для получения информации о пользователе
@@ -234,6 +244,18 @@ const UserProfile: React.FC = () => {
       setError(err instanceof Error ? err.message : 'Ошибка загрузки лупов');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchLikedLoops = async () => {
+    try {
+      setLikedLoading(true);
+      const response = await likeApi.getLikedLoops(1, 100);
+      setLikedLoops(response.loops as Loop[]);
+    } catch (err) {
+      console.error('Error fetching liked loops:', err);
+    } finally {
+      setLikedLoading(false);
     }
   };
 
@@ -354,49 +376,114 @@ const UserProfile: React.FC = () => {
       </div>
 
       <div className="user-profile-content">
-        <div className="user-loops-section">
-          <div className="user-loops-header">
-            <h2 className="user-loops-title">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 18V5l12-2v13"></path>
-                <circle cx="6" cy="18" r="3"></circle>
-                <circle cx="18" cy="16" r="3"></circle>
-              </svg>
-              Лупы пользователя {user.username}
-            </h2>
-            <div className="user-loops-count">{loops.length} лупов</div>
-          </div>
-          
-          {loops.length === 0 ? (
-            <div className="user-loops-empty">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <path d="M12 6v6l4 2"></path>
-              </svg>
-              <h3>У этого пользователя пока нет лупов</h3>
-              <p>Возможно, он скоро что-нибудь загрузит!</p>
-            </div>
-          ) : (
-            <div className="user-loops-grid">
-              {loops.map((loop) => (
-                <LoopCard
-                  key={loop.id}
-                  loop={{
-                    ...loop,
-                    author: user?.username || 'Unknown',
-                    created_at: loop.created_at,
-                    tags: loop.tags || []
-                  }}
-                  currentUserId={currentUser?.id}
-                  onPlay={handlePlay}
-                  isPlaying={currentlyPlaying === loop.id && isPlaying}
-                  isLoading={audioLoading === loop.id}
-                  showLike={true}
-                />
-              ))}
-            </div>
+        <div className="user-profile-tabs">
+          <button 
+            className={`user-profile-tab ${activeTab === 'loops' ? 'active' : ''}`}
+            onClick={() => setActiveTab('loops')}
+          >
+            Лупы ({loops.length})
+          </button>
+          {currentUser && currentUser.id === parseInt(userId || '0') && (
+            <button 
+              className={`user-profile-tab ${activeTab === 'liked' ? 'active' : ''}`}
+              onClick={() => setActiveTab('liked')}
+            >
+              Лайкнутые ({likedLoops.length})
+            </button>
           )}
         </div>
+
+        {activeTab === 'loops' ? (
+          <div className="user-loops-section">
+            <div className="user-loops-header">
+              <h2 className="user-loops-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 18V5l12-2v13"></path>
+                  <circle cx="6" cy="18" r="3"></circle>
+                  <circle cx="18" cy="16" r="3"></circle>
+                </svg>
+                Лупы пользователя {user.username}
+              </h2>
+              <div className="user-loops-count">{loops.length} лупов</div>
+            </div>
+            
+            {loops.length === 0 ? (
+              <div className="user-loops-empty">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 6v6l4 2"></path>
+                </svg>
+                <h3>У этого пользователя пока нет лупов</h3>
+                <p>Возможно, он скоро что-нибудь загрузит!</p>
+              </div>
+            ) : (
+              <div className="user-loops-grid">
+                {loops.map((loop) => (
+                  <LoopCard
+                    key={loop.id}
+                    loop={{
+                      ...loop,
+                      author: user?.username || 'Unknown',
+                      created_at: loop.created_at,
+                      tags: loop.tags || []
+                    }}
+                    currentUserId={currentUser?.id}
+                    onPlay={handlePlay}
+                    isPlaying={currentlyPlaying === loop.id && isPlaying}
+                    isLoading={audioLoading === loop.id}
+                    showLike={true}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="user-loops-section">
+            <div className="user-loops-header">
+              <h2 className="user-loops-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+                Лайкнутые лупы
+              </h2>
+              <div className="user-loops-count">{likedLoops.length} лупов</div>
+            </div>
+            
+            {likedLoading ? (
+              <div className="loading-spinner">
+                <div className="spinner"></div>
+                <p>Загрузка...</p>
+              </div>
+            ) : likedLoops.length === 0 ? (
+              <div className="user-loops-empty">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+                <h3>Вы еще ничего не лайкнули</h3>
+                <p>Лайкайте лупы, чтобы они появились здесь!</p>
+              </div>
+            ) : (
+              <div className="user-loops-grid">
+                {likedLoops.map((loop) => (
+                  <LoopCard
+                    key={loop.id}
+                    loop={{
+                      ...loop,
+                      author: loop.author || 'Unknown',
+                      created_at: loop.created_at,
+                      tags: loop.tags || []
+                    }}
+                    currentUserId={currentUser?.id}
+                    onPlay={handlePlay}
+                    isPlaying={currentlyPlaying === loop.id && isPlaying}
+                    isLoading={audioLoading === loop.id}
+                    showLike={true}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

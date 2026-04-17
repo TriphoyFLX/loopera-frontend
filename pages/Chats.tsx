@@ -20,8 +20,10 @@ const Chats = () => {
   useEffect(() => {
     const fetchChats = async () => {
       try {
+        console.log('Fetching chats...');
         setIsLoadingChats(true)
         const response = await chatApi.getUserChats()
+        console.log('Chats response:', response);
         setChats(response.chats)
         
         // Если есть chatId в URL, выбираем соответствующий чат

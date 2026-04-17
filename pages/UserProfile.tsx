@@ -383,7 +383,7 @@ const UserProfile: React.FC = () => {
           >
             Лупы ({loops.length})
           </button>
-          {currentUser && currentUser.id === parseInt(userId || '0') && (
+          {currentUser && (!userId || currentUser.id === parseInt(userId)) && (
             <button 
               className={`user-profile-tab ${activeTab === 'liked' ? 'active' : ''}`}
               onClick={() => setActiveTab('liked')}

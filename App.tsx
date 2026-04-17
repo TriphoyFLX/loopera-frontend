@@ -42,11 +42,9 @@ function App() {
             </ProtectedRoute>
           } />
           <Route path="/profile/:userId" element={
-            <ProtectedRoute>
-              <Layout>
-                <UserProfile />
-              </Layout>
-            </ProtectedRoute>
+            <Layout>
+              <UserProfile />
+            </Layout>
           } />
           <Route path="/chats" element={
             <ProtectedRoute>
@@ -56,11 +54,9 @@ function App() {
             </ProtectedRoute>
           } />
           <Route path="/upload" element={
-            <ProtectedRoute>
-              <Layout>
-                <LoopUpload />
-              </Layout>
-            </ProtectedRoute>
+            <Layout>
+              <LoopUpload />
+            </Layout>
           } />
           <Route path="/search" element={
             <ProtectedRoute>

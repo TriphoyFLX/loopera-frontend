@@ -97,7 +97,7 @@ const LoopCard: React.FC<LoopCardProps> = ({
   return (
     <div className="loop-card">
       <div className="loop-card-header">
-        <div className="loop-user" onClick={() => window.location.href = `/user/${loop.user_id}`}>
+        <div className="loop-user" onClick={() => window.location.href = `/profile/${loop.user_id}`}>
           <div className="loop-avatar">
             {getInitials(loop.author)}
           </div>

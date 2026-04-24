@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { getUploadsUrl } from '../utils/urls';
 import { api } from '../utils/api';
 import { useAuth } from '../hooks/useAuth';
@@ -277,9 +278,9 @@ const RecentLoops: React.FC<RecentLoopsProps> = ({
       <div className="section-header">
         <h2 className="section-title">{title}</h2>
         {showAllButton && (
-          <button className="view-all-button">
+          <Link to="/loops" className="view-all-button">
             Посмотреть все →
-          </button>
+          </Link>
         )}
       </div>
 

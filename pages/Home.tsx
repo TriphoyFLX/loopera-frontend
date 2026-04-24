@@ -2,11 +2,27 @@ import RecentLoops from '../components/RecentLoops';
 import SubscribedLoops from '../components/SubscribedLoops';
 import TopLoopmakers from '../components/TopLoopmakers';
 import Add from '../components/Add';
+import LoopGuideModal from '../components/LoopGuideModal';
 import { useAuth } from '../hooks/useAuth';
+import { useState, useEffect } from 'react';
 import styles from './Home.module.css';
 
 const Home = () => {
   const { user } = useAuth();
+  const [showGuideModal, setShowGuideModal] = useState(false);
+
+  useEffect(() => {
+    // Показываем модальное окно через 2 секунды после загрузки страницы
+    const timer = setTimeout(() => {
+      setShowGuideModal(true);
+    }, 2000);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleCloseGuide = () => {
+    setShowGuideModal(false);
+  };
 
   return (
     <div className={styles.homePage}>
@@ -362,6 +378,12 @@ const Home = () => {
           </div>
         </section>
       )}
+      
+      {/* Модальное окно с инструкцией */}
+      <LoopGuideModal 
+        isOpen={showGuideModal} 
+        onClose={handleCloseGuide} 
+      />
     </div>
   );
 };

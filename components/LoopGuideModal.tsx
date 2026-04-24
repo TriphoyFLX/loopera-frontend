@@ -34,28 +34,28 @@ const LoopGuideModal = ({ isOpen, onClose }: LoopGuideModalProps) => {
   const steps = [
     {
       icon: '🎵',
-      title: 'Выбери жанр',
-      description: 'Определи стиль твоего лупа - Trap, Drill, Lo-Fi или другой жанр'
+      title: 'Выбери вайб',
+      description: 'Определи настроение: Trap, Drill, Lo-Fi или свой уникальный стиль'
     },
     {
       icon: '🎹',
-      title: 'Создай мелодию',
-      description: 'Запиши качественную мелодию или басовую линию в DAW'
+      title: 'Сделай мелодию',
+      description: 'Создай цепляющий луп — мелодия или бас, который хочется зациклить'
     },
     {
       icon: '🎚️',
-      title: 'Настрой громкость',
-      description: 'Убедись что уровень громкости не клиппирует и звучит чисто'
+      title: 'Доведи звук',
+      description: 'Убери клиппинг, выровняй громкость, сделай чистый микс'
     },
     {
       icon: '📁',
-      title: 'Экспортируй',
-      description: 'Сохрани в формате WAV или MP3 с качеством 320kbps'
+      title: 'Экспорт',
+      description: 'WAV или MP3 (лучше WAV) — без потери качества'
     },
     {
       icon: '📤',
-      title: 'Загрузи на сайт',
-      description: 'Добавь обложку, описание и теги для лучшего охвата'
+      title: 'Залив на сайт',
+      description: 'Добавь обложку, описание и теги — это бустит просмотры'
     }
   ];
 
@@ -65,6 +65,8 @@ const LoopGuideModal = ({ isOpen, onClose }: LoopGuideModalProps) => {
       onClick={handleBackdropClick}
     >
       <div className={`${styles.modalContent} ${isVisible ? styles.slideIn : ''}`}>
+        
+        {/* CLOSE */}
         <button 
           className={styles.closeButton}
           onClick={onClose}
@@ -75,28 +77,34 @@ const LoopGuideModal = ({ isOpen, onClose }: LoopGuideModalProps) => {
           </svg>
         </button>
 
+        {/* HEADER */}
         <div className={styles.modalHeader}>
           <div className={styles.modalIcon}>
             <span className={styles.iconEmoji}>🎯</span>
             <div className={styles.iconGlow} />
           </div>
+
           <h2 className={styles.modalTitle}>
-            Как загрузить <span className={styles.titleAccent}>красивый луп</span>
+            Как загрузить <span className={styles.titleAccent}>луп, который качает</span>
           </h2>
+
           <p className={styles.modalSubtitle}>
-            Следуй этим шагам для создания качественного лупа в стиле сайта
+            Короткий гайд, чтобы твои лупы реально скачивали и юзали
           </p>
         </div>
 
+        {/* STEPS */}
         <div className={styles.stepsContainer}>
           {steps.map((step, index) => (
             <div key={index} className={styles.stepCard}>
               <div className={styles.stepNumber}>
                 <span>{index + 1}</span>
               </div>
+
               <div className={styles.stepIcon}>
                 <span>{step.icon}</span>
               </div>
+
               <div className={styles.stepContent}>
                 <h3 className={styles.stepTitle}>{step.title}</h3>
                 <p className={styles.stepDescription}>{step.description}</p>
@@ -105,31 +113,54 @@ const LoopGuideModal = ({ isOpen, onClose }: LoopGuideModalProps) => {
           ))}
         </div>
 
+        {/* IMPORTANT NOTE */}
+        <div className={styles.importantNote}>
+          <span className={styles.noteIcon}>📢</span>
+          <p>
+            Добавь в название лупа свой Telegram для связи <br />
+            <strong>(пример: dark trap loop @yourtag)</strong>
+          </p>
+        </div>
+
+        {/* TIPS */}
         <div className={styles.tipsSection}>
           <h4 className={styles.tipsTitle}>
             <span className={styles.tipsIcon}>💡</span>
-            Профессиональные советы
+            Советы
           </h4>
+
           <div className={styles.tipsGrid}>
             <div className={styles.tipItem}>
               <span className={styles.tipIcon}>🎧</span>
-              <span>Используй наушники для детальной проработки</span>
+              <span>Проверяй звук в наушниках</span>
             </div>
+
             <div className={styles.tipItem}>
               <span className={styles.tipIcon}>🔊</span>
-              <span>Проверь звучание на разных устройствах</span>
+              <span>Тестируй на телефоне и колонках</span>
             </div>
+
             <div className={styles.tipItem}>
               <span className={styles.tipIcon}>⚡</span>
-              <span>Добавь уникальный саунд для узнаваемости</span>
+              <span>Делай уникальный саунд</span>
             </div>
+
             <div className={styles.tipItem}>
               <span className={styles.tipIcon}>🎨</span>
-              <span>Создай яркую обложку для привлечения внимания</span>
+              <span>Крутая обложка = больше кликов</span>
             </div>
           </div>
         </div>
 
+        {/* FINAL CTA */}
+        <div className={styles.finalCTA}>
+          <h4>🚀 Готов залететь?</h4>
+          <p>
+            Чем уникальнее твой звук — тем выше шанс, что его заберут в трек
+          </p>
+        </div>
+
+        {/* FOOTER */}
         <div className={styles.modalFooter}>
           <button 
             className={styles.primaryButton}
@@ -143,13 +174,15 @@ const LoopGuideModal = ({ isOpen, onClose }: LoopGuideModalProps) => {
               <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
+
           <button 
             className={styles.footerCloseButton}
             onClick={onClose}
           >
-            Закрыть окно
+            Закрыть
           </button>
         </div>
+
       </div>
     </div>
   );

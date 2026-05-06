@@ -10,6 +10,9 @@ import Chats from './pages/Chats'
 import LoopUpload from './pages/LoopUpload'
 import Search from './pages/Search'
 import Admin from './pages/Admin'
+import Shop from './pages/Shop'
+import CreatePack from './pages/CreatePack'
+import AdminShop from './pages/AdminShop'
 import AdminRoute from './components/AdminRoute'
 import ForgotPassword from './components/ForgotPasswordForm'
 import './App.css'
@@ -66,10 +69,29 @@ function App() {
               </Layout>
             </ProtectedRoute>
           } />
+          <Route path="/shop" element={
+            <Layout>
+              <Shop />
+            </Layout>
+          } />
+          <Route path="/create-pack" element={
+            <ProtectedRoute>
+              <Layout>
+                <CreatePack />
+              </Layout>
+            </ProtectedRoute>
+          } />
           <Route path="/admin" element={
             <AdminRoute>
               <Layout>
                 <Admin />
+              </Layout>
+            </AdminRoute>
+          } />
+          <Route path="/admin/shop" element={
+            <AdminRoute>
+              <Layout>
+                <AdminShop />
               </Layout>
             </AdminRoute>
           } />

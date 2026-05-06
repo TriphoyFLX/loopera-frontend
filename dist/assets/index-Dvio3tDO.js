@@ -19853,7 +19853,7 @@ const AuthProvider = ({ children }) => {
     logout,
     isAuthenticated: !!token,
     isLoading,
-    isAdmin: user?.email === "roomop86@gmail.com"
+    isAdmin: user?.role === "admin"
   }), [user, token, isLoading]);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(AuthContext.Provider, { value, children });
 };
@@ -19869,7 +19869,7 @@ const sidebar = "_sidebar_q839z_1";
 const item = "_item_q839z_37";
 const menu = "_menu_q839z_50";
 const active$1 = "_active_q839z_95";
-const styles$5 = {
+const styles$6 = {
 	sidebar: sidebar,
 	item: item,
 	menu: menu,
@@ -19878,9 +19878,8 @@ const styles$5 = {
 
 const Sidebar = () => {
   const location = useLocation();
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isLoading } = useAuth();
   if (isLoading) return null;
-  if (!isAuthenticated) return /* @__PURE__ */ jsxRuntimeExports.jsx(Navigate, { to: "/auth", replace: true });
   const items = [
     {
       path: "/",
@@ -19902,18 +19901,18 @@ const Sidebar = () => {
       icon: /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M12 5v14M5 12h14" }) })
     }
   ];
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("aside", { className: styles$5.sidebar, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$5.menu, children: items.map((item) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("aside", { className: styles$6.sidebar, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$6.menu, children: items.map((item) => /* @__PURE__ */ jsxRuntimeExports.jsx(
     Link,
     {
       to: item.path,
-      className: `${styles$5.item} ${location.pathname === item.path ? styles$5.active : ""}`,
+      className: `${styles$6.item} ${location.pathname === item.path ? styles$6.active : ""}`,
       children: item.icon
     },
     item.path
   )) }) });
 };
 
-const header = "_header_1ty9r_3";
+const header$1 = "_header_1ty9r_3";
 const headerContainer = "_headerContainer_1ty9r_15";
 const searchSection = "_searchSection_1ty9r_27";
 const searchButton = "_searchButton_1ty9r_33";
@@ -19926,8 +19925,8 @@ const profileButton = "_profileButton_1ty9r_197";
 const profileAvatar = "_profileAvatar_1ty9r_243";
 const profileName = "_profileName_1ty9r_263";
 const glowEffect = "_glowEffect_1ty9r_457";
-const styles$4 = {
-	header: header,
+const styles$5 = {
+	header: header$1,
 	headerContainer: headerContainer,
 	searchSection: searchSection,
 	searchButton: searchButton,
@@ -19968,11 +19967,11 @@ const Header = () => {
   const handleAdminClick = () => {
     navigate("/admin");
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("header", { className: styles$4.header, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.headerContainer, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$4.searchSection, children: !isSearchOpen ? /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("header", { className: styles$5.header, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.headerContainer, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$5.searchSection, children: !isSearchOpen ? /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "button",
       {
-        className: styles$4.searchButton,
+        className: styles$5.searchButton,
         onClick: () => setIsSearchOpen(true),
         "aria-label": "Поиск",
         children: [
@@ -19980,10 +19979,10 @@ const Header = () => {
             /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "11", cy: "11", r: "8" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "m21 21-4.35-4.35" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$4.glowEffect })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$5.glowEffect })
         ]
       }
-    ) : /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSearch, className: styles$4.searchForm, children: [
+    ) : /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSearch, className: styles$5.searchForm, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "input",
         {
@@ -19991,11 +19990,11 @@ const Header = () => {
           value: searchQuery,
           onChange: handleSearchInputChange,
           placeholder: "Поиск лупов, авторов...",
-          className: styles$4.searchInput,
+          className: styles$5.searchInput,
           autoFocus: true
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "submit", className: styles$4.searchSubmitButton, "aria-label": "Найти", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "submit", className: styles$5.searchSubmitButton, "aria-label": "Найти", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "11", cy: "11", r: "8" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "m21 21-4.35-4.35" })
       ] }) }),
@@ -20007,7 +20006,7 @@ const Header = () => {
             setIsSearchOpen(false);
             setSearchQuery("");
           },
-          className: styles$4.searchCancelButton,
+          className: styles$5.searchCancelButton,
           "aria-label": "Закрыть",
           children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: "18", y1: "6", x2: "6", y2: "18" }),
@@ -20015,34 +20014,34 @@ const Header = () => {
           ] })
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$4.glowEffect })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$5.glowEffect })
     ] }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.profileSection, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$5.profileSection, children: [
       isAdmin && /* @__PURE__ */ jsxRuntimeExports.jsxs(
         "button",
         {
-          className: styles$4.profileButton,
+          className: styles$5.profileButton,
           onClick: handleAdminClick,
           "aria-label": "Админ панель",
           style: { marginRight: "10px", backgroundColor: "#dc2626" },
           children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$4.profileName, children: "Admin" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$5.profileName, children: "Admin" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("polyline", { points: "6 9 12 15 18 9" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$4.glowEffect })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$5.glowEffect })
           ]
         }
       ),
       /* @__PURE__ */ jsxRuntimeExports.jsxs(
         "button",
         {
-          className: styles$4.profileButton,
+          className: styles$5.profileButton,
           onClick: handleProfileClick,
           "aria-label": "Профиль",
           children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$4.profileAvatar, children: user?.username ? user.username.charAt(0).toUpperCase() : "U" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$4.profileName, children: user?.username || "Гость" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$5.profileAvatar, children: user?.username ? user.username.charAt(0).toUpperCase() : "U" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$5.profileName, children: user?.username || "Гость" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("polyline", { points: "6 9 12 15 18 9" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$4.glowEffect })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$5.glowEffect })
           ]
         }
       )
@@ -20055,7 +20054,7 @@ const navItem = "_navItem_hh0l6_47";
 const iconWrapper = "_iconWrapper_hh0l6_63";
 const label = "_label_hh0l6_80";
 const active = "_active_hh0l6_89";
-const styles$3 = {
+const styles$4 = {
 	mobileAppBar: mobileAppBar,
 	navItem: navItem,
 	iconWrapper: iconWrapper,
@@ -20100,7 +20099,7 @@ const MobileAppBar = () => {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
     "nav",
     {
-      className: `${styles$3.mobileAppBar} ${!isVisible ? styles$3.hidden : ""}`,
+      className: `${styles$4.mobileAppBar} ${!isVisible ? styles$4.hidden : ""}`,
       style: {
         transform: isVisible ? "translateY(0)" : "translateY(100%)",
         transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
@@ -20111,10 +20110,10 @@ const MobileAppBar = () => {
           Link,
           {
             to: item.path,
-            className: `${styles$3.navItem} ${isActive ? styles$3.active : ""}`,
+            className: `${styles$4.navItem} ${isActive ? styles$4.active : ""}`,
             children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$3.iconWrapper, children: isActive ? item.activeIcon : item.icon }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$3.label, children: item.label })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$4.iconWrapper, children: isActive ? item.activeIcon : item.icon }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$4.label, children: item.label })
             ]
           },
           item.path
@@ -20128,7 +20127,7 @@ const looperaLogo = "data:image/svg+xml,%3csvg%20width='24'%20height='12'%20view
 
 const logoButton = "_logoButton_1bk4c_1";
 const logoImage = "_logoImage_1bk4c_30";
-const styles$2 = {
+const styles$3 = {
 	logoButton: logoButton,
 	logoImage: logoImage
 };
@@ -20138,7 +20137,7 @@ const LogoButton = () => {
   const handleClick = () => {
     navigate("/");
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: styles$2.logoButton, onClick: handleClick, children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: looperaLogo, alt: "Loopera", className: styles$2.logoImage }) });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: styles$3.logoButton, onClick: handleClick, children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: looperaLogo, alt: "Loopera", className: styles$3.logoImage }) });
 };
 
 const Layout = ({ children }) => {
@@ -20165,7 +20164,7 @@ const ProtectedRoute = ({ children }) => {
 class API {
   baseURL;
   constructor() {
-    this.baseURL = "/api";
+    this.baseURL = "https://loopera-lpr.vercel.app/api";
   }
   async handleResponse(response) {
     const contentType = response.headers.get("content-type");
@@ -20281,9 +20280,12 @@ class API {
   }
   async uploadLoop(formData, token) {
     try {
-      const response = await fetch(`${this.baseURL}/loops`, {
+      const response = await fetch(`${this.baseURL}/loops/upload`, {
         method: "POST",
-        headers: this.getHeaders(token),
+        headers: {
+          "Authorization": `Bearer ${token}`
+          // Не устанавливаем Content-Type для FormData - браузер сделает это автоматически
+        },
         body: formData
       });
       return await this.handleResponse(response);
@@ -20318,8 +20320,7 @@ class API {
   }
   async getAllLoops(page = 1, limit = 6, token) {
     try {
-      const url = token ? `${this.baseURL}/loops?page=${page}&limit=${limit}` : `${this.baseURL}/loops/public?page=${page}&limit=${limit}`;
-      const response = await fetch(url, {
+      const response = await fetch(`${this.baseURL}/loops?page=${page}&limit=${limit}`, {
         method: "GET",
         headers: this.getHeaders(token)
       });
@@ -20929,15 +20930,19 @@ const useInfiniteScroll = ({
 };
 
 const getBaseURL$2 = () => {
-  const apiURL = "";
-  return apiURL ? `${apiURL}/api` : "/api";
+  return "https://loopera-lpr.vercel.app/api";
 };
 class LikeApi {
   async request(endpoint, options = {}) {
     const token = tokenStorage.getToken();
-    console.log("LikeApi.request(): token =", token ? "exists" : "missing");
-    const url = `${getBaseURL$2()}${endpoint}`;
-    console.log("LikeApi.request(): url =", url);
+    const baseURL = getBaseURL$2();
+    const url = `${baseURL}${endpoint}`;
+    console.log("LikeApi.request():");
+    console.log("  baseURL =", baseURL);
+    console.log("  endpoint =", endpoint);
+    console.log("  token =", token ? "exists" : "missing");
+    console.log("  full url =", url);
+    console.log("  Authorization header =", token ? `Bearer ${token.substring(0, 20)}...` : "missing");
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -20948,7 +20953,12 @@ class LikeApi {
     const response = await fetch(url, config);
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      console.error("LikeApi.request() error:", errorData);
+      console.error("LikeApi.request() error:", {
+        status: response.status,
+        statusText: response.statusText,
+        url,
+        errorData
+      });
       throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
     }
     return response;
@@ -21060,7 +21070,7 @@ const LoopCard = ({
   const hasMoreTags = allTags.length > 3;
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loop-card", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loop-card-header", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loop-user", onClick: () => window.location.href = `/user/${loop.user_id}`, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loop-user", onClick: () => window.location.href = `/profile/${loop.user_id}`, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "loop-avatar", children: getInitials(loop.author) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "loop-username", children: loop.author || "triphoy_prod" })
       ] }),
@@ -21388,7 +21398,7 @@ const RecentLoops = ({
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "section-header", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "section-title", children: title }),
-      showAllButton && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: "view-all-button", children: "Посмотреть все →" })
+      showAllButton && /* @__PURE__ */ jsxRuntimeExports.jsx(Link, { to: "/loops", className: "view-all-button", children: "Посмотреть все →" })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "loops-grid", children: loops.map((loop) => /* @__PURE__ */ jsxRuntimeExports.jsx(
       LoopCard,
@@ -21411,8 +21421,7 @@ const RecentLoops = ({
 };
 
 const getBaseURL$1 = () => {
-  const apiURL = "";
-  return apiURL ? `${apiURL}/api` : "/api";
+  return "https://loopera-lpr.vercel.app/api";
 };
 class SubscriptionApi {
   constructor() {
@@ -21625,7 +21634,7 @@ const SubscribedLoops = ({
   ] });
 };
 
-const API_BASE_URL = `${""}/api`;
+const API_BASE_URL = "https://loopera-lpr.vercel.app/api";
 class TopUsersApi {
   async request(endpoint, options = {}) {
     const token = tokenStorage.getToken();
@@ -21759,7 +21768,7 @@ const headline = "_headline_8bsdy_72";
 const sub = "_sub_8bsdy_73";
 const divider = "_divider_8bsdy_74";
 const contacts = "_contacts_8bsdy_75";
-const footer = "_footer_8bsdy_76";
+const footer$1 = "_footer_8bsdy_76";
 const badge = "_badge_8bsdy_88";
 const badgeDot = "_badgeDot_8bsdy_104";
 const closeBtn = "_closeBtn_8bsdy_118";
@@ -21767,7 +21776,7 @@ const contactLink = "_contactLink_8bsdy_186";
 const cta = "_cta_8bsdy_222";
 const ctaArrow = "_ctaArrow_8bsdy_252";
 const partner = "_partner_8bsdy_261";
-const styles$1 = {
+const styles$2 = {
 	root: root,
 	wrap: wrap,
 	topRow: topRow,
@@ -21775,7 +21784,7 @@ const styles$1 = {
 	sub: sub,
 	divider: divider,
 	contacts: contacts,
-	footer: footer,
+	footer: footer$1,
 	badge: badge,
 	badgeDot: badgeDot,
 	closeBtn: closeBtn,
@@ -21788,16 +21797,16 @@ const styles$1 = {
 const Add = () => {
   const [visible, setVisible] = reactExports.useState(true);
   if (!visible) return null;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.root, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.wrap, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.topRow, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.badge, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.badgeDot }),
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$2.root, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.wrap, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.topRow, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.badge, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$2.badgeDot }),
         "Реклама"
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
-          className: styles$1.closeBtn,
+          className: styles$2.closeBtn,
           "aria-label": "Закрыть рекламу",
           onClick: () => setVisible(false),
           children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { width: "10", height: "10", viewBox: "0 0 10 10", fill: "none", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round", children: [
@@ -21807,31 +21816,31 @@ const Add = () => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: styles$1.headline, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: styles$2.headline, children: [
       "Охватите",
       /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
       /* @__PURE__ */ jsxRuntimeExports.jsx("em", { children: "свою аудиторию" })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$1.sub, children: "Тысячи читателей видят этот блок каждый день. Займите его первым." }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.divider }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.contacts, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("a", { className: styles$1.contactLink, href: "mailto:ads@loopera.com", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$2.sub, children: "Тысячи читателей видят этот блок каждый день. Займите его первым." }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$2.divider }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$2.contacts, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("a", { className: styles$2.contactLink, href: "mailto:ads@loopera.com", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { width: "14", height: "14", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.8", strokeLinecap: "round", strokeLinejoin: "round", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "2", y: "4", width: "20", height: "16", rx: "2" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("polyline", { points: "22,6 12,13 2,6" })
       ] }),
       "triphoyprod@gmail.com"
     ] }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.footer, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.footer, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs(
         "button",
         {
-          className: styles$1.cta,
+          className: styles$2.cta,
           onClick: () => {
             window.open("https://t.me/triphoyprod", "_blank");
           },
           children: [
             "Разместить рекламу",
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.ctaArrow, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$2.ctaArrow, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
               "svg",
               {
                 width: "11",
@@ -21851,7 +21860,110 @@ const Add = () => {
           ]
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.partner, children: "Партнёрская программа" })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$2.partner, children: "Партнёрская программа" })
+    ] })
+  ] }) });
+};
+
+const overlay = "_overlay_10qha_2";
+const modal = "_modal_10qha_14";
+const show = "_show_10qha_29";
+const header = "_header_10qha_35";
+const steps = "_steps_10qha_52";
+const step = "_step_10qha_52";
+const index = "_index_10qha_66";
+const stepTitle = "_stepTitle_10qha_80";
+const stepDesc = "_stepDesc_10qha_86";
+const note = "_note_10qha_93";
+const footer = "_footer_10qha_112";
+const primary = "_primary_10qha_119";
+const secondary = "_secondary_10qha_135";
+const styles$1 = {
+	overlay: overlay,
+	modal: modal,
+	show: show,
+	header: header,
+	steps: steps,
+	step: step,
+	index: index,
+	stepTitle: stepTitle,
+	stepDesc: stepDesc,
+	note: note,
+	footer: footer,
+	primary: primary,
+	secondary: secondary
+};
+
+const LoopGuideModal = ({ isOpen, onClose }) => {
+  const [isVisible, setIsVisible] = reactExports.useState(false);
+  reactExports.useEffect(() => {
+    if (isOpen) {
+      setIsVisible(true);
+      document.body.style.overflow = "hidden";
+    } else {
+      setIsVisible(false);
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
+  if (!isOpen) return null;
+  const steps = [
+    {
+      title: "Выбери стиль",
+      description: "Trap, Drill, Lo-Fi или свой звук"
+    },
+    {
+      title: "Создай луп",
+      description: "Мелодия или бас, который хочется крутить"
+    },
+    {
+      title: "Чистый звук",
+      description: "Без клиппинга, норм уровень"
+    },
+    {
+      title: "Экспорт",
+      description: "Лучше WAV"
+    },
+    {
+      title: "Загрузка",
+      description: "Добавь обложку и теги"
+    }
+  ];
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.overlay, onClick: (e) => e.target === e.currentTarget && onClose(), children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `${styles$1.modal} ${isVisible ? styles$1.show : ""}`, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.header, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { children: [
+        "Загрузка ",
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "лупа" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Коротко и по делу" })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.steps, children: steps.map((step, i) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.step, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.index, children: i + 1 }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.stepTitle, children: step.title }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.stepDesc, children: step.description })
+      ] })
+    ] }, i)) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.note, children: [
+      "Добавь Telegram в название",
+      /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "dark trap loop @yourtag" })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.footer, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          className: styles$1.primary,
+          onClick: () => {
+            onClose();
+            window.location.href = "/loop-upload";
+          },
+          children: "Начать"
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: styles$1.secondary, onClick: onClose, children: "Закрыть" })
     ] })
   ] }) });
 };
@@ -22024,6 +22136,16 @@ const styles = {
 
 const Home = () => {
   const { user } = useAuth();
+  const [showGuideModal, setShowGuideModal] = reactExports.useState(false);
+  reactExports.useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowGuideModal(true);
+    }, 2e3);
+    return () => clearTimeout(timer);
+  }, []);
+  const handleCloseGuide = () => {
+    setShowGuideModal(false);
+  };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.homePage, children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: styles.promoSection, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.promoNoise, "aria-hidden": "true" }),
@@ -22285,7 +22407,14 @@ const Home = () => {
         /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "/auth", className: `${styles.btn} ${styles.btnPrimary} ${styles.btnLarge}`, children: "Создать аккаунт" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "/loops", className: `${styles.btn} ${styles.btnOutline} ${styles.btnLarge}`, children: "Смотреть лупы" })
       ] })
-    ] }) })
+    ] }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      LoopGuideModal,
+      {
+        isOpen: showGuideModal,
+        onClose: handleCloseGuide
+      }
+    )
   ] });
 };
 
@@ -22383,8 +22512,7 @@ const Loops = () => {
 };
 
 const getBaseURL = () => {
-  const apiURL = "";
-  return apiURL ? `${apiURL}/api` : "/api";
+  return "https://loopera-lpr.vercel.app/api";
 };
 class ChatApi {
   constructor() {
@@ -22440,10 +22568,13 @@ const chatApi = new ChatApi();
 const UserProfile = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
-  const { token, user: currentUser } = useAuth();
+  const { token, user: currentUser, logout } = useAuth();
   const [user, setUser] = reactExports.useState(null);
   const [loops, setLoops] = reactExports.useState([]);
+  const [likedLoops, setLikedLoops] = reactExports.useState([]);
+  const [activeTab, setActiveTab] = reactExports.useState("loops");
   const [loading, setLoading] = reactExports.useState(true);
+  const [likedLoading, setLikedLoading] = reactExports.useState(false);
   const [error, setError] = reactExports.useState(null);
   const [currentlyPlaying, setCurrentlyPlaying] = reactExports.useState(null);
   const [isPlaying, setIsPlaying] = reactExports.useState(false);
@@ -22451,16 +22582,34 @@ const UserProfile = () => {
   const audioRef = reactExports.useRef(null);
   const handleStartChat = async () => {
     try {
+      console.log("handleStartChat called");
       if (!currentUser) {
         console.error("User not authenticated");
         return;
       }
       const targetUserId = userId || currentUser?.id?.toString();
+      console.log("targetUserId:", targetUserId);
       if (!targetUserId) {
         console.error("No user ID available");
         return;
       }
-      await chatApi.createOrGetChat(parseInt(targetUserId));
+      console.log("Fetching user info for:", targetUserId);
+      const userResponse = await fetch(`https://loopera-lpr.vercel.app/api/chats/user/${targetUserId}`, {
+        headers: {
+          ...token && { Authorization: `Bearer ${token}` }
+        }
+      });
+      console.log("User response status:", userResponse.status);
+      if (!userResponse.ok) {
+        throw new Error("Пользователь не найден");
+      }
+      const userData = await userResponse.json();
+      console.log("User data:", userData);
+      const actualUserId = userData.user.id;
+      console.log("Actual user ID:", actualUserId);
+      console.log("Creating chat with user ID:", actualUserId);
+      await chatApi.createOrGetChat(actualUserId);
+      console.log("Chat created successfully");
       navigate("/chats");
     } catch (error2) {
       console.error("Error creating chat:", error2);
@@ -22539,18 +22688,23 @@ const UserProfile = () => {
       fetchUserLoops(targetUserId);
     }
   }, [userId, currentUser]);
+  reactExports.useEffect(() => {
+    if (activeTab === "liked" && currentUser) {
+      fetchLikedLoops();
+    }
+  }, [activeTab, currentUser]);
   const fetchUserProfile = async (targetUserId) => {
     try {
-      const response = await api.getAllLoops(1, 100, token || void 0);
-      const userLoops = response.loops.filter((loop) => loop.user_id === parseInt(targetUserId || ""));
-      if (userLoops.length > 0) {
-        const userInfo = {
-          id: parseInt(targetUserId || ""),
-          username: userLoops[0].author || "Unknown",
-          created_at: userLoops[0].created_at || ""
-        };
-        setUser(userInfo);
+      const response = await fetch(`https://loopera-lpr.vercel.app/api/chats/user/${targetUserId}`, {
+        headers: {
+          ...token && { Authorization: `Bearer ${token}` }
+        }
+      });
+      if (!response.ok) {
+        throw new Error("Пользователь не найден");
       }
+      const data = await response.json();
+      setUser(data.user);
     } catch (err) {
       console.error("Error fetching user profile:", err);
       setError(err instanceof Error ? err.message : "Ошибка загрузки профиля");
@@ -22560,14 +22714,35 @@ const UserProfile = () => {
     try {
       setLoading(true);
       setError(null);
+      const userResponse = await fetch(`https://loopera-lpr.vercel.app/api/chats/user/${targetUserId}`, {
+        headers: {
+          ...token && { Authorization: `Bearer ${token}` }
+        }
+      });
+      if (!userResponse.ok) {
+        throw new Error("Пользователь не найден");
+      }
+      const userData = await userResponse.json();
+      const userId2 = userData.user.id;
       const response = await api.getAllLoops(1, 100, token || void 0);
-      const userLoops = response.loops.filter((loop) => loop.user_id === parseInt(targetUserId || ""));
+      const userLoops = response.loops.filter((loop) => loop.user_id === userId2);
       setLoops(userLoops);
     } catch (err) {
       console.error("Error fetching user loops:", err);
       setError(err instanceof Error ? err.message : "Ошибка загрузки лупов");
     } finally {
       setLoading(false);
+    }
+  };
+  const fetchLikedLoops = async () => {
+    try {
+      setLikedLoading(true);
+      const response = await likeApi.getLikedLoops(1, 100);
+      setLikedLoops(response.loops);
+    } catch (err) {
+      console.error("Error fetching liked loops:", err);
+    } finally {
+      setLikedLoading(false);
     }
   };
   reactExports.useEffect(() => {
@@ -22644,51 +22819,125 @@ const UserProfile = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: () => navigate("/loops"), className: "user-profile-button secondary", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M19 12H5M12 19l-7-7 7-7" }) }),
             "Все лупы"
+          ] }),
+          currentUser && currentUser.id === user.id && /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { onClick: () => {
+            logout();
+            navigate("/");
+          }, className: "user-profile-button", style: { background: "rgba(220, 38, 38, 0.2)", borderColor: "rgba(220, 38, 38, 0.3)" }, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("polyline", { points: "16 17 21 12 16 7" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: "21", y1: "12", x2: "9", y2: "12" })
+            ] }),
+            "Выйти"
           ] })
         ] })
       ] })
     ] }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "user-profile-content", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "user-loops-section", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "user-loops-header", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: "user-loops-title", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M9 18V5l12-2v13" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "6", cy: "18", r: "3" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "18", cy: "16", r: "3" })
-          ] }),
-          "Лупы пользователя ",
-          user.username
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "user-loops-count", children: [
-          loops.length,
-          " лупов"
-        ] })
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "user-profile-content", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "user-profile-tabs", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          "button",
+          {
+            className: `user-profile-tab ${activeTab === "loops" ? "active" : ""}`,
+            onClick: () => setActiveTab("loops"),
+            children: [
+              "Лупы (",
+              loops.length,
+              ")"
+            ]
+          }
+        ),
+        currentUser && (!userId || currentUser.id === parseInt(userId)) && /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          "button",
+          {
+            className: `user-profile-tab ${activeTab === "liked" ? "active" : ""}`,
+            onClick: () => setActiveTab("liked"),
+            children: [
+              "Лайкнутые (",
+              likedLoops.length,
+              ")"
+            ]
+          }
+        )
       ] }),
-      loops.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "user-loops-empty", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "12", cy: "12", r: "10" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M12 6v6l4 2" })
+      activeTab === "loops" ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "user-loops-section", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "user-loops-header", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: "user-loops-title", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M9 18V5l12-2v13" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "6", cy: "18", r: "3" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "18", cy: "16", r: "3" })
+            ] }),
+            "Лупы пользователя ",
+            user.username
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "user-loops-count", children: [
+            loops.length,
+            " лупов"
+          ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "У этого пользователя пока нет лупов" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Возможно, он скоро что-нибудь загрузит!" })
-      ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "user-loops-grid", children: loops.map((loop) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-        LoopCard,
-        {
-          loop: {
-            ...loop,
-            author: user?.username || "Unknown",
-            created_at: loop.created_at,
-            tags: loop.tags || []
+        loops.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "user-loops-empty", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "12", cy: "12", r: "10" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M12 6v6l4 2" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "У этого пользователя пока нет лупов" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Возможно, он скоро что-нибудь загрузит!" })
+        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "user-loops-grid", children: loops.map((loop) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+          LoopCard,
+          {
+            loop: {
+              ...loop,
+              author: user?.username || "Unknown",
+              created_at: loop.created_at,
+              tags: loop.tags || []
+            },
+            currentUserId: currentUser?.id,
+            onPlay: handlePlay,
+            isPlaying: currentlyPlaying === loop.id && isPlaying,
+            isLoading: audioLoading === loop.id,
+            showLike: true
           },
-          currentUserId: currentUser?.id,
-          onPlay: handlePlay,
-          isPlaying: currentlyPlaying === loop.id && isPlaying,
-          isLoading: audioLoading === loop.id,
-          showLike: true
-        },
-        loop.id
-      )) })
-    ] }) })
+          loop.id
+        )) })
+      ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "user-loops-section", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "user-loops-header", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: "user-loops-title", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" }) }),
+            "Лайкнутые лупы"
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "user-loops-count", children: [
+            likedLoops.length,
+            " лупов"
+          ] })
+        ] }),
+        likedLoading ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loading-spinner", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "spinner" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Загрузка..." })
+        ] }) : likedLoops.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "user-loops-empty", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "Вы еще ничего не лайкнули" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Лайкайте лупы, чтобы они появились здесь!" })
+        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "user-loops-grid", children: likedLoops.map((loop) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+          LoopCard,
+          {
+            loop: {
+              ...loop,
+              author: loop.author || "Unknown",
+              created_at: loop.created_at,
+              tags: loop.tags || []
+            },
+            currentUserId: currentUser?.id,
+            onPlay: handlePlay,
+            isPlaying: currentlyPlaying === loop.id && isPlaying,
+            isLoading: audioLoading === loop.id,
+            showLike: true
+          },
+          loop.id
+        )) })
+      ] })
+    ] })
   ] });
 };
 
@@ -22706,8 +22955,10 @@ const Chats = () => {
   reactExports.useEffect(() => {
     const fetchChats = async () => {
       try {
+        console.log("Fetching chats...");
         setIsLoadingChats(true);
         const response = await chatApi.getUserChats();
+        console.log("Chats response:", response);
         setChats(response.chats);
         if (chatId) {
           const chat = response.chats.find((c) => c.id === parseInt(chatId));
@@ -23821,6 +24072,2126 @@ const Admin = () => {
   ] });
 };
 
+const STYLES = `
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .shop-root {
+    --bg-base: #07070f;
+    --bg-surface: #0d0d1c;
+    --bg-card: #0f0f20;
+    --bg-card-hover: #141428;
+    --border-subtle: rgba(255,255,255,0.06);
+    --border-mid: rgba(255,255,255,0.1);
+    --border-accent: rgba(124,58,237,0.5);
+    --accent-violet: #7c3aed;
+    --accent-violet-light: #9d67f5;
+    --accent-cyan: #06d6f5;
+    --accent-cyan-dim: rgba(6,214,245,0.15);
+    --text-primary: #f0eeff;
+    --text-secondary: #8b84b0;
+    --text-muted: #4a4570;
+    --gradient-brand: linear-gradient(135deg, #7c3aed 0%, #06d6f5 100%);
+    --gradient-card-shine: linear-gradient(135deg, rgba(124,58,237,0.08) 0%, rgba(6,214,245,0.04) 100%);
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    font-family: var(--font-body);
+    background: var(--bg-base);
+    color: var(--text-primary);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  .shop-root::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% -10%, rgba(124,58,237,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 110%, rgba(6,214,245,0.08) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .shop-root > * { position: relative; z-index: 1; }
+
+  /* ---- HEADER ---- */
+  .sh-header {
+    padding: 2rem 2.5rem 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .sh-brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .sh-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: var(--gradient-brand);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+    box-shadow: 0 0 30px rgba(124,58,237,0.4);
+  }
+
+  .sh-title {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+  }
+
+  .sh-subtitle {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    letter-spacing: 0.02em;
+  }
+
+  .sh-balance {
+    background: rgba(124,58,237,0.12);
+    border: 1px solid rgba(124,58,237,0.25);
+    border-radius: 50px;
+    padding: 0.5rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.85rem;
+  }
+
+  .sh-balance-icon { font-size: 16px; }
+  .sh-balance-label { color: var(--text-secondary); font-weight: 400; }
+  .sh-balance-amount {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--accent-violet-light);
+    font-size: 0.95rem;
+  }
+
+  /* ---- FILTERS ---- */
+  .sh-filters {
+    max-width: 1400px;
+    margin: 1.75rem auto 0;
+    padding: 0 2.5rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .sh-search {
+    flex: 1;
+    min-width: 240px;
+    position: relative;
+  }
+
+  .sh-search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 15px;
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+
+  .sh-search input {
+    width: 100%;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 0.65rem 1rem 0.65rem 2.6rem;
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .sh-search input::placeholder { color: var(--text-muted); }
+
+  .sh-search input:focus {
+    border-color: var(--border-accent);
+    box-shadow: 0 0 0 3px rgba(124,58,237,0.12);
+  }
+
+  .sh-selects {
+    display: flex;
+    gap: 0.65rem;
+  }
+
+  .sh-select-wrap {
+    position: relative;
+  }
+
+  .sh-select-wrap select {
+    appearance: none;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 0.65rem 2.2rem 0.65rem 1rem;
+    font-family: var(--font-body);
+    font-size: 0.83rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .sh-select-wrap select:focus,
+  .sh-select-wrap select:hover { border-color: var(--border-mid); color: var(--text-primary); }
+
+  .sh-select-arrow {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .sh-total-badge {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    padding: 0.5rem 0;
+  }
+
+  .sh-total-badge strong { color: var(--text-secondary); font-weight: 500; }
+
+  /* ---- GRID ---- */
+  .sh-grid {
+    max-width: 1400px;
+    margin: 2rem auto 0;
+    padding: 0 2.5rem 3rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+
+  /* ---- PACK CARD ---- */
+  .sh-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.25s cubic-bezier(.22,.61,.36,1), border-color 0.25s, box-shadow 0.25s;
+    animation: cardIn 0.45s cubic-bezier(.22,.61,.36,1) both;
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(18px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .sh-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    border-color: rgba(124,58,237,0.35);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(124,58,237,0.08);
+  }
+
+  .sh-card-cover {
+    height: 120px;
+    background: linear-gradient(135deg, rgba(124,58,237,0.15) 0%, rgba(6,214,245,0.08) 100%);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--border-subtle);
+    overflow: hidden;
+  }
+
+  .sh-card-cover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(15,15,32,0.7) 100%);
+  }
+
+  .sh-waveform {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 48px;
+    opacity: 0.35;
+  }
+
+  .sh-waveform span {
+    display: block;
+    width: 3px;
+    border-radius: 3px;
+    background: var(--accent-violet-light);
+    animation: wave 1.2s ease-in-out infinite;
+  }
+
+  @keyframes wave {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(0.4); }
+  }
+
+  .sh-play-btn {
+    position: absolute;
+    z-index: 2;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--gradient-brand);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #fff;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(124,58,237,0.5);
+  }
+
+  .sh-play-btn:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(124,58,237,0.7); }
+
+  .sh-play-btn.playing {
+    animation: pulsePurple 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulsePurple {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(124,58,237,0.6); }
+    50% { box-shadow: 0 0 0 12px rgba(124,58,237,0); }
+  }
+
+  .sh-no-preview {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .sh-card-body {
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex: 1;
+  }
+
+  .sh-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .sh-pack-title {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+  }
+
+  .sh-voice-tag {
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: rgba(6,214,245,0.12);
+    border: 1px solid rgba(6,214,245,0.2);
+    color: var(--accent-cyan);
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .sh-pack-author {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 3px;
+  }
+
+  .sh-pack-author-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent-violet);
+    opacity: 0.6;
+  }
+
+  .sh-desc {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-weight: 300;
+  }
+
+  .sh-stats {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .sh-stat {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border-subtle);
+    padding: 4px 9px;
+    border-radius: 8px;
+  }
+
+  .sh-stat-val { color: var(--text-secondary); font-weight: 500; }
+
+  .sh-stars {
+    display: flex;
+    gap: 2px;
+  }
+
+  .sh-star {
+    font-size: 12px;
+    line-height: 1;
+  }
+
+  .sh-card-footer {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    background: rgba(0,0,0,0.2);
+  }
+
+  .sh-price {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+  }
+
+  .sh-price-amount {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .sh-price-unit {
+    font-size: 0.73rem;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  .sh-buy-btn {
+    position: relative;
+    overflow: hidden;
+    padding: 0.55rem 1.2rem;
+    border-radius: 12px;
+    border: none;
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    background: var(--gradient-brand);
+    color: #fff;
+    transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 16px rgba(124,58,237,0.35);
+  }
+
+  .sh-buy-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0) 70%);
+    transform: translateX(-100%);
+    transition: transform 0.5s;
+  }
+
+  .sh-buy-btn:hover::before { transform: translateX(100%); }
+  .sh-buy-btn:hover { box-shadow: 0 6px 24px rgba(124,58,237,0.55); transform: translateY(-1px); }
+  .sh-buy-btn:active { transform: translateY(0) scale(0.97); }
+
+  .sh-buy-btn:disabled {
+    background: rgba(255,255,255,0.06);
+    color: var(--text-muted);
+    cursor: not-allowed;
+    box-shadow: none;
+    border: 1px solid var(--border-subtle);
+  }
+  .sh-buy-btn:disabled::before { display: none; }
+
+  /* ---- PAGINATION ---- */
+  .sh-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0 2.5rem 3rem;
+  }
+
+  .sh-page-btn {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 0.55rem 1.4rem;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+
+  .sh-page-btn:hover:not(:disabled) {
+    border-color: var(--border-accent);
+    color: var(--text-primary);
+    background: rgba(124,58,237,0.08);
+  }
+
+  .sh-page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  .sh-page-info {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    min-width: 160px;
+    text-align: center;
+  }
+
+  /* ---- STATES ---- */
+  .sh-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    gap: 1.5rem;
+  }
+
+  .sh-spinner {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid rgba(124,58,237,0.15);
+    border-top-color: var(--accent-violet);
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .sh-loading-text {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+  }
+
+  .sh-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    gap: 1rem;
+  }
+
+  .sh-error-msg {
+    color: #f87171;
+    font-size: 0.9rem;
+    background: rgba(248,113,113,0.08);
+    border: 1px solid rgba(248,113,113,0.2);
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+  }
+
+  .sh-retry-btn {
+    background: transparent;
+    border: 1px solid var(--border-mid);
+    border-radius: 12px;
+    padding: 0.55rem 1.4rem;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .sh-retry-btn:hover { border-color: var(--border-accent); color: var(--text-primary); }
+
+  .sh-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 2rem;
+    gap: 0.75rem;
+  }
+
+  .sh-empty-icon {
+    font-size: 3rem;
+    opacity: 0.25;
+  }
+
+  .sh-empty h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+  }
+
+  .sh-empty p { font-size: 0.82rem; color: var(--text-muted); }
+
+  /* ---- DIVIDER ---- */
+  .sh-section-bar {
+    max-width: 1400px;
+    margin: 2rem auto 0;
+    padding: 0 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .sh-section-label {
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .sh-section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border-subtle);
+  }
+`;
+const WaveformBars = () => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "sh-waveform", children: [40, 70, 55, 80, 45, 60, 75, 50, 65, 40, 80, 55, 45, 70, 60].map((h, i) => /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: {
+  height: `${h}%`,
+  animationDelay: `${i * 0.08}s`,
+  opacity: 0.5 + i % 3 * 0.15
+} }, i)) });
+const StarRating = ({ rating }) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "sh-stars", children: Array.from({ length: 5 }, (_, i) => /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-star", children: i < Math.floor(rating) ? "★" : "☆" }, i)) });
+const PackCard = ({ pack, playingPreview, onPlay, onBuy, userBalance, idx }) => {
+  const isPlaying = playingPreview === pack.id;
+  const canBuy = userBalance >= pack.price;
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-card", style: { animationDelay: `${idx * 0.04}s` }, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-card-cover", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(WaveformBars, {}),
+      pack.preview_url ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          className: `sh-play-btn ${isPlaying ? "playing" : ""}`,
+          onClick: () => onPlay(pack.id, pack.preview_url),
+          "aria-label": isPlaying ? "Pause preview" : "Play preview",
+          children: isPlaying ? "⏸" : "▶"
+        }
+      ) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "sh-no-preview", children: "🎵" })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-card-body", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-card-head", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-pack-title", children: pack.title }),
+          pack.voice_tag && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-voice-tag", children: pack.voice_tag })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-pack-author", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-pack-author-dot" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+            "@",
+            pack.hashtag
+          ] })
+        ] })
+      ] }),
+      pack.description && /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "sh-desc", children: pack.description }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-stats", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-stat", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "⭐" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-stat-val", children: (pack.avg_rating || 0).toFixed(1) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { style: { color: "var(--text-muted)", fontSize: "0.7rem" }, children: [
+            "(",
+            pack.rating_count,
+            ")"
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-stat", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "🛒" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-stat-val", children: pack.sales_count })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-stat", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "🕒" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-stat-val", children: pack.created_at ? new Date(pack.created_at).toLocaleDateString("ru-RU", { day: "numeric", month: "short" }) : "N/A" })
+        ] }),
+        pack.loops_count && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-stat", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "🔁" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-stat-val", children: pack.loops_count })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(StarRating, { rating: pack.avg_rating })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-card-footer", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-price", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-price-amount", children: pack.price }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-price-unit", children: "coins" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          className: "sh-buy-btn",
+          onClick: () => onBuy(pack.id, pack.price),
+          disabled: !canBuy,
+          children: canBuy ? "Buy Pack" : "No funds"
+        }
+      )
+    ] })
+  ] });
+};
+const Shop = () => {
+  const [packs, setPacks] = reactExports.useState([]);
+  const [loading, setLoading] = reactExports.useState(true);
+  const [error, setError] = reactExports.useState("");
+  const [search, setSearch] = reactExports.useState("");
+  const [sort, setSort] = reactExports.useState("created_at");
+  const [order, setOrder] = reactExports.useState("DESC");
+  const [page, setPage] = reactExports.useState(1);
+  const [totalPages, setTotalPages] = reactExports.useState(1);
+  const [total, setTotal] = reactExports.useState(0);
+  const [playingPreview, setPlayingPreview] = reactExports.useState(null);
+  const [userBalance, setUserBalance] = reactExports.useState(0);
+  const audioRef = reactExports.useRef(null);
+  const searchTimeout = reactExports.useRef(null);
+  reactExports.useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+      if (searchTimeout.current) {
+        clearTimeout(searchTimeout.current);
+      }
+    };
+  }, []);
+  reactExports.useEffect(() => {
+    fetchPacks();
+    fetchUserBalance();
+  }, [sort, order, page]);
+  reactExports.useEffect(() => {
+    clearTimeout(searchTimeout.current);
+    searchTimeout.current = setTimeout(() => {
+      setPage(1);
+      fetchPacks();
+    }, 380);
+    return () => clearTimeout(searchTimeout.current);
+  }, [search]);
+  const fetchPacks = async () => {
+    try {
+      setLoading(true);
+      const params = new URLSearchParams({ page: page.toString(), limit: "20", sort, order, ...search && { search } });
+      const res = await fetch(`/api/shop?${params}`);
+      if (!res.ok) throw new Error("Failed to fetch packs");
+      const data = await res.json();
+      setPacks(data.packs);
+      setTotalPages(data.pagination.totalPages);
+      setTotal(data.pagination.total);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const fetchUserBalance = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const res = await fetch("/api/shop/balance/my", { headers: { Authorization: `Bearer ${token}` } });
+      if (res.ok) {
+        const b = await res.json();
+        setUserBalance(b.available_balance || 0);
+      }
+    } catch {
+    }
+  };
+  const handleBuyPack = async (packId, price) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please login to purchase packs");
+      return;
+    }
+    if (userBalance < price) {
+      alert("Insufficient balance");
+      return;
+    }
+    try {
+      const res = await fetch(`/api/shop/${packId}/buy`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
+      });
+      if (!res.ok) {
+        const e = await res.json();
+        throw new Error(e.error || "Failed to purchase");
+      }
+      alert("Pack purchased successfully!");
+      setUserBalance((prev) => prev - price);
+      fetchPacks();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to purchase pack");
+    }
+  };
+  const playPreview = (packId, previewUrl) => {
+    if (!previewUrl) return;
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+    if (playingPreview === packId) {
+      setPlayingPreview(null);
+      return;
+    }
+    const audio = new Audio(previewUrl);
+    audioRef.current = audio;
+    audio.play();
+    audio.onended = () => setPlayingPreview(null);
+    setPlayingPreview(packId);
+  };
+  if (loading && packs.length === 0) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "shop-root", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("style", { children: STYLES }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-loading", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "sh-spinner" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "sh-loading-text", children: "Loading packs…" })
+      ] })
+    ] });
+  }
+  if (error) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "shop-root", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("style", { children: STYLES }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-error", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "sh-error-msg", children: [
+          "⚠ ",
+          error
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: "sh-retry-btn", onClick: fetchPacks, children: "Try again" })
+      ] })
+    ] });
+  }
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "shop-root", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("style", { children: STYLES }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("header", { className: "sh-header", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-brand", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "sh-logo", children: "🎵" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "sh-title", children: "SoundPacks" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "sh-subtitle", children: "Premium loops & samples from top creators" })
+        ] })
+      ] }),
+      userBalance > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-balance", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-balance-icon", children: "💎" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-balance-label", children: "Balance" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "sh-balance-amount", children: [
+          userBalance.toLocaleString(),
+          " coins"
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-filters", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-search", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-search-icon", children: "🔍" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "input",
+          {
+            type: "text",
+            placeholder: "Search packs, creators, tags…",
+            value: search,
+            onChange: (e) => setSearch(e.target.value)
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-selects", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-select-wrap", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("select", { value: sort, onChange: (e) => {
+            setSort(e.target.value);
+            setPage(1);
+          }, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "created_at", children: "Newest" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "sales_count", children: "Popular" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "avg_rating", children: "Top Rated" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "price", children: "Price" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "title", children: "Name" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-select-arrow", children: "▾" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-select-wrap", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("select", { value: order, onChange: (e) => {
+            setOrder(e.target.value);
+            setPage(1);
+          }, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "DESC", children: "↓ Desc" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: "ASC", children: "↑ Asc" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-select-arrow", children: "▾" })
+        ] })
+      ] }),
+      total > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "sh-total-badge", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: total }),
+        " packs"
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-section-bar", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-section-label", children: "Marketplace" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "sh-section-line" }),
+      loading && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { width: 16, height: 16, borderRadius: "50%", border: "2px solid rgba(124,58,237,0.15)", borderTopColor: "var(--accent-violet)", animation: "spin 0.8s linear infinite", flexShrink: 0 } })
+    ] }),
+    packs.length === 0 && !loading ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-empty", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "sh-empty-icon", children: "🎵" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "No packs found" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Try adjusting your search or filters" })
+    ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "sh-grid", children: packs.map((pack, idx) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+      PackCard,
+      {
+        pack,
+        idx,
+        playingPreview,
+        onPlay: playPreview,
+        onBuy: handleBuyPack,
+        userBalance
+      },
+      pack.id
+    )) }),
+    totalPages > 1 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-pagination", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: "sh-page-btn", onClick: () => setPage((p) => Math.max(1, p - 1)), disabled: page === 1, children: "← Prev" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "sh-page-info", children: [
+        "Page ",
+        page,
+        " / ",
+        totalPages,
+        " · ",
+        total,
+        " packs"
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: "sh-page-btn", onClick: () => setPage((p) => Math.min(totalPages, p + 1)), disabled: page === totalPages, children: "Next →" })
+    ] })
+  ] });
+};
+
+const CreatePack = () => {
+  const navigate = useNavigate();
+  const [title, setTitle] = reactExports.useState("");
+  const [description, setDescription] = reactExports.useState("");
+  const [price, setPrice] = reactExports.useState("");
+  const [voiceTag, setVoiceTag] = reactExports.useState("");
+  const [userLoops, setUserLoops] = reactExports.useState([]);
+  const [selectedLoops, setSelectedLoops] = reactExports.useState([]);
+  const [uploadedLoops, setUploadedLoops] = reactExports.useState([]);
+  const [voiceTagFile, setVoiceTagFile] = reactExports.useState(null);
+  const [textFile, setTextFile] = reactExports.useState(null);
+  const [textFileContent, setTextFileContent] = reactExports.useState("");
+  const [loading, setLoading] = reactExports.useState(false);
+  const [error, setError] = reactExports.useState("");
+  const [success, setSuccess] = reactExports.useState("");
+  const [uploadMode, setUploadMode] = reactExports.useState("existing");
+  const [uploadingFiles, setUploadingFiles] = reactExports.useState(false);
+  reactExports.useEffect(() => {
+    fetchUserLoops();
+  }, []);
+  const fetchUserLoops = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/auth");
+        return;
+      }
+      const response = await fetch("/api/loops/my", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch loops");
+      }
+      const data = await response.json();
+      setUserLoops(data.loops || []);
+    } catch (err) {
+      console.error("Failed to fetch loops:", err);
+      setError(err instanceof Error ? err.message : "Failed to fetch loops");
+    }
+  };
+  const handleLoopToggle = (loopId) => {
+    setSelectedLoops((prev) => {
+      if (prev.includes(loopId)) {
+        return prev.filter((id) => id !== loopId);
+      } else if (prev.length < 15) {
+        return [...prev, loopId];
+      } else {
+        setError("Maximum 15 loops allowed per pack");
+        return prev;
+      }
+    });
+  };
+  const handleLoopFileUpload = async (files) => {
+    if (!files || files.length === 0) return;
+    console.log("handleLoopFileUpload called with files:", files.length);
+    setUploadingFiles(true);
+    setError("");
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
+      const formData = new FormData();
+      Array.from(files).forEach((file) => {
+        formData.append("loops", file);
+        console.log("Adding file to FormData:", file.name, file.size, file.type);
+      });
+      console.log("Sending request to /api/pack-upload/loops");
+      const response = await fetch("/api/pack-upload/loops", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+        body: formData
+      });
+      console.log("Response status:", response.status);
+      const data = await response.json();
+      console.log("Response data:", data);
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to upload loops");
+      }
+      setUploadedLoops((prev) => [...prev, ...data.loops]);
+      setSuccess(`${data.loops.length} loops uploaded successfully`);
+    } catch (err) {
+      console.error("Error in handleLoopFileUpload:", err);
+      setError(err instanceof Error ? err.message : "Failed to upload loops");
+    } finally {
+      setUploadingFiles(false);
+    }
+  };
+  const handleVoiceTagUpload = async (file) => {
+    setUploadingFiles(true);
+    setError("");
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const formData = new FormData();
+      formData.append("voice_tag_file", file);
+      const response = await fetch("/api/pack-upload/voice-tag", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+        body: formData
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to upload voice tag");
+      }
+      setVoiceTagFile(file);
+      setSuccess("Voice tag uploaded successfully");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to upload voice tag");
+    } finally {
+      setUploadingFiles(false);
+    }
+  };
+  const handleTextFileUpload = async (file) => {
+    setUploadingFiles(true);
+    setError("");
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const formData = new FormData();
+      formData.append("text_file", file);
+      const response = await fetch("/api/pack-upload/text-file", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+        body: formData
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to upload text file");
+      }
+      const data = await response.json();
+      setTextFile(file);
+      setTextFileContent(data.content);
+      setSuccess("Text file uploaded successfully");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to upload text file");
+    } finally {
+      setUploadingFiles(false);
+    }
+  };
+  const removeUploadedLoop = (loopId) => {
+    setUploadedLoops((prev) => prev.filter((loop) => loop.id !== loopId));
+  };
+  const getTotalLoops = () => {
+    return selectedLoops.length + uploadedLoops.length;
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!title.trim()) {
+      setError("Title is required");
+      return;
+    }
+    if (!price || parseInt(price) < 0) {
+      setError("Valid price is required");
+      return;
+    }
+    const totalLoops = getTotalLoops();
+    if (totalLoops === 0) {
+      setError("At least one loop must be selected or uploaded");
+      return;
+    }
+    if (totalLoops > 15) {
+      setError("Maximum 15 loops allowed per pack");
+      return;
+    }
+    if (!textFile) {
+      setError("Text file is required");
+      return;
+    }
+    setLoading(true);
+    setError("");
+    setSuccess("");
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/auth");
+        return;
+      }
+      const response = await fetch("/api/pack-upload/create", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          title: title.trim(),
+          description: description.trim(),
+          price: parseInt(price),
+          voice_tag: voiceTag.trim(),
+          voice_tag_file: voiceTagFile?.name || null,
+          text_file: textFile?.name || null,
+          loopIds: selectedLoops,
+          loopFiles: uploadedLoops.map((loop) => loop.id)
+        })
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to create pack");
+      }
+      setSuccess("Pack submitted successfully! It will be reviewed by moderators.");
+      setTimeout(() => {
+        navigate("/shop");
+      }, 2e3);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to create pack");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const formatDuration = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "create-pack-container", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "create-pack-header", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { children: "Create Sound Pack" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Create a pack with your loops to sell on the marketplace" })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, className: "create-pack-form", children: [
+      error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "alert alert-error", children: error }),
+      success && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "alert alert-success", children: success }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form-section", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Basic Information" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form-group", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "title", children: "Pack Title *" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "input",
+            {
+              type: "text",
+              id: "title",
+              value: title,
+              onChange: (e) => setTitle(e.target.value),
+              placeholder: "Enter pack title...",
+              maxLength: 255,
+              required: true
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form-group", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "description", children: "Description" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "textarea",
+            {
+              id: "description",
+              value: description,
+              onChange: (e) => setDescription(e.target.value),
+              placeholder: "Describe your pack...",
+              rows: 4,
+              maxLength: 1e3
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form-row", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form-group", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "price", children: "Price (coins) *" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "input",
+              {
+                type: "number",
+                id: "price",
+                value: price,
+                onChange: (e) => setPrice(e.target.value),
+                placeholder: "0",
+                min: "0",
+                max: "10000",
+                required: true
+              }
+            )
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form-group", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "voiceTag", children: "Voice Tag Text (optional)" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "input",
+              {
+                type: "text",
+                id: "voiceTag",
+                value: voiceTag,
+                onChange: (e) => setVoiceTag(e.target.value),
+                placeholder: "Your producer tag...",
+                maxLength: 100
+              }
+            )
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form-section", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Voice Tag File (optional)" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "file-upload-area", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "input",
+              {
+                type: "file",
+                id: "voiceTagFile",
+                accept: ".mp3,.wav,.ogg,.m4a,.flac",
+                onChange: (e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    handleVoiceTagUpload(e.target.files[0]);
+                  }
+                },
+                disabled: uploadingFiles
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: "voiceTagFile", className: "file-upload-label", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "upload-icon", children: "🎤" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Upload voice tag file" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "upload-hint", children: "MP3, WAV, OGG, M4A, FLAC (Max 50MB)" })
+            ] })
+          ] }),
+          voiceTagFile && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "uploaded-file-info", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+            "✅ ",
+            voiceTagFile.name
+          ] }) })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form-section", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Text File (required)" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "file-description", children: "Upload a text file with detailed information about your pack, licensing terms, and any additional notes." }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "file-upload-area", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "input",
+              {
+                type: "file",
+                id: "textFile",
+                accept: ".txt,.rtf",
+                onChange: (e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    handleTextFileUpload(e.target.files[0]);
+                  }
+                },
+                disabled: uploadingFiles,
+                required: true
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: "textFile", className: "file-upload-label", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "upload-icon", children: "📄" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Upload text file *" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "upload-hint", children: "TXT or RTF format (Max 10MB)" })
+            ] })
+          ] }),
+          textFile && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "uploaded-file-info", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+              "✅ ",
+              textFile.name
+            ] }),
+            textFileContent && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-preview", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { children: "Preview:" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+                textFileContent.substring(0, 200),
+                textFileContent.length > 200 ? "..." : ""
+              ] })
+            ] })
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form-section", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { children: [
+          "Loops Management",
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "loop-count", children: [
+            "(",
+            getTotalLoops(),
+            "/15 total)"
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loop-mode-toggle", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              type: "button",
+              className: `mode-btn ${uploadMode === "existing" ? "active" : ""}`,
+              onClick: () => setUploadMode("existing"),
+              children: "Use Existing Loops"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              type: "button",
+              className: `mode-btn ${uploadMode === "new" ? "active" : ""}`,
+              onClick: () => setUploadMode("new"),
+              children: "Upload New Loops"
+            }
+          )
+        ] }),
+        uploadMode === "existing" && /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: userLoops.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "no-loops", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "You don't have any loops yet." }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              type: "button",
+              className: "upload-loops-btn",
+              onClick: () => navigate("/loop-upload"),
+              children: "Upload Loops First"
+            }
+          )
+        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "loops-grid", children: userLoops.map((loop) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          "div",
+          {
+            className: `loop-card ${selectedLoops.includes(loop.id) ? "selected" : ""}`,
+            onClick: () => handleLoopToggle(loop.id),
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loop-checkbox", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "input",
+                  {
+                    type: "checkbox",
+                    checked: selectedLoops.includes(loop.id),
+                    onChange: () => handleLoopToggle(loop.id)
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "checkmark", children: "✓" })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loop-info", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "loop-title", children: loop.title }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loop-meta", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+                    "🎵 ",
+                    loop.genre || "Unknown"
+                  ] }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+                    "⏱️ ",
+                    formatDuration(loop.duration)
+                  ] }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+                    "💓 ",
+                    loop.bpm,
+                    " BPM"
+                  ] }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+                    "🎹 ",
+                    loop.key || "N/A"
+                  ] })
+                ] })
+              ] })
+            ]
+          },
+          loop.id
+        )) }) }),
+        uploadMode === "new" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "upload-section", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "file-upload-area", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "input",
+              {
+                type: "file",
+                id: "loopFiles",
+                multiple: true,
+                accept: ".mp3,.wav,.ogg,.m4a,.flac",
+                onChange: (e) => {
+                  if (e.target.files) {
+                    handleLoopFileUpload(e.target.files);
+                  }
+                },
+                disabled: uploadingFiles
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: "loopFiles", className: `file-upload-label ${uploadingFiles ? "loading" : ""}`, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "upload-icon", children: "📁" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: uploadingFiles ? "Uploading..." : "Click to upload loops or drag and drop" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "upload-hint", children: "MP3, WAV, OGG, M4A, FLAC (Max 50MB each, up to 15 files)" })
+            ] })
+          ] }),
+          uploadedLoops.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "uploaded-loops", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("h4", { children: [
+              "Uploaded Loops (",
+              uploadedLoops.length,
+              ")"
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "uploaded-loops-list", children: uploadedLoops.map((loop) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "uploaded-loop-item", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "loop-name", children: loop.originalName }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "button",
+                {
+                  type: "button",
+                  className: "remove-btn",
+                  onClick: () => removeUploadedLoop(loop.id),
+                  children: "×"
+                }
+              )
+            ] }, loop.id)) })
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form-section", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Pack Rules" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rules-info", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rule-item", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "rule-icon", children: "ℹ️" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Maximum 15 loops per pack" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rule-item", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "rule-icon", children: "⏰" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Account must be at least 3 days old" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rule-item", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "rule-icon", children: "📦" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Maximum 3 packs per day" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rule-item", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "rule-icon", children: "👁️" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "All packs are reviewed by moderators" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rule-item", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "rule-icon", children: "💰" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "15% commission on all sales" })
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form-actions", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            type: "button",
+            className: "btn-secondary",
+            onClick: () => navigate("/shop"),
+            disabled: loading,
+            children: "Cancel"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            type: "submit",
+            className: "btn-primary",
+            disabled: loading || selectedLoops.length === 0,
+            children: loading ? "Creating..." : "Submit for Review"
+          }
+        )
+      ] })
+    ] })
+  ] });
+};
+
+const AdminShop = () => {
+  const [activeTab, setActiveTab] = reactExports.useState("pending");
+  const [pendingPacks, setPendingPacks] = reactExports.useState([]);
+  const [withdrawals, setWithdrawals] = reactExports.useState([]);
+  const [reports, setReports] = reactExports.useState([]);
+  const [selectedPack, setSelectedPack] = reactExports.useState(null);
+  const [loading, setLoading] = reactExports.useState(false);
+  const [error, setError] = reactExports.useState("");
+  const [success, setSuccess] = reactExports.useState("");
+  const [rejectionReason, setRejectionReason] = reactExports.useState("");
+  const [showRejectModal, setShowRejectModal] = reactExports.useState(false);
+  const [rejectingPackId, setRejectingPackId] = reactExports.useState(null);
+  const [stats, setStats] = reactExports.useState(null);
+  reactExports.useEffect(() => {
+    fetchPendingPacks();
+    if (activeTab === "withdrawals") fetchWithdrawals();
+    if (activeTab === "reports") fetchReports();
+    if (activeTab === "stats") fetchStats();
+  }, [activeTab]);
+  const fetchPendingPacks = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const response = await fetch("/api/admin/shop/packs/pending", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      if (!response.ok) throw new Error("Failed to fetch pending packs");
+      const packs = await response.json();
+      setPendingPacks(packs);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to fetch data");
+    }
+  };
+  const fetchWithdrawals = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const response = await fetch("/api/admin/shop/withdrawals", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      if (!response.ok) throw new Error("Failed to fetch withdrawals");
+      const data = await response.json();
+      setWithdrawals(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to fetch data");
+    }
+  };
+  const fetchReports = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const response = await fetch("/api/admin/shop/reports", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      if (!response.ok) throw new Error("Failed to fetch reports");
+      const data = await response.json();
+      setReports(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to fetch data");
+    }
+  };
+  const fetchStats = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const response = await fetch("/api/admin/shop/stats", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      if (!response.ok) throw new Error("Failed to fetch stats");
+      const data = await response.json();
+      setStats(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to fetch data");
+    }
+  };
+  const fetchPackDetails = async (packId) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const response = await fetch(`/api/admin/shop/packs/${packId}/moderation`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      if (!response.ok) throw new Error("Failed to fetch pack details");
+      const pack = await response.json();
+      setSelectedPack(pack);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to fetch pack details");
+    }
+  };
+  const handleApprovePack = async (packId) => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const response = await fetch(`/api/admin/shop/packs/${packId}/approve`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      if (!response.ok) throw new Error("Failed to approve pack");
+      setSuccess("Pack approved successfully");
+      fetchPendingPacks();
+      setSelectedPack(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to approve pack");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleRejectPack = async () => {
+    if (!rejectionReason.trim()) {
+      setError("Rejection reason is required");
+      return;
+    }
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const response = await fetch(`/api/admin/shop/packs/${rejectingPackId}/reject`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ rejection_reason: rejectionReason })
+      });
+      if (!response.ok) throw new Error("Failed to reject pack");
+      setSuccess("Pack rejected successfully");
+      fetchPendingPacks();
+      setShowRejectModal(false);
+      setRejectionReason("");
+      setRejectingPackId(null);
+      setSelectedPack(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to reject pack");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleProcessWithdrawal = async (withdrawalId, action) => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const response = await fetch(`/api/admin/shop/withdrawals/${withdrawalId}/${action}`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      if (!response.ok) throw new Error(`Failed to ${action} withdrawal`);
+      setSuccess(`Withdrawal ${action}d successfully`);
+      fetchWithdrawals();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : `Failed to ${action} withdrawal`);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleResolveReport = async (reportId) => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const response = await fetch(`/api/admin/shop/reports/${reportId}/resolve`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ resolution: "Resolved by admin" })
+      });
+      if (!response.ok) throw new Error("Failed to resolve report");
+      setSuccess("Report resolved successfully");
+      fetchReports();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to resolve report");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const openRejectModal = (packId) => {
+    setRejectingPackId(packId);
+    setShowRejectModal(true);
+  };
+  const closeRejectModal = () => {
+    setShowRejectModal(false);
+    setRejectionReason("");
+    setRejectingPackId(null);
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "admin-shop-container", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "admin-header", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { children: "Shop Administration" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Manage packs, withdrawals, and reports" })
+    ] }),
+    error && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "alert alert-error", children: [
+      error,
+      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => setError(""), children: "×" })
+    ] }),
+    success && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "alert alert-success", children: [
+      success,
+      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => setSuccess(""), children: "×" })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "admin-tabs", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        "button",
+        {
+          className: `tab ${activeTab === "pending" ? "active" : ""}`,
+          onClick: () => setActiveTab("pending"),
+          children: [
+            "Pending Packs (",
+            pendingPacks.length,
+            ")"
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          className: `tab ${activeTab === "withdrawals" ? "active" : ""}`,
+          onClick: () => setActiveTab("withdrawals"),
+          children: "Withdrawals"
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        "button",
+        {
+          className: `tab ${activeTab === "reports" ? "active" : ""}`,
+          onClick: () => setActiveTab("reports"),
+          children: [
+            "Reports (",
+            reports.filter((r) => r.status === "pending").length,
+            ")"
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          className: `tab ${activeTab === "stats" ? "active" : ""}`,
+          onClick: () => setActiveTab("stats"),
+          children: "Statistics"
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "admin-content", children: [
+      activeTab === "pending" && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "pending-packs", children: pendingPacks.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "empty-state", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { fontSize: "48px" }, children: "📦" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "No pending packs" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "All packs have been reviewed" })
+      ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "packs-list", children: pendingPacks.map((pack) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pack-item", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pack-info", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: pack.title }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "pack-author", children: [
+            "@",
+            pack.hashtag,
+            " (",
+            pack.username,
+            ")"
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "pack-price", children: [
+            pack.price,
+            " coins"
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "pack-date", children: [
+            "Created: ",
+            new Date(pack.created_at).toLocaleDateString()
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pack-actions", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              className: "btn-view",
+              onClick: () => fetchPackDetails(pack.id),
+              children: "View Details"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              className: "btn-approve",
+              onClick: () => handleApprovePack(pack.id),
+              disabled: loading,
+              children: "Approve"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              className: "btn-reject",
+              onClick: () => openRejectModal(pack.id),
+              disabled: loading,
+              children: "Reject"
+            }
+          )
+        ] })
+      ] }, pack.id)) }) }),
+      activeTab === "withdrawals" && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "withdrawals-section", children: withdrawals.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "empty-state", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { fontSize: "48px" }, children: "💰" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "No withdrawal requests" })
+      ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "withdrawals-list", children: withdrawals.map((withdrawal) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "withdrawal-item", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "withdrawal-info", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { children: [
+            withdrawal.amount,
+            " coins"
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+            "@",
+            withdrawal.hashtag,
+            " (",
+            withdrawal.username,
+            ")"
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+            withdrawal.bank,
+            " - ",
+            withdrawal.phone
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+            "Requested: ",
+            new Date(withdrawal.created_at).toLocaleDateString()
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `status ${withdrawal.status}`, children: withdrawal.status })
+        ] }),
+        withdrawal.status === "pending" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "withdrawal-actions", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              className: "btn-approve",
+              onClick: () => handleProcessWithdrawal(withdrawal.id, "approve"),
+              disabled: loading,
+              children: "Approve"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              className: "btn-reject",
+              onClick: () => handleProcessWithdrawal(withdrawal.id, "reject"),
+              disabled: loading,
+              children: "Reject"
+            }
+          )
+        ] })
+      ] }, withdrawal.id)) }) }),
+      activeTab === "reports" && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "reports-section", children: reports.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "empty-state", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { fontSize: "48px" }, children: "🚨" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "No reports" })
+      ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "reports-list", children: reports.map((report) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "report-item", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "report-info", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: report.reason.replace("_", " ") }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+            "By: ",
+            report.reporter_name
+          ] }),
+          report.pack_title && /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+            "Pack: ",
+            report.pack_title
+          ] }),
+          report.reported_user_name && /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+            "Reported: ",
+            report.reported_user_name
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: report.description }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+            "Reported: ",
+            new Date(report.created_at).toLocaleDateString()
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `status ${report.status}`, children: report.status })
+        ] }),
+        report.status === "pending" && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "report-actions", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            className: "btn-approve",
+            onClick: () => handleResolveReport(report.id),
+            disabled: loading,
+            children: "Resolve"
+          }
+        ) })
+      ] }, report.id)) }) }),
+      activeTab === "stats" && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "stats-section", children: stats ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "stats-grid", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "stat-card", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "General Statistics" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "stat-item", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Total Packs:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: stats.general.total_packs })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "stat-item", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Approved Packs:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: stats.general.approved_packs })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "stat-item", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Pending Packs:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: stats.general.pending_packs })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "stat-item", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Total Revenue:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+              stats.general.total_revenue,
+              " coins"
+            ] })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "stat-card", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "Weekly Statistics" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "stat-item", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Weekly Orders:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: stats.weekly.weekly_orders })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "stat-item", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Weekly Revenue:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+              stats.weekly.weekly_revenue,
+              " coins"
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "stat-item", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "New Packs:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: stats.weekly.weekly_packs })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "stat-card", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "Top Sellers" }),
+          stats.top_sellers.map((seller, index) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "stat-item", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+              "@",
+              seller.hashtag
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+              seller.total_revenue,
+              " coins"
+            ] })
+          ] }, index))
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "stat-card", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "Top Packs" }),
+          stats.top_packs.map((pack, index) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "stat-item", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: pack.title }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+              pack.sales_count,
+              " sales"
+            ] })
+          ] }, index))
+        ] })
+      ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "loading", children: "Loading statistics..." }) })
+    ] }),
+    selectedPack && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-overlay", onClick: () => setSelectedPack(null), children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-content", onClick: (e) => e.stopPropagation(), children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-header", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: selectedPack.title }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: "close-btn", onClick: () => setSelectedPack(null), children: "×" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-body", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "pack-details", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Author:" }),
+            " @",
+            selectedPack.hashtag,
+            " (",
+            selectedPack.username,
+            ")"
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Email:" }),
+            " ",
+            selectedPack.email
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Price:" }),
+            " ",
+            selectedPack.price,
+            " coins"
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Voice Tag:" }),
+            " ",
+            selectedPack.voice_tag || "None"
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Description:" }),
+            " ",
+            selectedPack.description || "None"
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Created:" }),
+            " ",
+            new Date(selectedPack.created_at).toLocaleDateString()
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Member Since:" }),
+            " ",
+            new Date(selectedPack.user_created_at || "").toLocaleDateString()
+          ] })
+        ] }),
+        selectedPack.loops && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loops-section", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { children: [
+            "Loops (",
+            selectedPack.loops.length,
+            ")"
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "loops-list", children: selectedPack.loops.map((loop) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loop-item", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: loop.title }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+              loop.duration,
+              "s"
+            ] })
+          ] }, loop.id)) })
+        ] }),
+        selectedPack.user_stats && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "user-stats", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "User Statistics" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "stats-grid-small", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "stat-item", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Total Packs:" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: selectedPack.user_stats.total_packs })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "stat-item", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Approved:" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: selectedPack.user_stats.approved_packs })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "stat-item", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Rejected:" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: selectedPack.user_stats.rejected_packs })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "stat-item", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Total Sales:" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: selectedPack.user_stats.total_sales })
+            ] })
+          ] })
+        ] }),
+        selectedPack.reports && selectedPack.reports.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "reports-section", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "Reports Against User" }),
+          selectedPack.reports.map((report) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "report-item-small", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("strong", { children: [
+                report.reason,
+                ":"
+              ] }),
+              " ",
+              report.description
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+              "By: ",
+              report.reporter_name
+            ] })
+          ] }, report.id))
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-actions", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            className: "btn-approve",
+            onClick: () => handleApprovePack(selectedPack.id),
+            disabled: loading,
+            children: "Approve Pack"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            className: "btn-reject",
+            onClick: () => openRejectModal(selectedPack.id),
+            disabled: loading,
+            children: "Reject Pack"
+          }
+        )
+      ] })
+    ] }) }),
+    showRejectModal && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-overlay", onClick: closeRejectModal, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-content", onClick: (e) => e.stopPropagation(), children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-header", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Reject Pack" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: "close-btn", onClick: closeRejectModal, children: "×" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-body", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form-group", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "rejectionReason", children: "Rejection Reason *" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "textarea",
+          {
+            id: "rejectionReason",
+            value: rejectionReason,
+            onChange: (e) => setRejectionReason(e.target.value),
+            placeholder: "Please explain why this pack is being rejected...",
+            rows: 4,
+            required: true
+          }
+        )
+      ] }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-actions", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            className: "btn-secondary",
+            onClick: closeRejectModal,
+            disabled: loading,
+            children: "Cancel"
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            className: "btn-reject",
+            onClick: handleRejectPack,
+            disabled: loading,
+            children: "Reject Pack"
+          }
+        )
+      ] })
+    ] }) })
+  ] });
+};
+
+const AdminRoute = ({ children }) => {
+  const { isAuthenticated, isAdmin, isLoading } = useAuth();
+  if (isLoading) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      height: "100vh",
+      color: "white",
+      fontSize: "18px"
+    }, children: "Загрузка..." });
+  }
+  if (!isAuthenticated) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Navigate, { to: "/auth", replace: true });
+  }
+  if (!isAdmin) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Navigate, { to: "/", replace: true });
+  }
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
+};
+
 const ForgotPasswordForm = ({ onBack }) => {
   const [email, setEmail] = reactExports.useState("");
   const [isLoading, setIsLoading] = reactExports.useState(false);
@@ -23952,11 +26323,14 @@ function App() {
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/", element: /* @__PURE__ */ jsxRuntimeExports.jsx(ProtectedRoute, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Home, {}) }) }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/loops", element: /* @__PURE__ */ jsxRuntimeExports.jsx(ProtectedRoute, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Loops, {}) }) }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/profile", element: /* @__PURE__ */ jsxRuntimeExports.jsx(ProtectedRoute, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(UserProfile, {}) }) }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/profile/:userId", element: /* @__PURE__ */ jsxRuntimeExports.jsx(ProtectedRoute, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(UserProfile, {}) }) }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/profile/:userId", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(UserProfile, {}) }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/chats", element: /* @__PURE__ */ jsxRuntimeExports.jsx(ProtectedRoute, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Chats, {}) }) }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/upload", element: /* @__PURE__ */ jsxRuntimeExports.jsx(ProtectedRoute, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(LoopUploadPage, {}) }) }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/loop-upload", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(LoopUploadPage, {}) }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/search", element: /* @__PURE__ */ jsxRuntimeExports.jsx(ProtectedRoute, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Search, {}) }) }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/admin", element: /* @__PURE__ */ jsxRuntimeExports.jsx(ProtectedRoute, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Admin, {}) }) }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/shop", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Shop, {}) }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/create-pack", element: /* @__PURE__ */ jsxRuntimeExports.jsx(ProtectedRoute, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(CreatePack, {}) }) }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/admin", element: /* @__PURE__ */ jsxRuntimeExports.jsx(AdminRoute, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Admin, {}) }) }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/admin/shop", element: /* @__PURE__ */ jsxRuntimeExports.jsx(AdminRoute, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(AdminShop, {}) }) }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "*", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Navigate, { to: "/", replace: true }) })
   ] }) }) });
 }

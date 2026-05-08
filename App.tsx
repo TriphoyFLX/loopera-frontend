@@ -15,6 +15,7 @@ import CreatePack from './pages/CreatePack'
 import AdminShop from './pages/AdminShop'
 import AdminRoute from './components/AdminRoute'
 import ForgotPassword from './components/ForgotPasswordForm'
+import Deposit from './pages/Deposit'
 import './App.css'
 
 function App() {
@@ -78,6 +79,13 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <CreatePack />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/deposit" element={
+            <ProtectedRoute>
+              <Layout>
+                <Deposit />
               </Layout>
             </ProtectedRoute>
           } />

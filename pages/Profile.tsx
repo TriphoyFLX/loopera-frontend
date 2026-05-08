@@ -33,6 +33,8 @@ const Profile = () => {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([])
   const [isLoadingSubscriptions, setIsLoadingSubscriptions] = useState(true)
   const [isAddingSubscription, setIsAddingSubscription] = useState(false)
+  const [balance, setBalance] = useState<number>(0)
+  const [isLoadingBalance, setIsLoadingBalance] = useState(true)
 
   useEffect(() => {
     const fetchUserLoops = async () => {
@@ -63,8 +65,28 @@ const Profile = () => {
       }
     }
 
+    const fetchBalance = async () => {
+      if (token) {
+        try {
+          setIsLoadingBalance(true)
+          const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/shop/balance/my`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          })
+          const data = await response.json()
+          setBalance(data.balance || 0)
+        } catch (error) {
+          console.error('Error fetching balance:', error)
+        } finally {
+          setIsLoadingBalance(false)
+        }
+      }
+    }
+
     fetchUserLoops()
     fetchSubscriptions()
+    fetchBalance()
   }, [token])
 
   const handleAddSubscription = async (artist: LoopArtist) => {
@@ -121,6 +143,10 @@ const Profile = () => {
     navigate('/auth')
   }
 
+  const handleDeposit = () => {
+    navigate('/deposit')
+  }
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ru-RU', {
       year: 'numeric',
@@ -147,6 +173,13 @@ const Profile = () => {
             <p className="profile-join-date">
               Присоединился {user.createdAt ? formatDate(user.createdAt) : 'недавно'}
             </p>
+            <div className="profile-balance">
+              <span className="balance-icon">💎</span>
+              <span className="balance-amount">{isLoadingBalance ? '...' : balance.toLocaleString()} coins</span>
+              <button className="deposit-button" onClick={handleDeposit}>
+                Пополнить
+              </button>
+            </div>
           </div>
         </div>
       </div>

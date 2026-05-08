@@ -708,7 +708,7 @@ const PackCard: React.FC<PackCardProps> = ({ pack, playingPreview, onPlay, onBuy
         <div className="sh-stats">
           <div className="sh-stat">
             <span>⭐</span>
-            <span className="sh-stat-val">{(pack.avg_rating || 0).toFixed(1)}</span>
+            <span className="sh-stat-val">{Number(pack.avg_rating || 0).toFixed(1)}</span>
             <span style={{ color: 'var(--text-muted)', fontSize: '0.7rem' }}>({pack.rating_count})</span>
           </div>
           <div className="sh-stat">

@@ -6,6 +6,7 @@ import Auth from './pages/Auth'
 import Home from './pages/Home'
 import Loops from './pages/Loops'
 import UserProfile from './pages/UserProfile'
+import Profile from './pages/Profile'
 import Chats from './pages/Chats'
 import LoopUpload from './pages/LoopUpload'
 import Search from './pages/Search'
@@ -42,7 +43,7 @@ function App() {
           <Route path="/profile" element={
             <ProtectedRoute>
               <Layout>
-                <UserProfile />
+                <Profile />
               </Layout>
             </ProtectedRoute>
           } />

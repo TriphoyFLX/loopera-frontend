@@ -24744,7 +24744,7 @@ const PackCard = ({ pack, playingPreview, onPlay, onBuy, userBalance, idx }) => 
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-stats", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-stat", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "⭐" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-stat-val", children: (pack.avg_rating || 0).toFixed(1) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-stat-val", children: Number(pack.avg_rating || 0).toFixed(1) }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { style: { color: "var(--text-muted)", fontSize: "0.7rem" }, children: [
             "(",
             pack.rating_count,
@@ -26316,6 +26316,88 @@ const ForgotPasswordForm = ({ onBack }) => {
   ] });
 };
 
+const Deposit = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  if (!user) {
+    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: "Загрузка..." });
+  }
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "deposit-page", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("style", { children: `
+        .deposit-page {
+          max-width: 800px;
+          margin: 0 auto;
+          padding: 40px 20px;
+        }
+
+        .deposit-header {
+          text-align: center;
+          margin-bottom: 40px;
+        }
+
+        .deposit-header h1 {
+          font-size: 32px;
+          margin-bottom: 10px;
+          color: #fff;
+        }
+
+        .deposit-header p {
+          color: #888;
+        }
+
+        .coming-soon {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          border-radius: 20px;
+          padding: 60px 40px;
+          text-align: center;
+          color: white;
+        }
+
+        .coming-soon-icon {
+          font-size: 64px;
+          margin-bottom: 20px;
+        }
+
+        .coming-soon h2 {
+          font-size: 28px;
+          margin-bottom: 15px;
+        }
+
+        .coming-soon p {
+          font-size: 18px;
+          opacity: 0.9;
+          margin-bottom: 30px;
+        }
+
+        .back-button {
+          display: inline-block;
+          padding: 12px 24px;
+          background: rgba(255, 255, 255, 0.2);
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          border-radius: 10px;
+          color: white;
+          text-decoration: none;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+          background: rgba(255, 255, 255, 0.3);
+        }
+      ` }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "deposit-header", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { children: "Пополнение баланса" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Добавьте coins на свой аккаунт" })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "coming-soon", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "coming-soon-icon", children: "💰" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Скоро будет доступно" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Мы работаем над системой пополнения баланса. Скоро здесь появятся способы оплаты." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: "back-button", onClick: () => navigate("/profile"), children: "Вернуться в профиль" })
+    ] })
+  ] });
+};
+
 function App() {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(BrowserRouter, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(AuthProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Routes, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/auth", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Auth, {}) }),
@@ -26329,6 +26411,7 @@ function App() {
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/search", element: /* @__PURE__ */ jsxRuntimeExports.jsx(ProtectedRoute, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Search, {}) }) }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/shop", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Shop, {}) }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/create-pack", element: /* @__PURE__ */ jsxRuntimeExports.jsx(ProtectedRoute, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(CreatePack, {}) }) }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/deposit", element: /* @__PURE__ */ jsxRuntimeExports.jsx(ProtectedRoute, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Deposit, {}) }) }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/admin", element: /* @__PURE__ */ jsxRuntimeExports.jsx(AdminRoute, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Admin, {}) }) }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/admin/shop", element: /* @__PURE__ */ jsxRuntimeExports.jsx(AdminRoute, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(AdminShop, {}) }) }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "*", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Navigate, { to: "/", replace: true }) })

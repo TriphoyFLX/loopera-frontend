@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
-import './Deposit.css'
 
 const Deposit = () => {
   const { user } = useAuth()

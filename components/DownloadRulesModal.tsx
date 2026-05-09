@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './DownloadRulesModal.module.css';
 
 interface DownloadRulesModalProps {
@@ -51,7 +52,9 @@ const DownloadRulesModal = ({ isOpen, onClose, onDownload, loopTitle }: Download
     onClose();
   };
 
-  return (
+  if (!isOpen) return null;
+
+  return createPortal(
     <div className={styles.overlay} onClick={(e) => e.target === e.currentTarget && onClose()}>
       
       <div className={`${styles.modal} ${isVisible ? styles.show : ''}`}>
@@ -103,7 +106,8 @@ const DownloadRulesModal = ({ isOpen, onClose, onDownload, loopTitle }: Download
         </div>
 
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

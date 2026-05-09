@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getUploadsUrl } from '../utils/urls';
 import { likeApi } from '../utils/likeApi';
+import DownloadRulesModal from './DownloadRulesModal';
 import './LoopCard.css';
 
 interface LoopCardProps {
@@ -27,6 +28,7 @@ const LoopCard: React.FC<LoopCardProps> = ({
   const [isLikeLoading, setIsLikeLoading] = useState(false);
   const [showAllTags, setShowAllTags] = useState(false);
   const [hasOverflow, setHasOverflow] = useState(false);
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
   const tagsContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -75,6 +77,14 @@ const LoopCard: React.FC<LoopCardProps> = ({
     }
   };
 
+  const handleDownloadClick = () => {
+    setShowDownloadModal(true);
+  };
+
+  const handleDownloadConfirm = () => {
+    window.open(getUploadsUrl(loop.filename));
+  };
+
   const getInitials = (name: string) => {
     return name?.charAt(0).toUpperCase() || '?';
   };
@@ -107,7 +117,7 @@ const LoopCard: React.FC<LoopCardProps> = ({
         <div className="loop-actions">
           <button 
             className="loop-action-btn" 
-            onClick={() => window.open(getUploadsUrl(loop.filename))}
+            onClick={handleDownloadClick}
             title="Скачать"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -246,6 +256,13 @@ const LoopCard: React.FC<LoopCardProps> = ({
           </div>
         </div>
       </div>
+      
+      <DownloadRulesModal
+        isOpen={showDownloadModal}
+        onClose={() => setShowDownloadModal(false)}
+        onDownload={handleDownloadConfirm}
+        loopTitle={loop.title}
+      />
     </div>
   );
 };

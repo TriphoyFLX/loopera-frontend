@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getUploadsUrl } from '../utils/urls';
 import { subscriptionApi } from '../utils/subscriptionApi';
+import DownloadRulesModal from './DownloadRulesModal';
+import './SubscribedLoops.css';
 
 interface Loop {
   id: number;
@@ -13,7 +15,6 @@ interface Loop {
   bpm?: number;
   key?: string;
 }
-import './SubscribedLoops.css';
 
 interface SubscribedLoopsProps {
   limit?: number;
@@ -29,6 +30,8 @@ const SubscribedLoops: React.FC<SubscribedLoopsProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [selectedLoop, setSelectedLoop] = useState<Loop | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -97,6 +100,17 @@ const SubscribedLoops: React.FC<SubscribedLoopsProps> = ({
     console.log('Loop clicked:', loopId);
   };
 
+  const handleDownloadClick = (loop: Loop) => {
+    setSelectedLoop(loop);
+    setShowDownloadModal(true);
+  };
+
+  const handleDownloadConfirm = () => {
+    if (selectedLoop) {
+      window.open(getUploadsUrl(selectedLoop.filename));
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="subscribed-loops-loading">
@@ -133,104 +147,113 @@ const SubscribedLoops: React.FC<SubscribedLoopsProps> = ({
   }
 
   return (
-    <div className="subscribed-loops">
-      <div className="loops-grid">
-        {loops.map((loop) => (
-          <div
-            key={loop.id}
-            className="loop-card"
-            onClick={() => handleLoopClick(loop.id)}
-          >
-            <div className="loop-card-header">
-              <div className="loop-user" onClick={() => window.location.href = `/user/${loop.user_id}`}>
-                <div className="loop-avatar">
-                  {loop.author ? loop.author.charAt(0).toUpperCase() : '?'}
+    <>
+      <div className="subscribed-loops">
+        <div className="loops-grid">
+          {loops.map((loop) => (
+            <div
+              key={loop.id}
+              className="loop-card"
+              onClick={() => handleLoopClick(loop.id)}
+            >
+              <div className="loop-card-header">
+                <div className="loop-user" onClick={() => window.location.href = `/user/${loop.user_id}`}>
+                  <div className="loop-avatar">
+                    {loop.author ? loop.author.charAt(0).toUpperCase() : '?'}
+                  </div>
+                  <span className="loop-username">{loop.author || 'Unknown'}</span>
                 </div>
-                <span className="loop-username">{loop.author || 'Unknown'}</span>
-              </div>
-              
-              <div className="loop-actions">
-                <button 
-                  className="loop-action-btn" 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    window.open(getUploadsUrl(loop.filename));
-                  }}
-                  title="Скачать"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <div className="loop-player">
-              <div className="player-controls">
-                <button 
-                  className={`play-button ${currentlyPlaying === loop.id && isPlaying ? 'playing' : ''}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handlePlay(loop);
-                  }}
-                >
-                  {currentlyPlaying === loop.id && isPlaying ? (
-                    <svg className="play-icon" viewBox="0 0 24 24" fill="currentColor">
-                      <rect x="6" y="4" width="4" height="16"/>
-                      <rect x="14" y="4" width="4" height="16"/>
+                
+                <div className="loop-actions">
+                  <button 
+                    className="loop-action-btn" 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDownloadClick(loop);
+                    }}
+                    title="Скачать"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
                     </svg>
-                  ) : (
-                    <svg className="play-icon" viewBox="0 0 24 24" fill="currentColor">
-                      <polygon points="5 3 19 12 5 21 5 3"/>
-                    </svg>
-                  )}
-                </button>
+                  </button>
+                </div>
+              </div>
 
-                <div className="waveform-container">
-                  <div className="waveform-bars">
-                    {[...Array(40)].map((_, i) => (
-                      <div 
-                        key={i} 
-                        className={`waveform-bar ${currentlyPlaying === loop.id && isPlaying && i < 20 ? 'active' : ''}`}
-                        style={{
-                          height: `${Math.random() * 60 + 20}%`,
-                          animation: currentlyPlaying === loop.id && isPlaying ? `waveform 1s ease infinite ${i * 0.05}s` : 'none'
-                        }}
-                      />
+              <div className="loop-player">
+                <div className="player-controls">
+                  <button 
+                    className={`play-button ${currentlyPlaying === loop.id && isPlaying ? 'playing' : ''}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePlay(loop);
+                    }}
+                  >
+                    {currentlyPlaying === loop.id && isPlaying ? (
+                      <svg className="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <rect x="6" y="4" width="4" height="16"/>
+                        <rect x="14" y="4" width="4" height="16"/>
+                      </svg>
+                    ) : (
+                      <svg className="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"/>
+                      </svg>
+                    )}
+                  </button>
+
+                  <div className="waveform-container">
+                    <div className="waveform-bars">
+                      {[...Array(40)].map((_, i) => (
+                        <div 
+                          key={i} 
+                          className={`waveform-bar ${currentlyPlaying === loop.id && isPlaying && i < 20 ? 'active' : ''}`}
+                          style={{
+                            height: `${Math.random() * 60 + 20}%`,
+                            animation: currentlyPlaying === loop.id && isPlaying ? `waveform 1s ease infinite ${i * 0.05}s` : 'none'
+                          }}
+                        />
+                      ))}
+                    </div>
+                    {currentlyPlaying === loop.id && isPlaying && <div className="progress-bar" style={{ width: '45%' }} />}
+                  </div>
+                </div>
+              </div>
+
+              <div className="loop-info">
+                <h3 className="loop-title">{loop.title}</h3>
+                <div className="loop-details">
+                  {loop.bpm && <span className="loop-detail">{loop.bpm} BPM</span>}
+                  {loop.key && <span className="loop-detail">{loop.key}</span>}
+                  {loop.genre && <span className="loop-detail">{loop.genre}</span>}
+                </div>
+                {loop.tags && loop.tags.length > 0 && (
+                  <div className="loop-tags">
+                    {loop.tags.slice(0, 3).map((tag: string, index: number) => (
+                      <span key={index} className="loop-tag">#{tag}</span>
                     ))}
                   </div>
-                  {currentlyPlaying === loop.id && isPlaying && <div className="progress-bar" style={{ width: '45%' }} />}
-                </div>
+                )}
               </div>
             </div>
-
-            <div className="loop-info">
-              <h3 className="loop-title">{loop.title}</h3>
-              <div className="loop-details">
-                {loop.bpm && <span className="loop-detail">{loop.bpm} BPM</span>}
-                {loop.key && <span className="loop-detail">{loop.key}</span>}
-                {loop.genre && <span className="loop-detail">{loop.genre}</span>}
-              </div>
-              {loop.tags && loop.tags.length > 0 && (
-                <div className="loop-tags">
-                  {loop.tags.slice(0, 3).map((tag: string, index: number) => (
-                    <span key={index} className="loop-tag">#{tag}</span>
-                  ))}
-                </div>
-              )}
-            </div>
+          ))}
+        </div>
+        
+        {showAllButton && loops.length > 0 && (
+          <div className="subscribed-loops-actions">
+            <button className="view-all-button">
+              Смотреть все лупы от подписанных артистов
+            </button>
           </div>
-        ))}
+        )}
       </div>
       
-      {showAllButton && loops.length > 0 && (
-        <div className="subscribed-loops-actions">
-          <button className="view-all-button">
-            Смотреть все лупы от подписанных артистов
-          </button>
-        </div>
-      )}
-    </div>
+      <DownloadRulesModal
+        isOpen={showDownloadModal}
+        onClose={() => setShowDownloadModal(false)}
+        onDownload={handleDownloadConfirm}
+        loopTitle={selectedLoop?.title}
+      />
+    </>
   );
 };
 

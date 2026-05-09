@@ -82,7 +82,13 @@ const LoopCard: React.FC<LoopCardProps> = ({
   };
 
   const handleDownloadConfirm = () => {
-    window.open(getUploadsUrl(loop.filename));
+    const url = getUploadsUrl(loop.filename);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = loop.filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const getInitials = (name: string) => {

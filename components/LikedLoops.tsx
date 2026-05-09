@@ -104,7 +104,13 @@ const LikedLoops: React.FC<LikedLoopsProps> = ({
 
   const handleDownloadConfirm = () => {
     if (selectedLoop) {
-      window.open(getUploadsUrl(selectedLoop.filename));
+      const url = getUploadsUrl(selectedLoop.filename);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = selectedLoop.filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
   };
 

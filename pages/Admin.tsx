@@ -50,10 +50,12 @@ const Admin: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'loops'>('overview');
-  const [userPage] = useState(1);
-  const [loopPage] = useState(1);
+  const [userPage, setUserPage] = useState(1);
+  const [loopPage, setLoopPage] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalLoops, setTotalLoops] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterStatus, setFilterStatus] = useState<'all' | 'banned' | 'active'>('all');
 
   // Функция для API запросов с токеном авторизации
   const apiRequest = async (url: string) => {
@@ -87,10 +89,13 @@ const Admin: React.FC = () => {
     return new Date(dateString).toLocaleString('ru-RU');
   };
 
-  const fetchUsers = async (page: number = 1) => {
+  const fetchUsers = async (page: number = 1, search?: string, status?: string) => {
     try {
       setLoading(true);
-      const data = await apiRequest(`/admin/users?page=${page}&limit=20`);
+      let url = `/admin/users?page=${page}&limit=20`;
+      if (search) url += `&search=${encodeURIComponent(search)}`;
+      if (status && status !== 'all') url += `&status=${status}`;
+      const data = await apiRequest(url);
       setUsers(data.users);
       setTotalUsers(data.pagination.totalUsers);
     } catch (err) {
@@ -185,11 +190,11 @@ const Admin: React.FC = () => {
 
   useEffect(() => {
     if (activeTab === 'users') {
-      fetchUsers(userPage);
+      fetchUsers(userPage, searchQuery, filterStatus);
     } else if (activeTab === 'loops') {
       fetchLoops(loopPage);
     }
-  }, [activeTab, userPage, loopPage]);
+  }, [activeTab, userPage, loopPage, searchQuery, filterStatus]);
 
   if (loading && !stats) {
     return (
@@ -400,6 +405,39 @@ const Admin: React.FC = () => {
                 </svg>
                 Управление пользователями
               </h3>
+            </div>
+            <div className="search-filters-container">
+              <div className="search-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Поиск по имени или email..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <div className="filter-box">
+                <select
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value as 'all' | 'banned' | 'active')}
+                >
+                  <option value="all">Все статусы</option>
+                  <option value="active">Активные</option>
+                  <option value="banned">Забаненные</option>
+                </select>
+              </div>
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setFilterStatus('all');
+                  setUserPage(1);
+                }}
+                className="btn-show-all"
+              >
+                Показать всех
+              </button>
             </div>
             <div className="table-container">
               <table className="admin-table">

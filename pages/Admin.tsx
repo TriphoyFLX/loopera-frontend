@@ -51,7 +51,7 @@ const Admin: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'loops'>('overview');
   const [userPage, setUserPage] = useState(1);
-  const [loopPage, setLoopPage] = useState(1);
+  const [loopPage] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalLoops, setTotalLoops] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');

@@ -53,7 +53,6 @@ const Admin: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'loops'>('overview');
   const [userPage, setUserPage] = useState(1);
-  const [loopPage] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalLoops, setTotalLoops] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
@@ -138,7 +137,7 @@ const Admin: React.FC = () => {
     }
   };
 
-  const fetchLoops = async (page: number = 1) => {
+  const fetchLoops = async () => {
     try {
       setLoading(true);
       const data = await apiRequest(`/admin/loops?limit=10000`);
@@ -167,7 +166,7 @@ const Admin: React.FC = () => {
       if (!response.ok) throw new Error('Failed to delete loop');
       
       // Обновляем список лупов
-      fetchLoops(loopPage);
+      fetchLoops();
       fetchStats();
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Unknown error');
@@ -236,9 +235,9 @@ const Admin: React.FC = () => {
     if (activeTab === 'users') {
       fetchUsers(userPage, searchQuery, filterStatus);
     } else if (activeTab === 'loops') {
-      fetchLoops(loopPage);
+      fetchLoops();
     }
-  }, [activeTab, userPage, loopPage, searchQuery, filterStatus]);
+  }, [activeTab, userPage, searchQuery, filterStatus]);
 
   if (loading && !stats) {
     return (

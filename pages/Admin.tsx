@@ -141,7 +141,7 @@ const Admin: React.FC = () => {
   const fetchLoops = async (page: number = 1) => {
     try {
       setLoading(true);
-      const data = await apiRequest(`/admin/loops?page=${page}&limit=20`);
+      const data = await apiRequest(`/admin/loops?limit=10000`);
       setLoops(data.loops);
       setTotalLoops(data.pagination.totalLoops);
     } catch (err) {

@@ -55,9 +55,20 @@ const Admin: React.FC = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalLoops, setTotalLoops] = useState(0);
 
-  // Простая функция для API запросов без токена
+  // Функция для API запросов с токеном авторизации
   const apiRequest = async (url: string) => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api${url}`);
+    const token = tokenStorage.getToken();
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api${url}`, {
+      headers
+    });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }

@@ -10,7 +10,9 @@ const LoopUpload = () => {
     bpm: undefined as number | undefined,
     key: '',
     genre: '',
-    tags: [] as string[]
+    tags: [] as string[],
+    instagram: '',
+    telegram: ''
   });
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -105,6 +107,12 @@ const LoopUpload = () => {
       if (formData.tags && formData.tags.length > 0) {
         uploadFormData.append('tags', JSON.stringify(formData.tags));
       }
+      if (formData.instagram) {
+        uploadFormData.append('instagram', formData.instagram);
+      }
+      if (formData.telegram) {
+        uploadFormData.append('telegram', formData.telegram);
+      }
 
       console.log('📦 FormData подготовлен:');
       for (let pair of uploadFormData.entries()) {
@@ -140,7 +148,9 @@ const LoopUpload = () => {
         bpm: undefined,
         key: '',
         genre: '',
-        tags: []
+        tags: [],
+        instagram: '',
+        telegram: ''
       });
       setFile(null);
       if (fileInputRef.current) {
@@ -278,6 +288,34 @@ const LoopUpload = () => {
               placeholder="trap, bass, 808, melody"
               disabled={isLoading}
             />
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="instagram">Instagram (необязательно)</label>
+              <input
+                type="url"
+                id="instagram"
+                name="instagram"
+                value={formData.instagram}
+                onChange={handleInputChange}
+                placeholder="https://instagram.com/username"
+                disabled={isLoading}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="telegram">Telegram (необязательно)</label>
+              <input
+                type="url"
+                id="telegram"
+                name="telegram"
+                value={formData.telegram}
+                onChange={handleInputChange}
+                placeholder="https://t.me/username"
+                disabled={isLoading}
+              />
+            </div>
           </div>
 
           {error && (

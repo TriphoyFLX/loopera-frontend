@@ -190,74 +190,101 @@ const Home = () => {
       </section>
 
       {/* Telegram подписка */}
-      <section className={styles.homeSection}>
-        <div className={styles.sectionHeader}>
-          <div className={styles.sectionTitleWrapper}>
-            <span className={styles.sectionBadge}>Сообщество</span>
-            <h2 className={styles.sectionTitle}>
-              Подписывайтесь на <span className={styles.titleAccent}>Telegram</span>
-            </h2>
-          </div>
-          <p className={styles.sectionDescription}>
-            Следите за новостями и эксклюзивными лупами в нашем Telegram канале
-          </p>
-        </div>
-        <div className={styles.telegramSection}>
-          <div className={styles.telegramCard}>
-            <div className={styles.telegramIcon}>
-              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                <path d="M42 24C42 33.9411 33.9411 42 24 42C14.0589 42 6 33.9411 6 24C6 14.0589 14.0589 6 24 6C33.9411 6 42 14.0589 42 24Z" fill="#0088CC"/>
-                <path d="M33.5 18.5L19.5 30.5L14.5 25.5" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-            <div className={styles.telegramContent}>
-              <h3 className={styles.telegramTitle}>@triphoymp3</h3>
-              <p className={styles.telegramDescription}>
-                Эксклюзивные лупы, новости платформы и розыгрыши каждый день
-              </p>
-              <div className={styles.telegramStats}>
-                <span className={styles.telegramStat}>
-                  <span className={styles.telegramStatNum}>8.5k+</span>
-                  <span className={styles.telegramStatLabel}>подписчиков</span>
-                </span>
-                <span className={styles.telegramStat}>
-                  <span className={styles.telegramStatNum}>24/7</span>
-                  <span className={styles.telegramStatLabel}>онлайн</span>
-                </span>
-              </div>
-            </div>
-            <a 
-              href="https://t.me/triphoymp3" 
-              target="_blank" 
-              rel="noreferrer"
-              className={styles.telegramButton}
-            >
-              <span>Подписаться</span>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </a>
-          </div>
-          <div className={styles.telegramFeatures}>
-            <div className={styles.telegramFeature}>
-              <span className={styles.telegramFeatureIcon}>🎵</span>
-              <span className={styles.telegramFeatureText}>Эксклюзивные лупы</span>
-            </div>
-            <div className={styles.telegramFeature}>
-              <span className={styles.telegramFeatureIcon}>🎁</span>
-              <span className={styles.telegramFeatureText}>Еженедельные розыгрыши</span>
-            </div>
-            <div className={styles.telegramFeature}>
-              <span className={styles.telegramFeatureIcon}>📢</span>
-              <span className={styles.telegramFeatureText}>Новости платформы</span>
-            </div>
-            <div className={styles.telegramFeature}>
-              <span className={styles.telegramFeatureIcon}>🤝</span>
-              <span className={styles.telegramFeatureText}>Коллаборации</span>
-            </div>
-          </div>
-        </div>
-      </section>
+     <section className={styles.telegramSectionFull}>
+       <div className={styles.sectionHeader}>
+         <div className={styles.sectionTitleWrapper}>
+           <span className={styles.sectionBadge}>Сообщество</span>
+           <h2 className={styles.sectionTitle}>
+             Подписывайтесь на <span className={styles.titleAccent}>Telegram</span>
+           </h2>
+         </div>
+         <p className={styles.sectionDescription}>
+           Следите за новостями и эксклюзивными лупами в нашем Telegram канале
+         </p>
+       </div>
+       
+       <div className={styles.telegramContainer}>
+         <div className={styles.telegramCard}>
+           {/* Анимированный фон с градиентом */}
+           <div className={styles.telegramCardGlow}></div>
+           
+           <div className={styles.telegramIcon}>
+             {/* Анимированная иконка Telegram */}
+             <svg width="48" height="48" viewBox="0 0 48 48" fill="none" className={styles.telegramSvg}>
+               <circle cx="24" cy="24" r="18" fill="#0088CC" className={styles.telegramCircle}/>
+               <path d="M33.5 18.5L19.5 30.5L14.5 25.5" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={styles.telegramPath}/>
+             </svg>
+           </div>
+
+           <div className={styles.telegramContent}>
+             <h3 className={styles.telegramTitle}>
+               @triphoymp3
+               <span className={styles.telegramVerifiedBadge}>✓</span>
+             </h3>
+             <p className={styles.telegramDescription}>
+               Эксклюзивные лупы, новости платформы и розыгрыши каждый день
+             </p>
+             
+             <div className={styles.telegramStats}>
+               <div className={styles.telegramStat}>
+                 <div className={styles.telegramStatWrapper}>
+                   <span className={styles.telegramStatNum}>8.5k+</span>
+                   <div className={styles.telegramStatTrend}>↑12%</div>
+                 </div>
+                 <span className={styles.telegramStatLabel}>подписчиков</span>
+               </div>
+               <div className={styles.telegramStatDivider}></div>
+               <div className={styles.telegramStat}>
+                 <div className={styles.telegramStatWrapper}>
+                   <span className={styles.telegramStatNum}>24/7</span>
+                   <div className={styles.telegramStatDot}></div>
+                 </div>
+                 <span className={styles.telegramStatLabel}>онлайн</span>
+               </div>
+             </div>
+           </div>
+
+           <div className={styles.telegramButtons}>
+             <a 
+               href="https://t.me/triphoymp3" 
+               target="_blank" 
+               rel="noreferrer"
+               className={styles.telegramButton}
+               onClick={(e) => e.stopPropagation()}
+             >
+               <span>Подписаться</span>
+               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                 <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+               </svg>
+             </a>
+             
+             <button 
+               className={styles.telegramShareButton}
+               onClick={(e) => {
+                 e.stopPropagation();
+                 // Логика для шаринга
+                 alert('Поделиться ссылкой на канал');
+               }}
+             >
+               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                 <path d="M8 2v8M5 7l3 3 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+               </svg>
+             </button>
+           </div>
+         </div>
+
+         {/* Интерактивный баннер */}
+         <div className={styles.telegramBanner}>
+           <div className={styles.telegramBannerContent}>
+             <span>🎯</span>
+             <span>Присоединяйся сейчас и получи бонус!</span>
+           </div>
+           <div className={styles.telegramBannerProgress}>
+             <div className={styles.telegramBannerProgressFill}></div>
+           </div>
+         </div>
+       </div>
+     </section>
 
       {/* Рекламный блок */}
       <Add />

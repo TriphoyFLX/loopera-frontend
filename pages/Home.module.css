@@ -1066,6 +1066,377 @@
   }
 }
 
+/* Полноширинная Telegram секция */
+.telegramSectionFull {
+  padding: 80px 24px;
+  background: linear-gradient(135deg, #ff2a5505, #ff2a5510);
+  position: relative;
+  overflow: hidden;
+}
+
+.telegramSectionFull::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 50%, #ff2a5515, transparent 70%);
+  animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+.telegramContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.telegramCard {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  background: linear-gradient(135deg, #ff2a5515, #ff6b8b10);
+  border: 1px solid #ff2a5530;
+  border-radius: 24px;
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  cursor: pointer;
+}
+
+.telegramCard:hover {
+  transform: translateY(-8px);
+  border-color: #ff2a5550;
+  box-shadow: 0 20px 40px rgba(255, 42, 85, 0.2);
+}
+
+.telegramCardGlow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 30%, #ff2a5525, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.telegramCard:hover .telegramCardGlow {
+  opacity: 1;
+}
+
+.telegramIcon {
+  flex-shrink: 0;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #ff2a55, #ff6b8b);
+  border-radius: 24px;
+  box-shadow: 0 12px 32px rgba(255, 42, 85, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.telegramIcon::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: rotate(45deg);
+  animation: shine 3s ease-in-out infinite;
+}
+
+@keyframes shine {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+  100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+}
+
+.telegramSvg {
+  width: 56px;
+  height: 56px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.telegramCircle {
+  fill: #fff;
+  transition: all 0.3s ease;
+}
+
+.telegramCard:hover .telegramCircle {
+  fill: #f0f0f0;
+}
+
+.telegramPath {
+  stroke: #ff2a55;
+  stroke-width: 3;
+  transition: all 0.3s ease;
+}
+
+.telegramCard:hover .telegramPath {
+  stroke: #ff1744;
+}
+
+.telegramContent {
+  flex: 1;
+}
+
+.telegramTitle {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #ff2a55, #ff6b8b);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.telegramVerifiedBadge {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #ff2a55, #ff6b8b);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(255, 42, 85, 0.3);
+}
+
+.telegramDescription {
+  font-size: 1.1rem;
+  color: #bbb;
+  margin: 0 0 24px 0;
+  line-height: 1.6;
+}
+
+.telegramStats {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+.telegramStat {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.telegramStatWrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.telegramStatNum {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #ff2a55;
+  text-shadow: 0 2px 4px rgba(255, 42, 85, 0.3);
+}
+
+.telegramStatTrend {
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+}
+
+.telegramStatDot {
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(76, 175, 80, 0.5);
+  animation: blink 2s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.telegramStatLabel {
+  font-size: 0.9rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+.telegramStatDivider {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, transparent, #ff2a5530, transparent);
+}
+
+.telegramButtons {
+  display: flex;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.telegramButton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #ff2a55, #ff6b8b);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  padding: 16px 32px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(255, 42, 85, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.telegramButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.telegramButton:hover::before {
+  left: 100%;
+}
+
+.telegramButton:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(255, 42, 85, 0.4);
+}
+
+.telegramShareButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  color: #fff;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.telegramShareButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.telegramBanner {
+  background: linear-gradient(135deg, #ff2a5520, #ff6b8b15);
+  border: 1px solid #ff2a5530;
+  border-radius: 20px;
+  padding: 24px 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.telegramBannerContent {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ff2a55;
+  margin-bottom: 16px;
+}
+
+.telegramBannerProgress {
+  height: 8px;
+  background: rgba(255, 42, 85, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.telegramBannerProgressFill {
+  height: 100%;
+  width: 75%;
+  background: linear-gradient(90deg, #ff2a55, #ff6b8b);
+  border-radius: 4px;
+  animation: progress 2s ease-in-out infinite alternate;
+}
+
+@keyframes progress {
+  0% { width: 60%; }
+  100% { width: 90%; }
+}
+
+@media (max-width: 768px) {
+  .telegramSectionFull {
+    padding: 60px 20px;
+  }
+
+  .telegramCard {
+    flex-direction: column;
+    text-align: center;
+    padding: 32px 24px;
+    gap: 24px;
+  }
+
+  .telegramTitle {
+    font-size: 1.8rem;
+    justify-content: center;
+  }
+
+  .telegramStats {
+    justify-content: center;
+    gap: 32px;
+  }
+
+  .telegramButtons {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .telegramButton {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .telegramBannerContent {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+}
+
 /* Telegram секция */
 .telegramSection {
   display: flex;

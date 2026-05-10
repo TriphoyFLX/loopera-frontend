@@ -205,21 +205,13 @@ const Home = () => {
        
        <div className={styles.telegramContainer}>
          <div className={styles.telegramCard}>
-           {/* Анимированный фон с градиентом */}
-           <div className={styles.telegramCardGlow}></div>
-           
            <div className={styles.telegramIcon}>
-             {/* Анимированная иконка Telegram */}
-             <svg width="48" height="48" viewBox="0 0 48 48" fill="none" className={styles.telegramSvg}>
-               <circle cx="24" cy="24" r="18" fill="#0088CC" className={styles.telegramCircle}/>
-               <path d="M33.5 18.5L19.5 30.5L14.5 25.5" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={styles.telegramPath}/>
-             </svg>
+             <img src="/assets/ava.jpg" alt="Telegram Avatar" className={styles.telegramAvatar} />
            </div>
 
            <div className={styles.telegramContent}>
              <h3 className={styles.telegramTitle}>
                @triphoymp3
-               <span className={styles.telegramVerifiedBadge}>✓</span>
              </h3>
              <p className={styles.telegramDescription}>
                Эксклюзивные лупы, новости платформы и розыгрыши каждый день
@@ -227,18 +219,12 @@ const Home = () => {
              
              <div className={styles.telegramStats}>
                <div className={styles.telegramStat}>
-                 <div className={styles.telegramStatWrapper}>
-                   <span className={styles.telegramStatNum}>8.5k+</span>
-                   <div className={styles.telegramStatTrend}>↑12%</div>
-                 </div>
+                 <span className={styles.telegramStatNum}>8.5k+</span>
                  <span className={styles.telegramStatLabel}>подписчиков</span>
                </div>
                <div className={styles.telegramStatDivider}></div>
                <div className={styles.telegramStat}>
-                 <div className={styles.telegramStatWrapper}>
-                   <span className={styles.telegramStatNum}>24/7</span>
-                   <div className={styles.telegramStatDot}></div>
-                 </div>
+                 <span className={styles.telegramStatNum}>24/7</span>
                  <span className={styles.telegramStatLabel}>онлайн</span>
                </div>
              </div>
@@ -250,37 +236,12 @@ const Home = () => {
                target="_blank" 
                rel="noreferrer"
                className={styles.telegramButton}
-               onClick={(e) => e.stopPropagation()}
              >
                <span>Подписаться</span>
                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                  <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                </svg>
              </a>
-             
-             <button 
-               className={styles.telegramShareButton}
-               onClick={(e) => {
-                 e.stopPropagation();
-                 // Логика для шаринга
-                 alert('Поделиться ссылкой на канал');
-               }}
-             >
-               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                 <path d="M8 2v8M5 7l3 3 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-               </svg>
-             </button>
-           </div>
-         </div>
-
-         {/* Интерактивный баннер */}
-         <div className={styles.telegramBanner}>
-           <div className={styles.telegramBannerContent}>
-             <span>🎯</span>
-             <span>Присоединяйся сейчас и получи бонус!</span>
-           </div>
-           <div className={styles.telegramBannerProgress}>
-             <div className={styles.telegramBannerProgressFill}></div>
            </div>
          </div>
        </div>

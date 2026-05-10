@@ -398,6 +398,63 @@ const Admin: React.FC = () => {
                 </table>
               </div>
             </div>
+
+            {/* Top Loopmakers */}
+            <div className="admin-card">
+              <div className="card-header">
+                <h3>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                  </svg>
+                  Топ лупмейкеры
+                </h3>
+              </div>
+              <div className="table-container">
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Пользователь</th>
+                      <th>Email</th>
+                      <th>Лупов</th>
+                      <th>Объем</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {stats.topUsers.map((user) => (
+                      <tr key={user.id}>
+                        <td>
+                          <a
+                            href={`/profile/${user.username}`}
+                            className="user-link"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <div className="user-info">
+                              <div className="user-avatar">
+                                {user.username.charAt(0).toUpperCase()}
+                              </div>
+                              <div className="user-details">
+                                <p>{user.username}</p>
+                                <p>ID: {user.id}</p>
+                              </div>
+                            </div>
+                          </a>
+                        </td>
+                        <td>
+                          <p>{user.email}</p>
+                        </td>
+                        <td>
+                          <p className="loop-count">{user.loop_count}</p>
+                        </td>
+                        <td>
+                          <p>{formatBytes(user.total_size || 0)}</p>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         )}
 

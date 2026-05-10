@@ -471,6 +471,23 @@
   padding: 0 4px;
 }
 
+/* User Links */
+.user-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: all 0.2s ease;
+}
+
+.user-link:hover .user-avatar {
+  background: linear-gradient(135deg, #ff6b8b, #ff2a55);
+  transform: scale(1.05);
+}
+
+.user-link:hover .user-details p {
+  color: #ff2a55;
+}
+
 /* Tables */
 .table-container {
   overflow-x: auto;

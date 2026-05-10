@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './Admin.css';
 import { tokenStorage } from '../utils/tokenStorage';
 
@@ -423,11 +424,9 @@ const Admin: React.FC = () => {
                     {stats.topUsers.map((user) => (
                       <tr key={user.id}>
                         <td>
-                          <a
-                            href={`/profile/${user.username}`}
+                          <Link
+                            to={`/profile/${user.username}`}
                             className="user-link"
-                            target="_blank"
-                            rel="noopener noreferrer"
                           >
                             <div className="user-info">
                               <div className="user-avatar">
@@ -438,7 +437,7 @@ const Admin: React.FC = () => {
                                 <p>ID: {user.id}</p>
                               </div>
                             </div>
-                          </a>
+                          </Link>
                         </td>
                         <td>
                           <p>{user.email}</p>

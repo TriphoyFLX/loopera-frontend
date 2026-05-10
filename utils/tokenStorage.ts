@@ -5,7 +5,6 @@ export const tokenStorage = {
   getToken: (): string | null => {
     try {
       const token = localStorage.getItem('token');
-      console.log('tokenStorage.getToken():', token ? 'token exists' : 'no token');
       return token;
     } catch (error) {
       console.error('Error getting token from localStorage:', error);
@@ -15,9 +14,7 @@ export const tokenStorage = {
 
   setToken: (token: string): void => {
     try {
-      console.log('tokenStorage.setToken(): saving token');
       localStorage.setItem('token', token);
-      console.log('tokenStorage.setToken(): token saved successfully');
     } catch (error) {
       console.error('Error setting token to localStorage:', error);
     }

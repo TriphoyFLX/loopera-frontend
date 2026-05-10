@@ -123,8 +123,13 @@ const Admin: React.FC = () => {
     if (!confirm('Вы уверены, что хотите удалить этот луп?')) return;
     
     try {
+      const token = tokenStorage.getToken();
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/loops/${loopId}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
       });
 
       if (!response.ok) throw new Error('Failed to delete loop');

@@ -520,6 +520,47 @@ const Admin: React.FC = () => {
                 </tbody>
               </table>
             </div>
+            <div className="pagination-container">
+              <div className="pagination-info">
+                <span>Показано {Math.min(userPage * 20, totalUsers)} из {totalUsers} пользователей</span>
+                <span>Страница {userPage} из {Math.ceil(totalUsers / 20)}</span>
+              </div>
+              <div className="pagination-buttons">
+                <button
+                  onClick={() => setUserPage(userPage - 1)}
+                  disabled={userPage === 1}
+                  className="btn-pagination"
+                >
+                  ← Назад
+                </button>
+                <span className="page-numbers">
+                  {Array.from({ length: Math.ceil(totalUsers / 20) }, (_, i) => i + 1)
+                    .filter(page => 
+                      page === 1 || 
+                      page === Math.ceil(totalUsers / 20) || 
+                      Math.abs(page - userPage) <= 2
+                    )
+                    .map((page, index, array) => (
+                      <React.Fragment key={page}>
+                        {index > 0 && array[index - 1] !== page - 1 && <span className="pagination-ellipsis">...</span>}
+                        <button
+                          onClick={() => setUserPage(page)}
+                          className={`btn-page ${page === userPage ? 'active' : ''}`}
+                        >
+                          {page}
+                        </button>
+                      </React.Fragment>
+                    ))}
+                </span>
+                <button
+                  onClick={() => setUserPage(userPage + 1)}
+                  disabled={userPage >= Math.ceil(totalUsers / 20)}
+                  className="btn-pagination"
+                >
+                  Вперед →
+                </button>
+              </div>
+            </div>
           </div>
         )}
 

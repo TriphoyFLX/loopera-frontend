@@ -107,7 +107,13 @@ const LikedLoops: React.FC<LikedLoopsProps> = ({
       const url = getUploadsUrl(selectedLoop.filename);
       const link = document.createElement('a');
       link.href = url;
-      link.download = selectedLoop.filename;
+      
+      // Создаем имя файла: loopera.ru_[название_лупа].расширение
+      const fileExtension = selectedLoop.filename.split('.').pop();
+      const sanitizedTitle = selectedLoop.title.replace(/[^a-zA-Z0-9а-яА-Я_\-\s]/g, '').trim();
+      const downloadName = `loopera.ru_${sanitizedTitle}.${fileExtension}`;
+      
+      link.download = downloadName;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

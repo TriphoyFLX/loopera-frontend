@@ -1227,10 +1227,8 @@
   display: flex;
   align-items: center;
   gap: 24px;
-  background: linear-gradient(135deg, #0088CC15, #0088CC05);
-  border: 1px solid #0088CC30;
+
   border-radius: 20px;
-  padding: 32px;
   max-width: 800px;
   width: 100%;
   position: relative;
@@ -1238,17 +1236,7 @@
   transition: all 0.3s ease;
 }
 
-.telegramCard::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(circle at 20% 20%, #0088CC20, transparent 50%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
+
 
 .telegramCard:hover::before {
   opacity: 1;

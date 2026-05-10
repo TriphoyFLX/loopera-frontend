@@ -167,7 +167,7 @@ class API {
 
   async getUserLoops(token: string, page: number = 1, limit: number = 6) {
     try {
-      const response = await fetch(`${this.baseURL}/loops?page=${page}&limit=${limit}`, {
+      const response = await fetch(`${this.baseURL}/loops/my?page=${page}&limit=${limit}`, {
         method: 'GET',
         headers: this.getHeaders(token)
       });

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Admin.css';
 import { tokenStorage } from '../utils/tokenStorage';
+import { getUploadsUrl } from '../utils/urls';
 
 interface User {
   id: number;
@@ -57,6 +58,37 @@ const Admin: React.FC = () => {
   const [totalLoops, setTotalLoops] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'banned' | 'active'>('all');
+  const [playingLoopId, setPlayingLoopId] = useState<number | null>(null);
+  const audioRef = React.useRef<HTMLAudioElement | null>(null);
+
+  const handlePlayLoop = (loopId: number, filename: string) => {
+    if (playingLoopId === loopId) {
+      // Pause if clicking the same loop
+      if (audioRef.current) {
+        audioRef.current.pause();
+        setPlayingLoopId(null);
+      }
+    } else {
+      // Play new loop
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+      const audio = new Audio(getUploadsUrl(filename));
+      audioRef.current = audio;
+      setPlayingLoopId(loopId);
+      audio.play();
+      audio.onended = () => setPlayingLoopId(null);
+    }
+  };
+
+  // Cleanup audio on unmount
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
+  }, []);
 
   // Функция для API запросов с токеном авторизации
   const apiRequest = async (url: string) => {
@@ -652,11 +684,22 @@ const Admin: React.FC = () => {
                     <tr key={loop.id}>
                       <td>
                         <div className="loop-item">
-                          <div className="loop-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                            </svg>
-                          </div>
+                          <button
+                            className="play-button"
+                            onClick={() => handlePlayLoop(loop.id, loop.filename)}
+                            title={playingLoopId === loop.id ? 'Пауза' : 'Воспроизвести'}
+                          >
+                            {playingLoopId === loop.id ? (
+                              <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                                <rect x="6" y="4" width="4" height="16"/>
+                                <rect x="14" y="4" width="4" height="16"/>
+                              </svg>
+                            ) : (
+                              <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                                <polygon points="5 3 19 12 5 21 5 3"/>
+                              </svg>
+                            )}
+                          </button>
                           <div className="loop-info">
                             <p>{loop.title}</p>
                             <p>ID: {loop.id}</p>

@@ -33,13 +33,6 @@ class LikeApi {
     const baseURL = getBaseURL();
     const url = `${baseURL}${endpoint}`;
     
-    console.log('LikeApi.request():');
-    console.log('  baseURL =', baseURL);
-    console.log('  endpoint =', endpoint);
-    console.log('  token =', token ? 'exists' : 'missing');
-    console.log('  full url =', url);
-    console.log('  Authorization header =', token ? `Bearer ${token.substring(0, 20)}...` : 'missing');
-    
     const config: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
@@ -55,7 +48,6 @@ class LikeApi {
       console.error('LikeApi.request() error:', {
         status: response.status,
         statusText: response.statusText,
-        url: url,
         errorData
       });
       throw new Error(errorData.message || `HTTP error! status: ${response.status}`);

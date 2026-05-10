@@ -28,11 +28,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const savedToken = tokenStorage.getToken();
     const savedUser = tokenStorage.getUser();
 
-    console.log('AuthProvider useEffect - savedToken:', savedToken, 'savedUser:', savedUser);
-
     if (savedToken && savedUser) {
       try {
-        console.log('AuthProvider - setting user from tokenStorage:', savedUser);
         setToken(savedToken);
         setUser(savedUser);
       } catch (error) {
@@ -45,12 +42,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = (newToken: string, newUser: User) => {
-    console.log('useAuth login called with:', { newToken, newUser });
     setToken(newToken);
     setUser(newUser);
     tokenStorage.setToken(newToken);
     tokenStorage.setUser(newUser);
-    console.log('useAuth login completed');
   };
 
   const logout = () => {

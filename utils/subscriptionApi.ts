@@ -40,9 +40,7 @@ class SubscriptionApi {
 
   private async request(endpoint: string, options: RequestInit = {}) {
     const currentToken = tokenStorage.getToken();
-    console.log('SubscriptionApi.request(): token =', currentToken ? 'exists' : 'missing');
     const url = `${getBaseURL()}${endpoint}`;
-    console.log('SubscriptionApi.request(): url =', url);
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };

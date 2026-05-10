@@ -138,10 +138,12 @@ const Admin: React.FC = () => {
 
   const banUser = async (userId: number, reason: string) => {
     try {
+      const token = tokenStorage.getToken();
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}/ban`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ reason }),
       });
@@ -149,7 +151,7 @@ const Admin: React.FC = () => {
       if (!response.ok) throw new Error('Failed to ban user');
       
       // Обновляем список пользователей
-      fetchUsers(userPage);
+      fetchUsers(userPage, searchQuery, filterStatus);
       fetchStats();
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Unknown error');
@@ -158,14 +160,18 @@ const Admin: React.FC = () => {
 
   const unbanUser = async (userId: number) => {
     try {
+      const token = tokenStorage.getToken();
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}/unban`, {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
       });
 
       if (!response.ok) throw new Error('Failed to unban user');
       
       // Обновляем список пользователей
-      fetchUsers(userPage);
+      fetchUsers(userPage, searchQuery, filterStatus);
       fetchStats();
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Unknown error');

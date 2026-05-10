@@ -6,6 +6,7 @@ import LoopGuideModal from '../components/LoopGuideModal';
 import { useAuth } from '../hooks/useAuth';
 import { useState, useEffect } from 'react';
 import styles from './Home.module.css';
+import TgImg from '../public/ava.jpg'
 
 const Home = () => {
   const { user } = useAuth();
@@ -206,7 +207,7 @@ const Home = () => {
        <div className={styles.telegramContainer}>
          <div className={styles.telegramCard}>
            <div className={styles.telegramIcon}>
-             <img src="/assets/ava.jpg" alt="Telegram Avatar" className={styles.telegramAvatar} />
+             <img src = {TgImg} alt="Telegram Avatar" className={styles.telegramAvatar} />
            </div>
 
            <div className={styles.telegramContent}>

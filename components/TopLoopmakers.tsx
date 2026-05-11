@@ -83,7 +83,7 @@ const TopLoopmakers: React.FC<TopLoopmakersProps> = ({ limit = 6 }) => {
         {users.map((user, index) => (
           <Link
             key={user.id}
-            to={`/user/${user.id}`}
+            to={`/profile/${user.id}`}
             className="top-user-card"
           >
             <div className="top-user-rank">

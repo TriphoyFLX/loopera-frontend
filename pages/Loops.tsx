@@ -11,6 +11,7 @@ const Loops: React.FC = () => {
   
   // Поиск по артисту
   const [artistSearch, setArtistSearch] = useState<string>('');
+  const [isSearching, setIsSearching] = useState<boolean>(false);
   
   // лимиты
   const [freshLimit, setFreshLimit] = useState(8);
@@ -40,9 +41,15 @@ const Loops: React.FC = () => {
               placeholder="Введите артиста в стиле которого хотите луп..."
               value={artistSearch}
               onChange={(e) => setArtistSearch(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && setIsSearching(!isSearching)}
               className="artist-search-input"
             />
-            <button className="artist-search-button">🎵 Найти</button>
+            <button 
+              className="artist-search-button"
+              onClick={() => setIsSearching(!isSearching)}
+            >
+              🎵 Найти
+            </button>
           </div>
 
           <div className="hero-stats">
@@ -108,6 +115,7 @@ const Loops: React.FC = () => {
             title=""
             sortBy="created_at"
             tag={tag || undefined}
+            search={isSearching ? artistSearch || undefined : undefined}
           />
 
           <button
@@ -139,6 +147,7 @@ const Loops: React.FC = () => {
             title=""
             sortBy="likes"
             tag={tag || undefined}
+            search={isSearching ? artistSearch || undefined : undefined}
           />
 
           <button
@@ -171,6 +180,7 @@ const Loops: React.FC = () => {
             sortBy="created_at"
             minBpm={120}
             tag={tag || undefined}
+            search={isSearching ? artistSearch || undefined : undefined}
           />
 
           <button

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { topUsersApi, type TopUser } from '../utils/topUsersApi';
 import './TopLoopmakers.css';
 
@@ -80,10 +81,10 @@ const TopLoopmakers: React.FC<TopLoopmakersProps> = ({ limit = 6 }) => {
     <div className="top-loopmakers">
       <div className="top-users-grid">
         {users.map((user, index) => (
-          <div
+          <Link
             key={user.id}
+            to={`/user/${user.id}`}
             className="top-user-card"
-            onClick={() => window.location.href = `/user/${user.id}`}
           >
             <div className="top-user-rank">
               <span className="rank-number">#{index + 1}</span>
@@ -129,7 +130,7 @@ const TopLoopmakers: React.FC<TopLoopmakersProps> = ({ limit = 6 }) => {
               </div>
               <span className="rating-value">{(user.avg_rating || 0).toFixed(1)}</span>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

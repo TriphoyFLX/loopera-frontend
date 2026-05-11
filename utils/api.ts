@@ -206,6 +206,20 @@ class API {
       throw error;
     }
   }
+
+  async getPopularHashtags(limit: number = 20) {
+    try {
+      const response = await fetch(`${this.baseURL}/loops/hashtags/popular?limit=${limit}`, {
+        method: 'GET',
+        headers: this.getHeaders()
+      });
+
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Get popular hashtags error:', error);
+      throw error;
+    }
+  }
 }
 
 export const api = new API();

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { api } from '../utils/api';
 import './PopularHashtags.css';
 
 interface Hashtag {
@@ -12,20 +13,18 @@ const PopularHashtags: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Заглушка данных - в будущем можно будет получать с бэкенда
-    const mockHashtags: Hashtag[] = [
-      { tag: '#trap', count: 234 },
-      { tag: '#drill', count: 189 },
-      { tag: '#lofi', count: 156 },
-      { tag: '#hiphop', count: 134 },
-      { tag: '#rnb', count: 98 },
-      { tag: '#electronic', count: 87 },
-      { tag: '#pop', count: 76 },
-      { tag: '#synthwave', count: 65 },
-    ];
-    
-    setHashtags(mockHashtags);
-    setLoading(false);
+    const fetchHashtags = async () => {
+      try {
+        const data = await api.getPopularHashtags(8);
+        setHashtags(data.hashtags);
+      } catch (error) {
+        console.error('Error fetching hashtags:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHashtags();
   }, []);
 
   if (loading) {
@@ -38,11 +37,11 @@ const PopularHashtags: React.FC = () => {
         {hashtags.map((hashtag, index) => (
           <Link 
             key={hashtag.tag} 
-            to={`/loops?tag=${hashtag.tag.replace('#', '')}`}
+            to={`/loops?tag=${hashtag.tag}`}
             className="hashtag-item"
           >
             <span className="hashtag-rank">#{index + 1}</span>
-            <span className="hashtag-name">{hashtag.tag}</span>
+            <span className="hashtag-name">#{hashtag.tag}</span>
             <span className="hashtag-count">{hashtag.count} лупов</span>
           </Link>
         ))}

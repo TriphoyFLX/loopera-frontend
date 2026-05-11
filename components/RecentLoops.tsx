@@ -29,6 +29,11 @@ interface RecentLoopsProps {
   type?: 'all' | 'my';
   sortBy?: 'created_at' | 'likes';
   tag?: string;
+  genre?: string;
+  minBpm?: number;
+  maxBpm?: number;
+  key?: string;
+  search?: string;
 }
 
 const RecentLoops: React.FC<RecentLoopsProps> = ({ 
@@ -37,7 +42,12 @@ const RecentLoops: React.FC<RecentLoopsProps> = ({
   showAllButton = true,
   type = 'all',
   sortBy = 'created_at',
-  tag
+  tag,
+  genre,
+  minBpm,
+  maxBpm,
+  key,
+  search
 }) => {
   const [loops, setLoops] = useState<Loop[]>([]);
   const [loading, setLoading] = useState(true);
@@ -70,7 +80,7 @@ const RecentLoops: React.FC<RecentLoopsProps> = ({
 
   useEffect(() => {
     fetchLoops();
-  }, [limit, type, sortBy, tag]);
+  }, [limit, type, sortBy, tag, genre, minBpm, maxBpm, key, search]);
 
   useEffect(() => {
     if (observerRef.current && loadMoreRef.current) {
@@ -198,7 +208,7 @@ const RecentLoops: React.FC<RecentLoopsProps> = ({
         response = await api.getUserLoops(token);
         setLoops(append ? [...loops, ...response.loops] : response.loops);
       } else {
-        response = await api.getAllLoops(pageNum, limit, token || undefined, sortBy, tag);
+        response = await api.getAllLoops(pageNum, limit, token || undefined, sortBy, tag, genre, minBpm, maxBpm, key, search);
         const newLoops = append ? [...loops, ...response.loops] : response.loops;
         setLoops(newLoops);
         

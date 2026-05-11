@@ -193,12 +193,16 @@ class API {
     }
   }
 
-  async getAllLoops(page: number = 1, limit: number = 6, token?: string, sortBy: string = 'created_at', tag?: string) {
+  async getAllLoops(page: number = 1, limit: number = 6, token?: string, sortBy: string = 'created_at', tag?: string, genre?: string, minBpm?: number, maxBpm?: number, key?: string, search?: string) {
     try {
       let url = `${this.baseURL}/loops?page=${page}&limit=${limit}&sortBy=${sortBy}`;
-      if (tag) {
-        url += `&tag=${encodeURIComponent(tag)}`;
-      }
+      if (tag) url += `&tag=${encodeURIComponent(tag)}`;
+      if (genre) url += `&genre=${encodeURIComponent(genre)}`;
+      if (minBpm) url += `&minBpm=${minBpm}`;
+      if (maxBpm) url += `&maxBpm=${maxBpm}`;
+      if (key) url += `&key=${encodeURIComponent(key)}`;
+      if (search) url += `&search=${encodeURIComponent(search)}`;
+      
       const response = await fetch(url, {
         method: 'GET',
         headers: this.getHeaders(token)
@@ -207,6 +211,20 @@ class API {
       return await this.handleResponse(response);
     } catch (error) {
       console.error('Get all loops error:', error);
+      throw error;
+    }
+  }
+
+  async getRandomLoops(limit: number = 10) {
+    try {
+      const response = await fetch(`${this.baseURL}/loops/random?limit=${limit}`, {
+        method: 'GET',
+        headers: this.getHeaders()
+      });
+
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Get random loops error:', error);
       throw error;
     }
   }

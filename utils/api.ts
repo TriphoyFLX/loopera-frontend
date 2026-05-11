@@ -193,9 +193,9 @@ class API {
     }
   }
 
-  async getAllLoops(page: number = 1, limit: number = 6, token?: string) {
+  async getAllLoops(page: number = 1, limit: number = 6, token?: string, sortBy: string = 'created_at') {
     try {
-      const response = await fetch(`${this.baseURL}/loops?page=${page}&limit=${limit}`, {
+      const response = await fetch(`${this.baseURL}/loops?page=${page}&limit=${limit}&sortBy=${sortBy}`, {
         method: 'GET',
         headers: this.getHeaders(token)
       });

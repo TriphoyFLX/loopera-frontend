@@ -3,10 +3,10 @@ import SubscribedLoops from '../components/SubscribedLoops';
 import TopLoopmakers from '../components/TopLoopmakers';
 import Add from '../components/Add';
 import LoopGuideModal from '../components/LoopGuideModal';
+import PopularHashtags from '../components/PopularHashtags';
 import { useAuth } from '../hooks/useAuth';
 import { useState, useEffect } from 'react';
 import styles from './Home.module.css';
-import TgImg from '../public/ava.jpg'
 
 const Home = () => {
   const { user } = useAuth();
@@ -187,7 +187,7 @@ const Home = () => {
             Самые скачиваемые лупы этой недели
           </p>
         </div>
-        <RecentLoops limit={6} showAllButton={true} type="all" title="" />
+        <RecentLoops limit={6} showAllButton={true} type="all" title="" sortBy="likes" />
       </section>
 
       {/* Telegram подписка */}
@@ -207,7 +207,7 @@ const Home = () => {
        <div className={styles.telegramContainer}>
          <div className={styles.telegramCard}>
            <div className={styles.telegramIcon}>
-             <img src = {TgImg} alt="Telegram Avatar" className={styles.telegramAvatar} />
+             <img src="/ava.jpg" alt="Telegram Avatar" className={styles.telegramAvatar} />
            </div>
 
            <div className={styles.telegramContent}>
@@ -248,8 +248,56 @@ const Home = () => {
        </div>
      </section>
 
+      {/* Лучшие хэштеги */}
+      <section className={styles.homeSection}>
+        <div className={styles.sectionHeader}>
+          <div className={styles.sectionTitleWrapper}>
+            <span className={styles.sectionBadge}>Тренды</span>
+            <h2 className={styles.sectionTitle}>
+              Лучшие <span className={styles.titleAccent}>хэштеги</span>
+            </h2>
+          </div>
+          <p className={styles.sectionDescription}>
+            Популярные жанры и направления
+          </p>
+        </div>
+        <PopularHashtags />
+      </section>
+
       {/* Рекламный блок */}
       <Add />
+
+      {/* Топ лупмейкеры */}
+      <section className={styles.homeSection}>
+        <div className={styles.sectionHeader}>
+          <div className={styles.sectionTitleWrapper}>
+            <span className={styles.sectionBadge}>Топ</span>
+            <h2 className={styles.sectionTitle}>
+              Топ <span className={styles.titleAccent}>лупмейкеры</span>
+            </h2>
+          </div>
+          <p className={styles.sectionDescription}>
+            Лучшие продюсеры по количеству лупов и лайков
+          </p>
+        </div>
+        <TopLoopmakers limit={6} />
+      </section>
+
+      {/* Новые лупы */}
+      <section className={styles.homeSection}>
+        <div className={styles.sectionHeader}>
+          <div className={styles.sectionTitleWrapper}>
+            <span className={styles.sectionBadge}>Новинки</span>
+            <h2 className={styles.sectionTitle}>
+              Свежие <span className={styles.titleAccent}>лупы</span>
+            </h2>
+          </div>
+          <p className={styles.sectionDescription}>
+            Только что загруженные лупы от продюсеров
+          </p>
+        </div>
+        <RecentLoops limit={6} showAllButton={true} type="all" title="" sortBy="created_at" />
+      </section>
 
       {user && (
         <section className={styles.homeSection}>
@@ -268,154 +316,139 @@ const Home = () => {
         </section>
       )}
 
-      <section className={styles.homeSection}>
+      {/* Возможности - ПРОКАЧАННАЯ СЕКЦИЯ */}
+      <section className={styles.featuresEnhancedSection}>
+        {/* Декоративный фон */}
+        <div className={styles.featuresBgGlow} aria-hidden="true" />
+        <div className={styles.featuresGridPattern} aria-hidden="true" />
+        
         <div className={styles.sectionHeader}>
           <div className={styles.sectionTitleWrapper}>
-            <span className={styles.sectionBadge}>Топ</span>
+            <span className={styles.sectionBadge}>
+              <span className={styles.badgeIcon}>✨</span>
+              Возможности
+            </span>
             <h2 className={styles.sectionTitle}>
-              Топ <span className={styles.titleAccent}>лупмейкеры</span>
+              Почему <span className={styles.titleAccent}>Loopera</span>
             </h2>
           </div>
           <p className={styles.sectionDescription}>
-            Лучшие продюсеры по количеству лупов и лайков
+            Инструменты и комьюнити для создания музыки будущего
           </p>
         </div>
-        <TopLoopmakers limit={6} />
+
+        <div className={styles.featuresGridEnhanced}>
+          {/* Карточка 1 */}
+          <div className={styles.featureCardEnhanced}>
+            <div className={styles.featureIconWrapper}>
+              <div className={styles.featureIconGlow} />
+              <span className={styles.featureEmoji}>🎵</span>
+            </div>
+            <div className={styles.featureContent}>
+              <div className={styles.featureHeader}>
+                <h3 className={styles.featureTitleEnhanced}>Библиотека лупов</h3>
+                <span className={styles.featureBadge}>8.5k+</span>
+              </div>
+              <p className={styles.featureDescriptionEnhanced}>
+                Тысячи качественных лупов в разных жанрах от профессиональных продюсеров. 
+                Ежедневные обновления и эксклюзивный контент.
+              </p>
+              <div className={styles.featureTags}>
+                <span>Trap</span>
+                <span>Drill</span>
+                <span>Lo-Fi</span>
+                <span>+12</span>
+              </div>
+            </div>
+            <div className={styles.featureCardGlow} />
+          </div>
+
+          {/* Карточка 2 */}
+          <div className={styles.featureCardEnhanced}>
+            <div className={styles.featureIconWrapper}>
+              <div className={styles.featureIconGlow} />
+              <span className={styles.featureEmoji}>🔥</span>
+            </div>
+            <div className={styles.featureContent}>
+              <div className={styles.featureHeader}>
+                <h3 className={styles.featureTitleEnhanced}>Подписки на артистов</h3>
+                <span className={styles.featureBadge}>NEW</span>
+              </div>
+              <p className={styles.featureDescriptionEnhanced}>
+                Следите за любимыми продюсерами и получайте их новые лупы первыми. 
+                Персональная лента рекомендаций на основе ваших интересов.
+              </p>
+              <div className={styles.featureStats}>
+                <div className={styles.featureStatItem}>
+                  <span className={styles.statValue}>500+</span>
+                  <span className={styles.statLabel}>артистов</span>
+                </div>
+                <div className={styles.featureStatItem}>
+                  <span className={styles.statValue}>24/7</span>
+                  <span className={styles.statLabel}>обновления</span>
+                </div>
+              </div>
+            </div>
+            <div className={styles.featureCardGlow} />
+          </div>
+
+          {/* Карточка 3 */}
+          <div className={styles.featureCardEnhanced}>
+            <div className={styles.featureIconWrapper}>
+              <div className={styles.featureIconGlow} />
+              <span className={styles.featureEmoji}>💬</span>
+            </div>
+            <div className={styles.featureContent}>
+              <div className={styles.featureHeader}>
+                <h3 className={styles.featureTitleEnhanced}>Сообщество</h3>
+                <span className={styles.featureBadge}>ACTIVE</span>
+              </div>
+              <p className={styles.featureDescriptionEnhanced}>
+                Общайтесь с другими продюсерами, обменивайтесь опытом и находите коллаборации. 
+                Еженедельные челленджи и конкурсы.
+              </p>
+              <div className={styles.featureActivity}>
+                <span className={styles.activityIndicator}>
+                  <span className={styles.activityDotPulse} />
+                  142 онлайн
+                </span>
+                <span className={styles.activityToday}>+24 сегодня</span>
+              </div>
+            </div>
+            <div className={styles.featureCardGlow} />
+          </div>
+
+          {/* Карточка 4 */}
+          <div className={styles.featureCardEnhanced}>
+            <div className={styles.featureIconWrapper}>
+              <div className={styles.featureIconGlow} />
+              <span className={styles.featureEmoji}>📤</span>
+            </div>
+            <div className={styles.featureContent}>
+              <div className={styles.featureHeader}>
+                <h3 className={styles.featureTitleEnhanced}>Загрузка лупов</h3>
+                <span className={styles.featureBadge}>FREE</span>
+              </div>
+              <p className={styles.featureDescriptionEnhanced}>
+                Делитесь своими творениями с сообществом и получайте обратную связь. 
+                Поддержка WAV, MP3, FLAC и мгновенная модерация.
+              </p>
+              <div className={styles.featureUploadInfo}>
+                <span>⚡ Мгновенная загрузка</span>
+                <span>🎯 До 500MB</span>
+              </div>
+            </div>
+            <div className={styles.featureCardGlow} />
+          </div>
+        </div>
+
+        {/* Декоративная линия внизу */}
+        <div className={styles.featuresBottomLine}>
+          <span />
+          <span />
+          <span />
+        </div>
       </section>
-
-      {/* Возможности - ПРОКАЧАННАЯ СЕКЦИЯ */}
-<section className={styles.featuresEnhancedSection}>
-  {/* Декоративный фон */}
-  <div className={styles.featuresBgGlow} aria-hidden="true" />
-  <div className={styles.featuresGridPattern} aria-hidden="true" />
-  
-  <div className={styles.sectionHeader}>
-    <div className={styles.sectionTitleWrapper}>
-      <span className={styles.sectionBadge}>
-        <span className={styles.badgeIcon}>✨</span>
-        Возможности
-      </span>
-      <h2 className={styles.sectionTitle}>
-        Почему <span className={styles.titleAccent}>Loopera</span>
-      </h2>
-    </div>
-    <p className={styles.sectionDescription}>
-      Инструменты и комьюнити для создания музыки будущего
-    </p>
-  </div>
-
-  <div className={styles.featuresGridEnhanced}>
-    {/* Карточка 1 */}
-    <div className={styles.featureCardEnhanced}>
-      <div className={styles.featureIconWrapper}>
-        <div className={styles.featureIconGlow} />
-        <span className={styles.featureEmoji}>🎵</span>
-      </div>
-      <div className={styles.featureContent}>
-        <div className={styles.featureHeader}>
-          <h3 className={styles.featureTitleEnhanced}>Библиотека лупов</h3>
-          <span className={styles.featureBadge}>8.5k+</span>
-        </div>
-        <p className={styles.featureDescriptionEnhanced}>
-          Тысячи качественных лупов в разных жанрах от профессиональных продюсеров. 
-          Ежедневные обновления и эксклюзивный контент.
-        </p>
-        <div className={styles.featureTags}>
-          <span>Trap</span>
-          <span>Drill</span>
-          <span>Lo-Fi</span>
-          <span>+12</span>
-        </div>
-      </div>
-      <div className={styles.featureCardGlow} />
-    </div>
-
-    {/* Карточка 2 */}
-    <div className={styles.featureCardEnhanced}>
-      <div className={styles.featureIconWrapper}>
-        <div className={styles.featureIconGlow} />
-        <span className={styles.featureEmoji}>🔥</span>
-      </div>
-      <div className={styles.featureContent}>
-        <div className={styles.featureHeader}>
-          <h3 className={styles.featureTitleEnhanced}>Подписки на артистов</h3>
-          <span className={styles.featureBadge}>NEW</span>
-        </div>
-        <p className={styles.featureDescriptionEnhanced}>
-          Следите за любимыми продюсерами и получайте их новые лупы первыми. 
-          Персональная лента рекомендаций на основе ваших интересов.
-        </p>
-        <div className={styles.featureStats}>
-          <div className={styles.featureStatItem}>
-            <span className={styles.statValue}>500+</span>
-            <span className={styles.statLabel}>артистов</span>
-          </div>
-          <div className={styles.featureStatItem}>
-            <span className={styles.statValue}>24/7</span>
-            <span className={styles.statLabel}>обновления</span>
-          </div>
-        </div>
-      </div>
-      <div className={styles.featureCardGlow} />
-    </div>
-
-    {/* Карточка 3 */}
-    <div className={styles.featureCardEnhanced}>
-      <div className={styles.featureIconWrapper}>
-        <div className={styles.featureIconGlow} />
-        <span className={styles.featureEmoji}>💬</span>
-      </div>
-      <div className={styles.featureContent}>
-        <div className={styles.featureHeader}>
-          <h3 className={styles.featureTitleEnhanced}>Сообщество</h3>
-          <span className={styles.featureBadge}>ACTIVE</span>
-        </div>
-        <p className={styles.featureDescriptionEnhanced}>
-          Общайтесь с другими продюсерами, обменивайтесь опытом и находите коллаборации. 
-          Еженедельные челленджи и конкурсы.
-        </p>
-        <div className={styles.featureActivity}>
-          <span className={styles.activityIndicator}>
-            <span className={styles.activityDotPulse} />
-            142 онлайн
-          </span>
-          <span className={styles.activityToday}>+24 сегодня</span>
-        </div>
-      </div>
-      <div className={styles.featureCardGlow} />
-    </div>
-
-    {/* Карточка 4 */}
-    <div className={styles.featureCardEnhanced}>
-      <div className={styles.featureIconWrapper}>
-        <div className={styles.featureIconGlow} />
-        <span className={styles.featureEmoji}>📤</span>
-      </div>
-      <div className={styles.featureContent}>
-        <div className={styles.featureHeader}>
-          <h3 className={styles.featureTitleEnhanced}>Загрузка лупов</h3>
-          <span className={styles.featureBadge}>FREE</span>
-        </div>
-        <p className={styles.featureDescriptionEnhanced}>
-          Делитесь своими творениями с сообществом и получайте обратную связь. 
-          Поддержка WAV, MP3, FLAC и мгновенная модерация.
-        </p>
-        <div className={styles.featureUploadInfo}>
-          <span>⚡ Мгновенная загрузка</span>
-          <span>🎯 До 500MB</span>
-        </div>
-      </div>
-      <div className={styles.featureCardGlow} />
-    </div>
-  </div>
-
-  {/* Декоративная линия внизу */}
-  <div className={styles.featuresBottomLine}>
-    <span />
-    <span />
-    <span />
-  </div>
-</section>
 
       {!user && (
         <section className={styles.homeCta}>

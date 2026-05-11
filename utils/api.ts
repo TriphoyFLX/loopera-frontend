@@ -193,9 +193,13 @@ class API {
     }
   }
 
-  async getAllLoops(page: number = 1, limit: number = 6, token?: string, sortBy: string = 'created_at') {
+  async getAllLoops(page: number = 1, limit: number = 6, token?: string, sortBy: string = 'created_at', tag?: string) {
     try {
-      const response = await fetch(`${this.baseURL}/loops?page=${page}&limit=${limit}&sortBy=${sortBy}`, {
+      let url = `${this.baseURL}/loops?page=${page}&limit=${limit}&sortBy=${sortBy}`;
+      if (tag) {
+        url += `&tag=${encodeURIComponent(tag)}`;
+      }
+      const response = await fetch(url, {
         method: 'GET',
         headers: this.getHeaders(token)
       });

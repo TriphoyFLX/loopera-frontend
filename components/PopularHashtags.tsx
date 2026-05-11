@@ -37,7 +37,7 @@ const PopularHashtags: React.FC = () => {
         {hashtags.map((hashtag, index) => (
           <Link 
             key={hashtag.tag} 
-            to={`/loops?tag=${hashtag.tag}`}
+            to={`/loops?tag=${encodeURIComponent(hashtag.tag)}`}
             className="hashtag-item"
           >
             <span className="hashtag-rank">#{index + 1}</span>

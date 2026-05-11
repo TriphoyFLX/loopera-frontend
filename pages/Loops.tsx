@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import RecentLoops from '../components/RecentLoops';
 import SubscribedLoops from '../components/SubscribedLoops';
 import './Loops.css';
 
 const Loops: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const tag = searchParams.get('tag');
+  
   // лимиты
   const [recentLimit, setRecentLimit] = useState(8);
   const [subLimit, setSubLimit] = useState(8);
@@ -14,10 +18,13 @@ const Loops: React.FC = () => {
       <section className="loops-hero">
         <div className="hero-content">
           <h1 className="hero-title">
-            Лупы<span className="hero-title-accent">.</span>
+            {tag ? `#${tag}` : 'Лупы'}<span className="hero-title-accent">.</span>
           </h1>
           <p className="hero-subtitle">
-            Откройте для себя тысячи профессиональных лупов от лучших продюсеров
+            {tag 
+              ? `Лупы с тегом #${tag}`
+              : 'Откройте для себя тысячи профессиональных лупов от лучших продюсеров'
+            }
           </p>
 
           <div className="hero-stats">
@@ -65,6 +72,7 @@ const Loops: React.FC = () => {
             showAllButton={false}
             type="all"
             title=""
+            tag={tag || undefined}
           />
 
           <button

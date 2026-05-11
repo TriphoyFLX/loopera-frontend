@@ -28,6 +28,7 @@ interface RecentLoopsProps {
   showAllButton?: boolean;
   type?: 'all' | 'my';
   sortBy?: 'created_at' | 'likes';
+  tag?: string;
 }
 
 const RecentLoops: React.FC<RecentLoopsProps> = ({ 
@@ -35,7 +36,8 @@ const RecentLoops: React.FC<RecentLoopsProps> = ({
   limit = 10,
   showAllButton = true,
   type = 'all',
-  sortBy = 'created_at'
+  sortBy = 'created_at',
+  tag
 }) => {
   const [loops, setLoops] = useState<Loop[]>([]);
   const [loading, setLoading] = useState(true);
@@ -68,7 +70,7 @@ const RecentLoops: React.FC<RecentLoopsProps> = ({
 
   useEffect(() => {
     fetchLoops();
-  }, [limit, type, sortBy]);
+  }, [limit, type, sortBy, tag]);
 
   useEffect(() => {
     if (observerRef.current && loadMoreRef.current) {
@@ -196,7 +198,7 @@ const RecentLoops: React.FC<RecentLoopsProps> = ({
         response = await api.getUserLoops(token);
         setLoops(append ? [...loops, ...response.loops] : response.loops);
       } else {
-        response = await api.getAllLoops(pageNum, limit, token || undefined, sortBy);
+        response = await api.getAllLoops(pageNum, limit, token || undefined, sortBy, tag);
         const newLoops = append ? [...loops, ...response.loops] : response.loops;
         setLoops(newLoops);
         

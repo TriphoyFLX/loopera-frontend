@@ -10,7 +10,7 @@ const LoopUpload = () => {
     bpm: undefined as number | undefined,
     key: '',
     genre: '',
-    tags: [] as string[],
+    tags: '',
     instagram: '',
     telegram: ''
   });
@@ -55,33 +55,9 @@ const LoopUpload = () => {
   };
 
   const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const tagsString = e.target.value;
-    const tagsArray = tagsString.split(',').map(tag => tag.trim()).filter(tag => tag);
     setFormData(prev => ({
       ...prev,
-      tags: tagsArray
-    }));
-  };
-
-  const handleTagsKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === ',') {
-      e.preventDefault();
-      const input = e.currentTarget;
-      const currentValue = input.value;
-      const tagsArray = currentValue.split(',').map(tag => tag.trim()).filter(tag => tag);
-      setFormData(prev => ({
-        ...prev,
-        tags: tagsArray
-      }));
-    }
-  };
-
-  const handleTagsInput = (e: React.FormEvent<HTMLInputElement>) => {
-    const input = e.currentTarget;
-    const tagsArray = input.value.split(',').map(tag => tag.trim()).filter(tag => tag);
-    setFormData(prev => ({
-      ...prev,
-      tags: tagsArray
+      tags: e.target.value
     }));
   };
 
@@ -126,8 +102,11 @@ const LoopUpload = () => {
       if (formData.genre) {
         uploadFormData.append('genre', formData.genre);
       }
-      if (formData.tags && formData.tags.length > 0) {
-        uploadFormData.append('tags', JSON.stringify(formData.tags));
+      if (formData.tags && formData.tags.trim()) {
+        const tagsArray = formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag);
+        if (tagsArray.length > 0) {
+          uploadFormData.append('tags', JSON.stringify(tagsArray));
+        }
       }
       if (formData.instagram) {
         uploadFormData.append('instagram', formData.instagram);
@@ -170,7 +149,7 @@ const LoopUpload = () => {
         bpm: undefined,
         key: '',
         genre: '',
-        tags: [],
+        tags: '',
         instagram: '',
         telegram: ''
       });
@@ -305,10 +284,8 @@ const LoopUpload = () => {
             <input
               type="text"
               id="tags"
-              value={formData.tags.join(', ')}
+              value={formData.tags}
               onChange={handleTagsChange}
-              onInput={handleTagsInput}
-              onKeyDown={handleTagsKeyDown}
               placeholder="trap, bass, 808, melody"
               disabled={isLoading}
             />

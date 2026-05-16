@@ -215,7 +215,7 @@ const LoopCard: React.FC<LoopCardProps> = ({
                   key={i} 
                   className={`waveform-bar ${isPlaying && i < 20 ? 'active' : ''}`}
                   style={{
-                    height: `${Math.random() * 60 + 20}%`,
+                    height: `${Math.floor(Math.random() * 60 + 20)}%`,
                     animation: isPlaying ? `waveform 1s ease infinite ${i * 0.05}s` : 'none'
                   }}
                 />

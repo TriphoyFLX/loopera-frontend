@@ -19,7 +19,6 @@ const Beats: React.FC = () => {
   });
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [beats, setBeats] = useState<any[]>([]);
@@ -329,18 +328,6 @@ const Beats: React.FC = () => {
           {success && (
             <div className="success-message">
               ✅ {success}
-            </div>
-          )}
-
-          {uploadProgress > 0 && (
-            <div className="progress-container">
-              <div className="progress-bar">
-                <div 
-                  className="progress-fill" 
-                  style={{ width: `${uploadProgress}%` }}
-                />
-              </div>
-              <span className="progress-text">{uploadProgress}%</span>
             </div>
           )}
 

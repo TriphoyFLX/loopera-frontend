@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getUploadsUrl } from '../utils/urls';
 import { likeApi } from '../utils/likeApi';
+import { api } from '../utils/api';
 import DownloadRulesModal from './DownloadRulesModal';
 import './LoopCard.css';
 
@@ -29,6 +30,8 @@ const LoopCard: React.FC<LoopCardProps> = ({
   const [showAllTags, setShowAllTags] = useState(false);
   const [hasOverflow, setHasOverflow] = useState(false);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [collaborations, setCollaborations] = useState<any[]>([]);
+  const [showCollaborations, setShowCollaborations] = useState(false);
   const tagsContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -46,6 +49,19 @@ const LoopCard: React.FC<LoopCardProps> = ({
 
     loadLikeStatus();
   }, [loop.id, currentUserId, showLike]);
+
+  useEffect(() => {
+    const loadCollaborations = async () => {
+      try {
+        const result = await api.getLoopCollaborations(loop.id);
+        setCollaborations(result.collaborations);
+      } catch (error) {
+        console.error('Error loading collaborations:', error);
+      }
+    };
+
+    loadCollaborations();
+  }, [loop.id]);
 
   // Проверка на переполнение тегов
   useEffect(() => {
@@ -295,6 +311,37 @@ const LoopCard: React.FC<LoopCardProps> = ({
                   <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21-.258-1.91.247-.502.377-1.012.756-1.512 1.136-.316.237-.622.373-.922.363-.68-.018-1.735-.376-3.018-.967-1.938-.854-3.232-1.88-4.293-2.915-.248-.242-.498-.49-.75-.737-.424-.416-.425-.656-.42-1.06.003-.22.088-.45.25-.65.27-.3.575-.605.864-.913.565-.597 1.05-1.122 1.458-1.536.358-.364.648-.478.942-.477.314.002.672.126 1.07.368.86.518 2.038 1.41 3.38 2.38 1.837 1.34 2.57 2.87 3.25 4.22.45.917.632 1.326.714 1.546.083.224.077.45-.026.695-.067.16-.22.33-.465.488-.738.535-1.518 1.09-2.298 1.648-.78.56-1.558 1.12-2.338 1.678-.78.558-1.558 1.116-2.338 1.674-.78.558-1.558 1.116-2.338 1.674z"/>
                 </svg>
               </a>
+            )}
+          </div>
+        )}
+
+        {collaborations.length > 0 && (
+          <div className="loop-collaborations">
+            <button 
+              className="collaborations-toggle"
+              onClick={() => setShowCollaborations(!showCollaborations)}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                <path d="M9 18V5l12-2v13M9 18c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm0 0v5M21 15c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm0 0v5"/>
+              </svg>
+              Коллаборации ({collaborations.length})
+              <svg className={`chevron ${showCollaborations ? 'open' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </button>
+            
+            {showCollaborations && (
+              <div className="collaborations-list">
+                {collaborations.map(beat => (
+                  <div key={beat.id} className="collaboration-item">
+                    <div className="collaboration-info">
+                      <span className="collaboration-title">{beat.title}</span>
+                      <span className="collaboration-author">by {beat.author}</span>
+                    </div>
+                    <audio controls src={getUploadsUrl(beat.filename)} />
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         )}

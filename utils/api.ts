@@ -242,6 +242,82 @@ class API {
       throw error;
     }
   }
+
+  async uploadBeat(formData: FormData, token: string) {
+    try {
+      const response = await fetch(`${this.baseURL}/beats`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Upload beat error:', error);
+      throw error;
+    }
+  }
+
+  async getAllBeats(page: number = 1, limit: number = 20, user_id?: number) {
+    try {
+      let url = `${this.baseURL}/beats?page=${page}&limit=${limit}`;
+      if (user_id) url += `&user_id=${user_id}`;
+      
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: this.getHeaders()
+      });
+
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Get all beats error:', error);
+      throw error;
+    }
+  }
+
+  async getBeatById(id: number) {
+    try {
+      const response = await fetch(`${this.baseURL}/beats/${id}`, {
+        method: 'GET',
+        headers: this.getHeaders()
+      });
+
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Get beat by id error:', error);
+      throw error;
+    }
+  }
+
+  async getLoopCollaborations(loopId: number) {
+    try {
+      const response = await fetch(`${this.baseURL}/beats/loop/${loopId}/collaborations`, {
+        method: 'GET',
+        headers: this.getHeaders()
+      });
+
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Get loop collaborations error:', error);
+      throw error;
+    }
+  }
+
+  async deleteBeat(id: number, token: string) {
+    try {
+      const response = await fetch(`${this.baseURL}/beats/${id}`, {
+        method: 'DELETE',
+        headers: this.getHeaders(token)
+      });
+
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Delete beat error:', error);
+      throw error;
+    }
+  }
 }
 
 export const api = new API();

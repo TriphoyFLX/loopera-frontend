@@ -63,6 +63,20 @@ const LoopUpload = () => {
     }));
   };
 
+  const handleTagsKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === ',') {
+      e.preventDefault();
+      const input = e.currentTarget;
+      const currentValue = input.value;
+      const tagsArray = currentValue.split(',').map(tag => tag.trim()).filter(tag => tag);
+      setFormData(prev => ({
+        ...prev,
+        tags: tagsArray
+      }));
+      input.value = tagsArray.join(', ');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -285,6 +299,7 @@ const LoopUpload = () => {
               id="tags"
               value={formData.tags.join(', ')}
               onChange={handleTagsChange}
+              onKeyDown={handleTagsKeyDown}
               placeholder="trap, bass, 808, melody"
               disabled={isLoading}
             />

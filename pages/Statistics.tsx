@@ -44,6 +44,7 @@ const Statistics = () => {
           ]);
           setStats(statsResponse);
           setHistory(historyResponse);
+          console.log('History data:', historyResponse);
         } catch (err) {
           console.error('Error fetching stats:', err);
           setError(err instanceof Error ? err.message : 'Ошибка загрузки статистики');
@@ -177,74 +178,86 @@ const Statistics = () => {
         <div className="charts-grid">
           <div className="chart-card">
             <h3>❤️ Лайки за {period === 'day' ? 'день' : period === 'week' ? 'неделю' : 'месяц'}</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={prepareChartData(history.likes_over_time)}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                <XAxis dataKey="date" stroke="rgba(255,255,255,0.6)" />
-                <YAxis stroke="rgba(255,255,255,0.6)" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(13, 13, 28, 0.9)', 
-                    border: '1px solid rgba(124, 58, 237, 0.3)',
-                    borderRadius: '8px'
-                  }}
-                />
-                <Legend />
-                <Line 
-                  type="monotone" 
-                  dataKey="value" 
-                  stroke="#7c3aed" 
-                  strokeWidth={2}
-                  dot={{ fill: '#7c3aed', strokeWidth: 2, r: 4 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            {history.likes_over_time.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={prepareChartData(history.likes_over_time)}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                  <XAxis dataKey="date" stroke="rgba(255,255,255,0.6)" />
+                  <YAxis stroke="rgba(255,255,255,0.6)" />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'rgba(13, 13, 28, 0.9)', 
+                      border: '1px solid rgba(124, 58, 237, 0.3)',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Legend />
+                  <Line 
+                    type="monotone" 
+                    dataKey="value" 
+                    stroke="#7c3aed" 
+                    strokeWidth={2}
+                    dot={{ fill: '#7c3aed', strokeWidth: 2, r: 4 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="no-data">Нет данных за выбранный период</div>
+            )}
           </div>
 
           <div className="chart-card">
             <h3>🎵 Лупы за {period === 'day' ? 'день' : period === 'week' ? 'неделю' : 'месяц'}</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={prepareChartData(history.loops_over_time)}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                <XAxis dataKey="date" stroke="rgba(255,255,255,0.6)" />
-                <YAxis stroke="rgba(255,255,255,0.6)" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(13, 13, 28, 0.9)', 
-                    border: '1px solid rgba(6, 214, 245, 0.3)',
-                    borderRadius: '8px'
-                  }}
-                />
-                <Legend />
-                <Bar dataKey="value" fill="#06d6f5" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+            {history.loops_over_time.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={prepareChartData(history.loops_over_time)}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                  <XAxis dataKey="date" stroke="rgba(255,255,255,0.6)" />
+                  <YAxis stroke="rgba(255,255,255,0.6)" />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'rgba(13, 13, 28, 0.9)', 
+                      border: '1px solid rgba(6, 214, 245, 0.3)',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Legend />
+                  <Bar dataKey="value" fill="#06d6f5" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="no-data">Нет данных за выбранный период</div>
+            )}
           </div>
 
           <div className="chart-card">
             <h3>📱 Telegram клики за {period === 'day' ? 'день' : period === 'week' ? 'неделю' : 'месяц'}</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={prepareChartData(history.telegram_clicks_over_time)}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                <XAxis dataKey="date" stroke="rgba(255,255,255,0.6)" />
-                <YAxis stroke="rgba(255,255,255,0.6)" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(13, 13, 28, 0.9)', 
-                    border: '1px solid rgba(124, 58, 237, 0.3)',
-                    borderRadius: '8px'
-                  }}
-                />
-                <Legend />
-                <Line 
-                  type="monotone" 
-                  dataKey="value" 
-                  stroke="#06d6f5" 
-                  strokeWidth={2}
-                  dot={{ fill: '#06d6f5', strokeWidth: 2, r: 4 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            {history.telegram_clicks_over_time.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={prepareChartData(history.telegram_clicks_over_time)}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                  <XAxis dataKey="date" stroke="rgba(255,255,255,0.6)" />
+                  <YAxis stroke="rgba(255,255,255,0.6)" />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'rgba(13, 13, 28, 0.9)', 
+                      border: '1px solid rgba(124, 58, 237, 0.3)',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Legend />
+                  <Line 
+                    type="monotone" 
+                    dataKey="value" 
+                    stroke="#06d6f5" 
+                    strokeWidth={2}
+                    dot={{ fill: '#06d6f5', strokeWidth: 2, r: 4 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="no-data">Нет данных за выбранный период</div>
+            )}
           </div>
         </div>
       </div>

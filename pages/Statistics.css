@@ -146,6 +146,13 @@
   color: #ff6b6b;
 }
 
+.no-data {
+  text-align: center;
+  padding: 60px 20px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 1rem;
+}
+
 @media (max-width: 768px) {
   .statistics-header {
     flex-direction: column;

@@ -14,7 +14,6 @@ import Admin from './pages/Admin'
 import Shop from './pages/Shop'
 import CreatePack from './pages/CreatePack'
 import AdminShop from './pages/AdminShop'
-import Beats from './pages/Beats'
 import AdminRoute from './components/AdminRoute'
 import ForgotPassword from './components/ForgotPasswordForm'
 import Deposit from './pages/Deposit'
@@ -64,13 +63,6 @@ function App() {
             <Layout>
               <LoopUpload />
             </Layout>
-          } />
-          <Route path="/beats" element={
-            <ProtectedRoute>
-              <Layout>
-                <Beats />
-              </Layout>
-            </ProtectedRoute>
           } />
           <Route path="/search" element={
             <ProtectedRoute>

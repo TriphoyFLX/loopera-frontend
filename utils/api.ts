@@ -270,6 +270,20 @@ class API {
     }
   }
 
+  async getUserStatsHistory(token: string, period: string = 'week') {
+    try {
+      const response = await fetch(`${this.baseURL}/loops/stats/history?period=${period}`, {
+        method: 'GET',
+        headers: this.getHeaders(token)
+      });
+
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Get user stats history error:', error);
+      throw error;
+    }
+  }
+
   async trackTelegramClick(loopId: number, token: string) {
     try {
       const response = await fetch(`${this.baseURL}/loops/telegram-click/${loopId}`, {

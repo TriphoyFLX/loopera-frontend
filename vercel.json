@@ -11,6 +11,10 @@
   ],
   "rewrites": [
     {
+      "source": "/api/beats",
+      "destination": "http://77.73.238.154:5001/api/beats"
+    },
+    {
       "source": "/api/(.*)",
       "destination": "http://77.73.238.154:5001/api/$1"
     },

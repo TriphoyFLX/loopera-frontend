@@ -2,8 +2,8 @@ class API {
   private baseURL: string;
 
   constructor() {
-    // Use direct backend URL to bypass Vercel proxy issues
-    this.baseURL = 'http://77.73.238.154:5001/api';
+    // Use HTTPS backend URL
+    this.baseURL = 'https://loopera-lpr.vercel.app/api';
   }
 
   private async handleResponse(response: Response) {

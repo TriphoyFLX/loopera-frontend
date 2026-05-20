@@ -245,7 +245,7 @@ class API {
 
   async uploadBeat(formData: FormData, token: string) {
     try {
-      const response = await fetch(`${this.baseURL}/beats`, {
+      const response = await fetch(`${this.baseURL}/beats/upload`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`

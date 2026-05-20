@@ -11,8 +11,12 @@
   ],
   "rewrites": [
     {
-      "source": "/api/beats",
-      "destination": "http://77.73.238.154:5001/api/beats"
+      "source": "/api/loops/upload",
+      "destination": "http://77.73.238.154:5001/api/loops/upload"
+    },
+    {
+      "source": "/api/beats/upload",
+      "destination": "http://77.73.238.154:5001/api/beats/upload"
     },
     {
       "source": "/api/(.*)",

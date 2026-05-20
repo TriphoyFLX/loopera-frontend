@@ -36,8 +36,8 @@ const Beats = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
-      if (selectedFile.size > 10 * 1024 * 1024) {
-        setError('Размер файла не должен превышать 10MB');
+      if (selectedFile.size > 4 * 1024 * 1024) {
+        setError('Размер файла не должен превышать 4MB');
         return;
       }
 
@@ -219,7 +219,7 @@ const Beats = () => {
         
         <form onSubmit={handleSubmit} className="upload-form">
           <div className="form-group">
-            <label htmlFor="file">Аудиофайл (макс. 10MB)</label>
+            <label htmlFor="file">Аудиофайл (макс. 4MB)</label>
             <input
               ref={fileInputRef}
               type="file"

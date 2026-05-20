@@ -1,34 +1,35 @@
-import React, { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { api } from '../utils/api';
-import { getUploadsUrl } from '../utils/urls';
 import './Beats.css';
 
-const Beats: React.FC = () => {
+const Beats = () => {
   const { token, user } = useAuth();
   const [formData, setFormData] = useState({
     title: '',
-    loop_id: '',
-    description: '',
-    tags: '',
     bpm: undefined as number | undefined,
     key: '',
     genre: '',
-    is_collaboration: false,
-    collaboration_credit: ''
+    tags: '',
+    description: '',
+    selectedLoop: null as any,
+    selectedLoopId: ''
   });
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [beats, setBeats] = useState<any[]>([]);
-  const [beatsLoading, setBeatsLoading] = useState(true);
+  const [loopSearchQuery, setLoopSearchQuery] = useState('');
+  const [loopSearchResults, setLoopSearchResults] = useState<any[]>([]);
+  const [showLoopDropdown, setShowLoopDropdown] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target;
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+      [name]: name === 'bpm' ? (value ? parseInt(value) : undefined) : value
     }));
   };
 
@@ -39,14 +40,60 @@ const Beats: React.FC = () => {
         setError('Размер файла не должен превышать 10MB');
         return;
       }
+
       const allowedTypes = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp4', 'audio/webm', 'audio/aac', 'audio/flac'];
       if (!allowedTypes.includes(selectedFile.type)) {
         setError('Неподдерживаемый формат файла');
         return;
       }
+
       setFile(selectedFile);
       setError('');
     }
+  };
+
+  const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      tags: e.target.value
+    }));
+  };
+
+  const handleLoopSearch = async (query: string) => {
+    setLoopSearchQuery(query);
+    if (query.length > 0) {
+      try {
+        const result = await api.getAllLoops(1, 10, undefined, 'created_at', undefined, undefined, undefined, undefined, undefined, query);
+        setLoopSearchResults(result.loops);
+        setShowLoopDropdown(true);
+      } catch (error) {
+        console.error('Error searching loops:', error);
+      }
+    } else {
+      setLoopSearchResults([]);
+      setShowLoopDropdown(false);
+    }
+  };
+
+  const handleLoopSelect = (loop: any) => {
+    setFormData(prev => ({
+      ...prev,
+      selectedLoop: loop,
+      selectedLoopId: loop.id.toString()
+    }));
+    setLoopSearchQuery(loop.title);
+    setShowLoopDropdown(false);
+    setLoopSearchResults([]);
+  };
+
+  const handleClearLoop = () => {
+    setFormData(prev => ({
+      ...prev,
+      selectedLoop: null,
+      selectedLoopId: ''
+    }));
+    setLoopSearchQuery('');
+    setLoopSearchResults([]);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -76,13 +123,13 @@ const Beats: React.FC = () => {
       uploadFormData.append('beat', file);
       uploadFormData.append('title', formData.title);
       
-      if (formData.loop_id) {
-        uploadFormData.append('loop_id', formData.loop_id);
+      if (formData.selectedLoopId) {
+        uploadFormData.append('loop_id', formData.selectedLoopId);
       }
       if (formData.description) {
         uploadFormData.append('description', formData.description);
       }
-      if (formData.tags) {
+      if (formData.tags && formData.tags.trim()) {
         const tagsArray = formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag);
         if (tagsArray.length > 0) {
           uploadFormData.append('tags', JSON.stringify(tagsArray));
@@ -97,57 +144,51 @@ const Beats: React.FC = () => {
       if (formData.genre) {
         uploadFormData.append('genre', formData.genre);
       }
-      if (formData.is_collaboration) {
-        uploadFormData.append('is_collaboration', 'true');
-      }
-      if (formData.collaboration_credit) {
-        uploadFormData.append('collaboration_credit', formData.collaboration_credit);
-      }
+
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return 90;
+          }
+          return prev + 10;
+        });
+      }, 200);
 
       await api.uploadBeat(uploadFormData, token);
+      
+      clearInterval(progressInterval);
+      setUploadProgress(100);
       setSuccess('Бит успешно загружен!');
       
       setFormData({
         title: '',
-        loop_id: '',
-        description: '',
-        tags: '',
         bpm: undefined,
         key: '',
         genre: '',
-        is_collaboration: false,
-        collaboration_credit: ''
+        tags: '',
+        description: '',
+        selectedLoop: null,
+        selectedLoopId: ''
       });
       setFile(null);
-      
-      loadBeats();
+      setLoopSearchQuery('');
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
 
       setTimeout(() => {
+        setUploadProgress(0);
         setSuccess('');
       }, 3000);
 
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ошибка загрузки бита');
+      setUploadProgress(0);
     } finally {
       setIsLoading(false);
     }
   };
-
-  const loadBeats = async () => {
-    try {
-      setBeatsLoading(true);
-      const result = await api.getAllBeats();
-      setBeats(result.beats);
-    } catch (err) {
-      console.error('Failed to load beats:', err);
-    } finally {
-      setBeatsLoading(false);
-    }
-  };
-
-  React.useEffect(() => {
-    loadBeats();
-  }, []);
 
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
@@ -160,10 +201,10 @@ const Beats: React.FC = () => {
   if (!token) {
     return (
       <div className="beats-page">
-        <div className="beats-container">
-          <h2>Биты</h2>
+        <div className="upload-container">
+          <h2>Загрузка бита</h2>
           <div className="error-message">
-            Для просмотра и загрузки битов необходимо авторизоваться
+            Для загрузки битов необходимо авторизоваться
           </div>
         </div>
       </div>
@@ -172,16 +213,17 @@ const Beats: React.FC = () => {
 
   return (
     <div className="beats-page">
-      <div className="beats-container">
-        <h2>Загрузить бит</h2>
+      <div className="upload-container">
+        <h2>Загрузка бита</h2>
         <p className="user-info">Пользователь: {user?.username}</p>
         
         <form onSubmit={handleSubmit} className="upload-form">
           <div className="form-group">
-            <label htmlFor="beat">Аудиофайл (макс. 10MB)</label>
+            <label htmlFor="file">Аудиофайл (макс. 10MB)</label>
             <input
+              ref={fileInputRef}
               type="file"
-              id="beat"
+              id="file"
               accept="audio/mpeg,audio/wav,audio/ogg,audio/mp4,audio/webm,audio/aac,audio/flac"
               onChange={handleFileChange}
               required
@@ -191,6 +233,7 @@ const Beats: React.FC = () => {
               <div className="file-info">
                 <span>📁 {file.name}</span>
                 <span>📊 {formatFileSize(file.size)}</span>
+                <span>🎵 {file.type}</span>
               </div>
             )}
           </div>
@@ -210,21 +253,53 @@ const Beats: React.FC = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="loop_id">Луп (опционально)</label>
-            <input
-              type="text"
-              id="loop_id"
-              name="loop_id"
-              value={formData.loop_id}
-              onChange={handleInputChange}
-              placeholder="ID лупа который использовали"
-              disabled={isLoading}
-            />
+            <label htmlFor="loopSearch">Я использовал луп с Луперы</label>
+            <div className="loop-selector">
+              <input
+                type="text"
+                id="loopSearch"
+                value={loopSearchQuery}
+                onChange={(e) => handleLoopSearch(e.target.value)}
+                placeholder="Поиск лупа по названию или автору"
+                disabled={isLoading}
+              />
+              {formData.selectedLoop && (
+                <button
+                  type="button"
+                  className="clear-loop-btn"
+                  onClick={handleClearLoop}
+                  disabled={isLoading}
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+            {showLoopDropdown && loopSearchResults.length > 0 && (
+              <div className="loop-dropdown">
+                {loopSearchResults.map(loop => (
+                  <div
+                    key={loop.id}
+                    className="loop-dropdown-item"
+                    onClick={() => handleLoopSelect(loop)}
+                  >
+                    <div className="loop-dropdown-info">
+                      <span className="loop-dropdown-title">{loop.title}</span>
+                      <span className="loop-dropdown-author">by {loop.author}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {formData.selectedLoop && (
+              <div className="selected-loop-info">
+                Выбран: {formData.selectedLoop.title} by {formData.selectedLoop.author}
+              </div>
+            )}
           </div>
 
           <div className="form-row">
             <div className="form-group">
-              <label htmlFor="bpm">BPM</label>
+              <label htmlFor="bpm">BPM (60-200)</label>
               <input
                 type="number"
                 id="bpm"
@@ -272,7 +347,7 @@ const Beats: React.FC = () => {
               type="text"
               id="tags"
               value={formData.tags}
-              onChange={handleInputChange}
+              onChange={handleTagsChange}
               placeholder="trap, bass, 808, melody"
               disabled={isLoading}
             />
@@ -291,34 +366,6 @@ const Beats: React.FC = () => {
             />
           </div>
 
-          <div className="form-group">
-            <label>
-              <input
-                type="checkbox"
-                name="is_collaboration"
-                checked={formData.is_collaboration}
-                onChange={handleInputChange}
-                disabled={isLoading}
-              />
-              Это коллаборация
-            </label>
-          </div>
-
-          {formData.is_collaboration && (
-            <div className="form-group">
-              <label htmlFor="collaboration_credit">Кредиты коллаборации</label>
-              <input
-                type="text"
-                id="collaboration_credit"
-                name="collaboration_credit"
-                value={formData.collaboration_credit}
-                onChange={handleInputChange}
-                placeholder="Имя соавтора"
-                disabled={isLoading}
-              />
-            </div>
-          )}
-
           {error && (
             <div className="error-message">
               ❌ {error}
@@ -331,6 +378,18 @@ const Beats: React.FC = () => {
             </div>
           )}
 
+          {uploadProgress > 0 && (
+            <div className="progress-container">
+              <div className="progress-bar">
+                <div 
+                  className="progress-fill" 
+                  style={{ width: `${uploadProgress}%` }}
+                />
+              </div>
+              <span className="progress-text">{uploadProgress}%</span>
+            </div>
+          )}
+
           <button 
             type="submit" 
             disabled={isLoading || !file}
@@ -339,29 +398,6 @@ const Beats: React.FC = () => {
             {isLoading ? '⏳ Загрузка...' : '📤 Загрузить бит'}
           </button>
         </form>
-
-        <div className="beats-list-section">
-          <h3>Все биты</h3>
-          {beatsLoading ? (
-            <div className="loading">Загрузка...</div>
-          ) : (
-            <div className="beats-grid">
-              {beats.map(beat => (
-                <div key={beat.id} className="beat-card">
-                  <h4>{beat.title}</h4>
-                  <p className="beat-author">Автор: {beat.author}</p>
-                  {beat.loop_title && (
-                    <p className="beat-loop">Луп: {beat.loop_title}</p>
-                  )}
-                  <audio controls src={getUploadsUrl(beat.filename)} />
-                  {beat.is_collaboration && (
-                    <span className="collaboration-badge">Коллаборация</span>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
       </div>
     </div>
   );

@@ -19,6 +19,19 @@ class API {
         data
       });
       
+      // Handle authentication errors
+      if (response.status === 401) {
+        const errorMessage = typeof data === 'string' 
+          ? data 
+          : data.message || 'Сессия истекла. Пожалуйста, войдите снова.';
+        
+        // Clear token from localStorage
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        
+        throw new Error(errorMessage);
+      }
+      
       const errorMessage = typeof data === 'string' 
         ? data 
         : data.message || `HTTP error! status: ${response.status}`;

@@ -1,10 +1,12 @@
 import { useState, useRef } from 'react';
 import { useAuth } from '../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../utils/api';
 import './LoopUpload.css';
 
 const LoopUpload = () => {
-  const { token, user } = useAuth();
+  const { token, user, logout } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: '',
     bpm: undefined as number | undefined,
@@ -165,7 +167,22 @@ const LoopUpload = () => {
 
     } catch (err) {
       console.error('❌ Ошибка загрузки:', err);
-      setError(err instanceof Error ? err.message : 'Ошибка загрузки лупа');
+      
+      const errorMessage = err instanceof Error ? err.message : 'Ошибка загрузки лупа';
+      
+      // Check if it's an authentication error
+      if (errorMessage.includes('сессия истекла') || errorMessage.includes('войдите снова')) {
+        setError('Сессия истекла. Перенаправляем на страницу входа...');
+        // Clear auth state
+        if (logout) logout();
+        // Redirect to login after a short delay
+        setTimeout(() => {
+          navigate('/auth');
+        }, 1500);
+      } else {
+        setError(errorMessage);
+      }
+      
       setUploadProgress(0);
     } finally {
       setIsLoading(false);

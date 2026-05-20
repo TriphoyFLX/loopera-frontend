@@ -17,6 +17,7 @@ import AdminShop from './pages/AdminShop'
 import AdminRoute from './components/AdminRoute'
 import ForgotPassword from './components/ForgotPasswordForm'
 import Deposit from './pages/Deposit'
+import Statistics from './pages/Statistics'
 import './App.css'
 
 function App() {
@@ -87,6 +88,13 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <Deposit />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/statistics" element={
+            <ProtectedRoute>
+              <Layout>
+                <Statistics />
               </Layout>
             </ProtectedRoute>
           } />

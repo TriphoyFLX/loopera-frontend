@@ -256,6 +256,34 @@ class API {
     }
   }
 
+  async getUserStats(token: string) {
+    try {
+      const response = await fetch(`${this.baseURL}/loops/stats`, {
+        method: 'GET',
+        headers: this.getHeaders(token)
+      });
+
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Get user stats error:', error);
+      throw error;
+    }
+  }
+
+  async trackTelegramClick(loopId: number, token: string) {
+    try {
+      const response = await fetch(`${this.baseURL}/loops/telegram-click/${loopId}`, {
+        method: 'POST',
+        headers: this.getHeaders(token)
+      });
+
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Track telegram click error:', error);
+      throw error;
+    }
+  }
+
   async uploadBeat(formData: FormData, token: string) {
     try {
       const response = await fetch(`${this.baseURL}/beats/upload`, {

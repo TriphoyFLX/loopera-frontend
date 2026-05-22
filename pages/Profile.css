@@ -10,15 +10,26 @@
 /* Стили для сетки лупов */
 .loops-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-  gap: 32px;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
   margin-top: 32px;
 }
 
 /* Улучшенные стили для карточек лупов в профиле */
 .loops-grid .loop-card {
-  min-height: 280px;
-  padding: 24px;
+  min-height: 300px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.loops-grid .loop-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 42, 85, 0.3);
+  box-shadow: 0 12px 32px rgba(255, 42, 85, 0.15);
 }
 
 .loops-grid .loop-card-content {
@@ -27,21 +38,20 @@
 
 @media (max-width: 1200px) {
   .loops-grid {
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
   }
 }
 
 @media (max-width: 768px) {
   .loops-grid {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
     margin-top: 24px;
   }
   
   .loops-grid .loop-card {
-    min-height: 240px;
-    padding: 20px;
+    min-height: 260px;
   }
 }
 
@@ -53,8 +63,7 @@
   }
   
   .loops-grid .loop-card {
-    min-height: 220px;
-    padding: 16px;
+    min-height: 240px;
   }
 }
 
@@ -280,8 +289,8 @@
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 24px;
-  padding: 24px;
-  margin-bottom: 24px;
+  padding: 32px;
+  margin-bottom: 32px;
   transition: all 0.3s ease;
 }
 
@@ -296,14 +305,14 @@
 }
 
 .profile-section-title {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
-  margin: 0 0 20px 0;
+  margin: 0 0 24px 0;
   color: rgba(255, 255, 255, 0.9);
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding-bottom: 12px;
+  gap: 12px;
+  padding-bottom: 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 

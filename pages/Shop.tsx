@@ -663,16 +663,12 @@ interface PackCardProps {
   pack: Pack;
   playingPreview: string | null;
   onPlay: (id: string, url: string) => void;
-  onBuy: (id: string, price: number) => void;
   onDownload: (id: string) => void;
-  userBalance: number;
   idx: number;
 }
 
-const PackCard: React.FC<PackCardProps> = ({ pack, playingPreview, onPlay, onBuy, onDownload, userBalance, idx }) => {
+const PackCard: React.FC<PackCardProps> = ({ pack, playingPreview, onPlay, onDownload, idx }) => {
   const isPlaying = playingPreview === pack.id;
-  const canBuy = userBalance >= pack.price;
-  const isPurchased = pack.purchased;
 
   return (
     <div className="sh-card" style={{ animationDelay: `${idx * 0.04}s` }}>
@@ -734,25 +730,14 @@ const PackCard: React.FC<PackCardProps> = ({ pack, playingPreview, onPlay, onBuy
 
       <div className="sh-card-footer">
         <div className="sh-price">
-          <span className="sh-price-amount">{pack.price}</span>
-          <span className="sh-price-unit">coins</span>
+          <span className="sh-price-amount">Free</span>
         </div>
-        {isPurchased ? (
-          <button
-            className="sh-buy-btn"
-            onClick={() => onDownload(pack.id)}
-          >
-            Download
-          </button>
-        ) : (
-          <button
-            className="sh-buy-btn"
-            onClick={() => onBuy(pack.id, pack.price)}
-            disabled={!canBuy}
-          >
-            {canBuy ? 'Buy Pack' : 'No funds'}
-          </button>
-        )}
+        <button
+          className="sh-buy-btn"
+          onClick={() => onDownload(pack.id)}
+        >
+          Download
+        </button>
       </div>
     </div>
   );
@@ -772,7 +757,6 @@ interface Pack {
   sales_count: number;
   created_at: string;
   loops_count?: number;
-  purchased?: boolean;
 }
 
 const Shop = () => {
@@ -843,24 +827,6 @@ const Shop = () => {
         setUserBalance(b.available_balance || 0);
       }
     } catch {}
-  };
-
-  const handleBuyPack = async (packId: string, price: number) => {
-    const token = localStorage.getItem('token');
-    if (!token) { alert('Please login to purchase packs'); return; }
-    if (userBalance < price) { alert('Insufficient balance'); return; }
-    try {
-      const res = await fetch(`/api/shop/${packId}/buy`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
-      });
-      if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Failed to purchase'); }
-      alert('Pack purchased successfully!');
-      setUserBalance(prev => prev - price);
-      fetchPacks();
-    } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to purchase pack');
-    }
   };
 
   const handleDownloadPack = async (packId: string) => {
@@ -1001,9 +967,7 @@ const Shop = () => {
               idx={idx}
               playingPreview={playingPreview}
               onPlay={playPreview}
-              onBuy={handleBuyPack}
               onDownload={handleDownloadPack}
-              userBalance={userBalance}
             />
           ))}
         </div>

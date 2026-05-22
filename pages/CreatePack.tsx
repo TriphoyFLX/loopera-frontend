@@ -16,7 +16,7 @@ const CreatePack: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -210,9 +210,9 @@ const CreatePack: React.FC = () => {
               <span>✅ {archiveFile.name} ({formatFileSize(archiveFile.size)})</span>
             </div>
           )}
-        </div>
+          </div>
 
-        <div className="form-section">
+          <div className="form-section">
           <h2>Preview Files *</h2>
           <p className="file-description">
             Upload 1 or 2 preview loops to showcase your pack.
@@ -286,47 +286,47 @@ const CreatePack: React.FC = () => {
                 }
               }}
               disabled={loading}
-            />
-            <label htmlFor="voiceTagFile" className="file-upload-label">
-              <span className="upload-icon">🎤</span>
-              <span>Upload voice tag file</span>
-              <span className="upload-hint">MP3, WAV, OGG, M4A, FLAC (Max 50MB)</span>
-            </label>
-          </div>
-          {voiceTagFile && (
-            <div className="uploaded-file-info">
-              <span>✅ {voiceTagFile.name}</span>
+              />
+              <label htmlFor="voiceTagFile" className="file-upload-label">
+                <span className="upload-icon">🎤</span>
+                <span>Upload voice tag file</span>
+                <span className="upload-hint">MP3, WAV, OGG, M4A, FLAC (Max 50MB)</span>
+              </label>
             </div>
-          )}
-        </div>
-
-        <div className="form-section">
-          <h2>Text File (required)</h2>
-          <p className="file-description">
-            Upload a text file with detailed information about your pack, licensing terms, and any additional notes.
-          </p>
-          <div className="file-upload-area">
-            <input
-              type="file"
-              id="textFile"
-              accept=".txt,.rtf,.pdf"
-              onChange={(e) => {
-                if (e.target.files && e.target.files[0]) {
-                  setTextFile(e.target.files[0]);
-                }
-              }}
-              disabled={loading}
-              required
-            />
-            <label htmlFor="textFile" className="file-upload-label">
-              <span className="upload-icon">�</span>
-              <span>Upload text file *</span>
-              <span className="upload-hint">TXT, RTF, PDF format (Max 10MB)</span>
-            </label>
+            {voiceTagFile && (
+              <div className="uploaded-file-info">
+                <span>✅ {voiceTagFile.name}</span>
+              </div>
+            )}
           </div>
-          {textFile && (
-            <div className="uploaded-file-info">
-              <span>✅ {textFile.name}</span>
+
+          <div className="form-section">
+            <h2>Text File (required)</h2>
+            <p className="file-description">
+              Upload a text file with detailed information about your pack, licensing terms, and any additional notes.
+            </p>
+            <div className="file-upload-area">
+              <input
+                type="file"
+                id="textFile"
+              accept=".txt,.rtf,.pdf"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                  setTextFile(e.target.files[0]);
+                  }
+                }}
+              disabled={loading}
+                required
+              />
+              <label htmlFor="textFile" className="file-upload-label">
+              <span className="upload-icon">�</span>
+                <span>Upload text file *</span>
+              <span className="upload-hint">TXT, RTF, PDF format (Max 10MB)</span>
+              </label>
+            </div>
+            {textFile && (
+              <div className="uploaded-file-info">
+                <span>✅ {textFile.name}</span>
             </div>
           )}
         </div>

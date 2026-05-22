@@ -275,7 +275,6 @@
 
 /* Основной контент */
 .profile-content {
-  max-width: 1200px;
   margin: 0 auto;
   padding: 40px 60px;
   display: grid;

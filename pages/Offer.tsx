@@ -179,7 +179,7 @@ const Offer: React.FC = () => {
             <p><strong>ИНН:</strong> [Укажите ИНН]</p>
             <p><strong>Юридический адрес:</strong> [Укажите адрес]</p>
             <p><strong>Email для связи:</strong> triphoyprod@gmail.com</p>
-            <p><strong>Telegram:</strong> @Troizkoe228</p>
+            <p><strong>Telegram:</strong> @triphoyprod</p>
           </div>
         </section>
 
@@ -188,7 +188,7 @@ const Offer: React.FC = () => {
           <div className="contacts">
             <p>По всем вопросам, связанным с настоящей Офертой, можно связаться с Исполнителем:</p>
             <p>Email: triphoyprod@gmail.com</p>
-            <p>Telegram: @Troizkoe228</p>
+            <p>Telegram: @triphoyprod</p>
             <p>Страница контактов: <a href="/contacts">/contacts</a></p>
           </div>
         </section>

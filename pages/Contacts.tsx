@@ -44,7 +44,7 @@ const Contacts: React.FC = () => {
               <span className="contact-icon">📱</span>
               <div>
                 <span className="contact-label">Telegram:</span>
-                <a href="https://t.me/Troizkoe228" className="contact-value">@Troizkoe228</a>
+                <a href="https://t.me/triphoyprod" className="contact-value">@triphoyprod</a>
               </div>
             </div>
           </div>

@@ -198,7 +198,7 @@ const Privacy: React.FC = () => {
           <div className="privacy-contacts">
             <p>По всем вопросам, связанным с обработкой персональных данных, можно связаться с Оператором:</p>
             <p>Email: triphoyprod@gmail.com</p>
-            <p>Telegram: @Troizkoe228</p>
+            <p>Telegram: @triphoyprod</p>
             <p>Страница контактов: <a href="/contacts">/contacts</a></p>
           </div>
         </section>

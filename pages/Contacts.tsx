@@ -16,16 +16,12 @@ const Contacts: React.FC = () => {
               <span className="requisite-value">Самозанятый</span>
             </div>
             <div className="requisite-item">
-              <span className="requisite-label">ФИО:</span>
-              <span className="requisite-value">[Укажите ФИО]</span>
-            </div>
-            <div className="requisite-item">
               <span className="requisite-label">ИНН:</span>
-              <span className="requisite-value">[Укажите ИНН]</span>
+              <span className="requisite-value">550367838850</span>
             </div>
             <div className="requisite-item">
-              <span className="requisite-label">Юридический адрес:</span>
-              <span className="requisite-value">[Укажите адрес]</span>
+              <span className="requisite-label">Адрес сайта:</span>
+              <span className="requisite-value">https://loopera-lpr.vercel.app</span>
             </div>
           </div>
         </section>

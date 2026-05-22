@@ -206,10 +206,10 @@ const Privacy: React.FC = () => {
         <section className="privacy-section">
           <h2>13. Реквизиты Оператора</h2>
           <div className="privacy-requisites">
-            <p><strong>Наименование:</strong> ООО «Loopera»</p>
-            <p><strong>ИНН:</strong> [Укажите ИНН]</p>
-            <p><strong>Юридический адрес:</strong> [Укажите адрес]</p>
+            <p><strong>Форма собственности:</strong> Самозанятый</p>
+            <p><strong>ИНН:</strong> 550367838850</p>
             <p><strong>Email:</strong> triphoyprod@gmail.com</p>
+            <p><strong>Адрес сайта:</strong> https://loopera-lpr.vercel.app</p>
           </div>
         </section>
       </div>

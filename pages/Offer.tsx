@@ -175,11 +175,12 @@ const Offer: React.FC = () => {
         <section className="offer-section">
           <h2>10. Реквизиты Исполнителя</h2>
           <div className="requisites">
-            <p><strong>Наименование:</strong> ООО «Loopera»</p>
-            <p><strong>ИНН:</strong> [Укажите ИНН]</p>
-            <p><strong>Юридический адрес:</strong> [Укажите адрес]</p>
+            <p><strong>Форма собственности:</strong> Самозанятый</p>
+            <p><strong>ИНН:</strong> 550367838850</p>
             <p><strong>Email для связи:</strong> triphoyprod@gmail.com</p>
             <p><strong>Telegram:</strong> @triphoyprod</p>
+            <p><strong>Адрес сайта:</strong> https://loopera-lpr.vercel.app</p>
+            <p><strong>Страница с реквизитами:</strong> https://loopera-lpr.vercel.app/contacts</p>
           </div>
         </section>
 

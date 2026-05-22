@@ -1,0 +1,193 @@
+.contacts-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  background: var(--background);
+  min-height: 100vh;
+}
+
+.contacts-content {
+  background: var(--surface);
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.contacts-content h1 {
+  font-size: 2.5rem;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.contacts-subtitle {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  margin-bottom: 40px;
+}
+
+.contacts-section {
+  margin-bottom: 40px;
+}
+
+.contacts-section h2 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--primary);
+}
+
+.requisites-card,
+.contact-card,
+.site-card,
+.work-hours-card,
+.payment-info-card,
+.products-info-card {
+  background: var(--background);
+  padding: 25px;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.requisite-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.requisite-item:last-child {
+  border-bottom: none;
+}
+
+.requisite-label {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.requisite-value {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.contact-item:last-child {
+  border-bottom: none;
+}
+
+.contact-icon {
+  font-size: 1.5rem;
+}
+
+.contact-label {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+.contact-value {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.contact-value:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.site-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+}
+
+.site-icon {
+  font-size: 1.5rem;
+}
+
+.site-value {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.site-value:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.work-hours-card p,
+.payment-info-card p,
+.products-info-card p {
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: 15px;
+}
+
+.payment-info-card ul,
+.products-info-card ul {
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin: 15px 0;
+  padding-left: 30px;
+}
+
+.payment-info-card li,
+.products-info-card li {
+  margin-bottom: 10px;
+}
+
+.payment-info-card a,
+.products-info-card a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.payment-info-card a:hover,
+.products-info-card a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .contacts-container {
+    padding: 20px 10px;
+  }
+
+  .contacts-content {
+    padding: 20px;
+  }
+
+  .contacts-content h1 {
+    font-size: 1.8rem;
+  }
+
+  .contacts-section h2 {
+    font-size: 1.3rem;
+  }
+
+  .requisite-item {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .requisite-label,
+  .requisite-value {
+    width: 100%;
+  }
+
+  .contact-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,102 @@
+.offer-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  background: var(--background);
+  min-height: 100vh;
+}
+
+.offer-content {
+  background: var(--surface);
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.offer-content h1 {
+  font-size: 2.5rem;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.offer-date {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 30px;
+  font-style: italic;
+}
+
+.offer-section {
+  margin-bottom: 40px;
+}
+
+.offer-section h2 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--primary);
+}
+
+.offer-section p {
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: 15px;
+}
+
+.offer-section ul {
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin: 15px 0;
+  padding-left: 30px;
+}
+
+.offer-section li {
+  margin-bottom: 10px;
+}
+
+.requisites,
+.contacts {
+  background: var(--background);
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.requisites p,
+.contacts p {
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.requisites strong,
+.contacts strong {
+  color: var(--text-primary);
+}
+
+.contacts a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.contacts a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .offer-container {
+    padding: 20px 10px;
+  }
+
+  .offer-content {
+    padding: 20px;
+  }
+
+  .offer-content h1 {
+    font-size: 1.8rem;
+  }
+
+  .offer-section h2 {
+    font-size: 1.3rem;
+  }
+}

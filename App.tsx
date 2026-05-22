@@ -18,6 +18,9 @@ import AdminRoute from './components/AdminRoute'
 import ForgotPassword from './components/ForgotPasswordForm'
 import Deposit from './pages/Deposit'
 import Statistics from './pages/Statistics'
+import Offer from './pages/Offer'
+import Contacts from './pages/Contacts'
+import Privacy from './pages/Privacy'
 import './App.css'
 
 function App() {
@@ -112,6 +115,10 @@ function App() {
               </Layout>
             </AdminRoute>
           } />
+          <Route path="/offer" element={<Offer />} />
+          <Route path="/terms" element={<Offer />} />
+          <Route path="/contacts" element={<Contacts />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>

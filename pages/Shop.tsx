@@ -115,6 +115,33 @@ const STYLES = `
     font-size: 0.95rem;
   }
 
+  .sh-create-btn {
+    background: var(--gradient-brand);
+    border: none;
+    border-radius: 14px;
+    padding: 0.7rem 1.4rem;
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(124,58,237,0.4);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+  }
+
+  .sh-create-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 28px rgba(124,58,237,0.6);
+  }
+
+  .sh-create-btn:active {
+    transform: translateY(0) scale(0.97);
+  }
+
   /* ---- FILTERS ---- */
   .sh-filters {
     max-width: 1400px;
@@ -901,13 +928,19 @@ const Shop = () => {
             <p className="sh-subtitle">Premium loops & samples from top creators</p>
           </div>
         </div>
-        {userBalance > 0 && (
-          <div className="sh-balance">
-            <span className="sh-balance-icon">💎</span>
-            <span className="sh-balance-label">Balance</span>
-            <span className="sh-balance-amount">{userBalance.toLocaleString()} coins</span>
-          </div>
-        )}
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <a href="/create-pack" className="sh-create-btn">
+            <span>+</span>
+            <span>Create Pack</span>
+          </a>
+          {userBalance > 0 && (
+            <div className="sh-balance">
+              <span className="sh-balance-icon">💎</span>
+              <span className="sh-balance-label">Balance</span>
+              <span className="sh-balance-amount">{userBalance.toLocaleString()} coins</span>
+            </div>
+          )}
+        </div>
       </header>
 
       <div className="sh-filters">

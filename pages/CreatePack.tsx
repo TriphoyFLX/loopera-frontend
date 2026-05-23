@@ -1,6 +1,7 @@
+// CreatePack.tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './CreatePack.module.css';
+import styles from './CreatePack.module.css';
 
 const CreatePack: React.FC = () => {
   const navigate = useNavigate();
@@ -105,281 +106,379 @@ const CreatePack: React.FC = () => {
     return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
   };
 
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.currentTarget.classList.add(styles.dragOver);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.currentTarget.classList.remove(styles.dragOver);
+  };
+
+  const handleDrop = (e: React.DragEvent, setter: (file: File) => void, accept: string[]) => {
+    e.preventDefault();
+    e.currentTarget.classList.remove(styles.dragOver);
+    
+    const file = e.dataTransfer.files[0];
+    if (file && accept.some(ext => file.name.toLowerCase().endsWith(ext))) {
+      setter(file);
+    }
+  };
+
   return (
-    <div className="create-pack-container">
-      <div className="create-pack-header">
-        <h1>Create Sound Pack</h1>
-        <p>Upload your archive with loops and create a pack to sell on the marketplace</p>
-      </div>
+    <div className={styles.container}>
+      <div className={styles.content}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Create Sound Pack</h1>
+          <p className={styles.subtitle}>Share your sounds with the world</p>
+        </div>
 
-      <form onSubmit={handleSubmit} className="create-pack-form">
-        {error && (
-          <div className="alert alert-error">
-            {error}
-          </div>
-        )}
-
-        {success && (
-          <div className="alert alert-success">
-            {success}
-          </div>
-        )}
-
-        <div className="form-section">
-          <h2>Basic Information</h2>
-          
-          <div className="form-group">
-            <label htmlFor="title">Pack Title *</label>
-            <input
-              type="text"
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter pack title..."
-              maxLength={255}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="description">Description</label>
-            <textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Describe your pack..."
-              rows={4}
-              maxLength={1000}
-            />
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="price">Price (coins) *</label>
-              <input
-                type="number"
-                id="price"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                placeholder="0"
-                min="0"
-                max="10000"
-                required
-              />
+        <form onSubmit={handleSubmit} className={styles.form}>
+          {error && (
+            <div className={styles.alertError}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <span>{error}</span>
             </div>
+          )}
 
-            <div className="form-group">
-              <label htmlFor="voiceTag">Voice Tag Text (optional)</label>
+          {success && (
+            <div className={styles.alertSuccess}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+              <span>{success}</span>
+            </div>
+          )}
+
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Basic Information</h2>
+            
+            <div className={styles.fieldGroup}>
+              <label className={styles.label} htmlFor="title">
+                Pack Title <span className={styles.required}>*</span>
+              </label>
               <input
                 type="text"
-                id="voiceTag"
-                value={voiceTag}
-                onChange={(e) => setVoiceTag(e.target.value)}
-                placeholder="Your producer tag..."
-                maxLength={100}
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="form-section">
-          <h2>Archive File *</h2>
-          <p className="file-description">
-            Upload a ZIP file containing all your loops for this pack.
-          </p>
-          <div className="file-upload-area">
-            <input
-              type="file"
-              id="archiveFile"
-              accept=".zip"
-              onChange={(e) => {
-                if (e.target.files && e.target.files[0]) {
-                  setArchiveFile(e.target.files[0]);
-                }
-              }}
-              disabled={loading}
-            />
-            <label htmlFor="archiveFile" className="file-upload-label">
-              <span className="upload-icon">📦</span>
-              <span>Upload archive file *</span>
-              <span className="upload-hint">ZIP format (Max 500MB)</span>
-            </label>
-          </div>
-          {archiveFile && (
-            <div className="uploaded-file-info">
-              <span>✅ {archiveFile.name} ({formatFileSize(archiveFile.size)})</span>
-            </div>
-          )}
-          </div>
-
-          <div className="form-section">
-          <h2>Preview Files *</h2>
-          <p className="file-description">
-            Upload 1 or 2 preview loops to showcase your pack.
-          </p>
-          
-          <div className="form-group">
-            <label htmlFor="preview1">Preview 1 *</label>
-            <div className="file-upload-area">
-              <input
-                type="file"
-                id="preview1"
-                accept=".mp3,.wav,.ogg,.m4a,.flac"
-                onChange={(e) => {
-                  if (e.target.files && e.target.files[0]) {
-                    setPreviewFile1(e.target.files[0]);
-                  }
-                }}
-                disabled={loading}
-              />
-              <label htmlFor="preview1" className="file-upload-label">
-                <span className="upload-icon">🎵</span>
-                <span>Upload first preview *</span>
-                <span className="upload-hint">MP3, WAV, OGG, M4A, FLAC (Max 50MB)</span>
-              </label>
-            </div>
-            {previewFile1 && (
-              <div className="uploaded-file-info">
-                <span>✅ {previewFile1.name} ({formatFileSize(previewFile1.size)})</span>
-              </div>
-            )}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="preview2">Preview 2 (optional)</label>
-            <div className="file-upload-area">
-              <input
-                type="file"
-                id="preview2"
-                accept=".mp3,.wav,.ogg,.m4a,.flac"
-                onChange={(e) => {
-                  if (e.target.files && e.target.files[0]) {
-                    setPreviewFile2(e.target.files[0]);
-                  }
-                }}
-                disabled={loading}
-              />
-              <label htmlFor="preview2" className="file-upload-label">
-                <span className="upload-icon">🎵</span>
-                <span>Upload second preview (optional)</span>
-                <span className="upload-hint">MP3, WAV, OGG, M4A, FLAC (Max 50MB)</span>
-              </label>
-            </div>
-            {previewFile2 && (
-              <div className="uploaded-file-info">
-                <span>✅ {previewFile2.name} ({formatFileSize(previewFile2.size)})</span>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="form-section">
-          <h2>Voice Tag File (optional)</h2>
-          <div className="file-upload-area">
-            <input
-              type="file"
-              id="voiceTagFile"
-              accept=".mp3,.wav,.ogg,.m4a,.flac"
-              onChange={(e) => {
-                if (e.target.files && e.target.files[0]) {
-                  setVoiceTagFile(e.target.files[0]);
-                }
-              }}
-              disabled={loading}
-              />
-              <label htmlFor="voiceTagFile" className="file-upload-label">
-                <span className="upload-icon">🎤</span>
-                <span>Upload voice tag file</span>
-                <span className="upload-hint">MP3, WAV, OGG, M4A, FLAC (Max 50MB)</span>
-              </label>
-            </div>
-            {voiceTagFile && (
-              <div className="uploaded-file-info">
-                <span>✅ {voiceTagFile.name}</span>
-              </div>
-            )}
-          </div>
-
-          <div className="form-section">
-            <h2>Text File (required)</h2>
-            <p className="file-description">
-              Upload a text file with detailed information about your pack, licensing terms, and any additional notes.
-            </p>
-            <div className="file-upload-area">
-              <input
-                type="file"
-                id="textFile"
-              accept=".txt,.rtf,.pdf"
-                onChange={(e) => {
-                  if (e.target.files && e.target.files[0]) {
-                  setTextFile(e.target.files[0]);
-                  }
-                }}
-              disabled={loading}
+                id="title"
+                className={styles.input}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g., 'Midnight Melodies'"
+                maxLength={255}
                 required
               />
-              <label htmlFor="textFile" className="file-upload-label">
-              <span className="upload-icon">�</span>
-                <span>Upload text file *</span>
-              <span className="upload-hint">TXT, RTF, PDF format (Max 10MB)</span>
-              </label>
+              <p className={styles.hint}>Choose a catchy title for your pack</p>
             </div>
-            {textFile && (
-              <div className="uploaded-file-info">
-                <span>✅ {textFile.name}</span>
-            </div>
-          )}
-        </div>
 
-        <div className="form-section">
-          <h2>Pack Rules</h2>
-          <div className="rules-info">
-            <div className="rule-item">
-              <span className="rule-icon">📦</span>
-              <span>Upload archive with loops in ZIP format</span>
+            <div className={styles.fieldGroup}>
+              <label className={styles.label} htmlFor="description">
+                Description
+              </label>
+              <textarea
+                id="description"
+                className={styles.textarea}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Describe your pack, inspiration, and what users can expect..."
+                rows={4}
+                maxLength={1000}
+              />
+              <p className={styles.hint}>{description.length}/1000 characters</p>
             </div>
-            <div className="rule-item">
-              <span className="rule-icon">🎵</span>
-              <span>Add 1-2 preview files for showcasing</span>
-            </div>
-            <div className="rule-item">
-              <span className="rule-icon">⏰</span>
-              <span>Account must be at least 3 days old</span>
-            </div>
-            <div className="rule-item">
-              <span className="rule-icon">📦</span>
-              <span>Maximum 3 packs per day</span>
-            </div>
-            <div className="rule-item">
-              <span className="rule-icon">👁️</span>
-              <span>All packs are reviewed by moderators</span>
-            </div>
-            <div className="rule-item">
-              <span className="rule-icon">💰</span>
-              <span>15% commission on all sales</span>
+
+            <div className={styles.row}>
+              <div className={styles.fieldGroup}>
+                <label className={styles.label} htmlFor="price">
+                  Price <span className={styles.required}>*</span>
+                </label>
+                <div className={styles.priceInput}>
+                  <span className={styles.priceSymbol}>💰</span>
+                  <input
+                    type="number"
+                    id="price"
+                    className={styles.input}
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    placeholder="0"
+                    min="0"
+                    max="10000"
+                    required
+                  />
+                  <span className={styles.priceUnit}>coins</span>
+                </div>
+              </div>
+
+              <div className={styles.fieldGroup}>
+                <label className={styles.label} htmlFor="voiceTag">
+                  Voice Tag Text
+                </label>
+                <input
+                  type="text"
+                  id="voiceTag"
+                  className={styles.input}
+                  value={voiceTag}
+                  onChange={(e) => setVoiceTag(e.target.value)}
+                  placeholder="Your producer tag..."
+                  maxLength={100}
+                />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="form-actions">
-          <button
-            type="button"
-            className="btn-secondary"
-            onClick={() => navigate('/shop')}
-            disabled={loading}
-          >
-            Cancel
-          </button>
-          
-          <button
-            type="submit"
-            className="btn-primary"
-            disabled={loading || !archiveFile || !previewFile1 || !textFile}
-          >
-            {loading ? 'Creating...' : 'Submit for Review'}
-          </button>
-        </div>
-      </form>
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Files</h2>
+            
+            <div className={styles.fieldGroup}>
+              <label className={styles.label}>
+                Archive File <span className={styles.required}>*</span>
+              </label>
+              <div 
+                className={styles.uploadArea}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={(e) => handleDrop(e, setArchiveFile, ['.zip'])}
+              >
+                <input
+                  type="file"
+                  id="archiveFile"
+                  className={styles.fileInput}
+                  accept=".zip"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      setArchiveFile(e.target.files[0]);
+                    }
+                  }}
+                  disabled={loading}
+                />
+                <label htmlFor="archiveFile" className={styles.uploadLabel}>
+                  <div className={styles.uploadIcon}>📦</div>
+                  <div className={styles.uploadText}>
+                    <span className={styles.uploadTitle}>Upload archive file</span>
+                    <span className={styles.uploadSubtitle}>ZIP format up to 500MB</span>
+                  </div>
+                </label>
+              </div>
+              {archiveFile && (
+                <div className={styles.fileInfo}>
+                  <span className={styles.fileIcon}>✓</span>
+                  <span className={styles.fileName}>{archiveFile.name}</span>
+                  <span className={styles.fileSize}>({formatFileSize(archiveFile.size)})</span>
+                </div>
+              )}
+            </div>
+
+            <div className={styles.row}>
+              <div className={styles.fieldGroup}>
+                <label className={styles.label}>
+                  Preview 1 <span className={styles.required}>*</span>
+                </label>
+                <div 
+                  className={styles.uploadArea}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={(e) => handleDrop(e, setPreviewFile1, ['.mp3', '.wav', '.ogg', '.m4a', '.flac'])}
+                >
+                  <input
+                    type="file"
+                    id="preview1"
+                    className={styles.fileInput}
+                    accept=".mp3,.wav,.ogg,.m4a,.flac"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setPreviewFile1(e.target.files[0]);
+                      }
+                    }}
+                    disabled={loading}
+                  />
+                  <label htmlFor="preview1" className={styles.uploadLabel}>
+                    <div className={styles.uploadIcon}>🎵</div>
+                    <div className={styles.uploadText}>
+                      <span className={styles.uploadTitle}>Upload preview 1</span>
+                      <span className={styles.uploadSubtitle}>MP3, WAV, OGG, M4A, FLAC (Max 50MB)</span>
+                    </div>
+                  </label>
+                </div>
+                {previewFile1 && (
+                  <div className={styles.fileInfo}>
+                    <span className={styles.fileIcon}>✓</span>
+                    <span className={styles.fileName}>{previewFile1.name}</span>
+                    <span className={styles.fileSize}>({formatFileSize(previewFile1.size)})</span>
+                  </div>
+                )}
+              </div>
+
+              <div className={styles.fieldGroup}>
+                <label className={styles.label}>Preview 2</label>
+                <div 
+                  className={styles.uploadArea}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={(e) => handleDrop(e, setPreviewFile2, ['.mp3', '.wav', '.ogg', '.m4a', '.flac'])}
+                >
+                  <input
+                    type="file"
+                    id="preview2"
+                    className={styles.fileInput}
+                    accept=".mp3,.wav,.ogg,.m4a,.flac"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setPreviewFile2(e.target.files[0]);
+                      }
+                    }}
+                    disabled={loading}
+                  />
+                  <label htmlFor="preview2" className={styles.uploadLabel}>
+                    <div className={styles.uploadIcon}>🎵</div>
+                    <div className={styles.uploadText}>
+                      <span className={styles.uploadTitle}>Upload preview 2</span>
+                      <span className={styles.uploadSubtitle}>Optional - MP3, WAV, OGG, M4A, FLAC (Max 50MB)</span>
+                    </div>
+                  </label>
+                </div>
+                {previewFile2 && (
+                  <div className={styles.fileInfo}>
+                    <span className={styles.fileIcon}>✓</span>
+                    <span className={styles.fileName}>{previewFile2.name}</span>
+                    <span className={styles.fileSize}>({formatFileSize(previewFile2.size)})</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className={styles.fieldGroup}>
+              <label className={styles.label}>Voice Tag File</label>
+              <div 
+                className={styles.uploadArea}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={(e) => handleDrop(e, setVoiceTagFile, ['.mp3', '.wav', '.ogg', '.m4a', '.flac'])}
+              >
+                <input
+                  type="file"
+                  id="voiceTagFile"
+                  className={styles.fileInput}
+                  accept=".mp3,.wav,.ogg,.m4a,.flac"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      setVoiceTagFile(e.target.files[0]);
+                    }
+                  }}
+                  disabled={loading}
+                />
+                <label htmlFor="voiceTagFile" className={styles.uploadLabel}>
+                  <div className={styles.uploadIcon}>🎤</div>
+                  <div className={styles.uploadText}>
+                    <span className={styles.uploadTitle}>Upload voice tag</span>
+                    <span className={styles.uploadSubtitle}>Optional - MP3, WAV, OGG, M4A, FLAC (Max 50MB)</span>
+                  </div>
+                </label>
+              </div>
+              {voiceTagFile && (
+                <div className={styles.fileInfo}>
+                  <span className={styles.fileIcon}>✓</span>
+                  <span className={styles.fileName}>{voiceTagFile.name}</span>
+                  <span className={styles.fileSize}>({formatFileSize(voiceTagFile.size)})</span>
+                </div>
+              )}
+            </div>
+
+            <div className={styles.fieldGroup}>
+              <label className={styles.label}>
+                Text File <span className={styles.required}>*</span>
+              </label>
+              <div 
+                className={styles.uploadArea}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={(e) => handleDrop(e, setTextFile, ['.txt', '.rtf', '.pdf'])}
+              >
+                <input
+                  type="file"
+                  id="textFile"
+                  className={styles.fileInput}
+                  accept=".txt,.rtf,.pdf"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      setTextFile(e.target.files[0]);
+                    }
+                  }}
+                  disabled={loading}
+                  required
+                />
+                <label htmlFor="textFile" className={styles.uploadLabel}>
+                  <div className={styles.uploadIcon}>📄</div>
+                  <div className={styles.uploadText}>
+                    <span className={styles.uploadTitle}>Upload text file</span>
+                    <span className={styles.uploadSubtitle}>TXT, RTF, PDF format (Max 10MB)</span>
+                  </div>
+                </label>
+              </div>
+              {textFile && (
+                <div className={styles.fileInfo}>
+                  <span className={styles.fileIcon}>✓</span>
+                  <span className={styles.fileName}>{textFile.name}</span>
+                  <span className={styles.fileSize}>({formatFileSize(textFile.size)})</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Guidelines</h2>
+            <div className={styles.rulesGrid}>
+              <div className={styles.ruleCard}>
+                <span className={styles.ruleIcon}>📦</span>
+                <span className={styles.ruleText}>ZIP archive with loops</span>
+              </div>
+              <div className={styles.ruleCard}>
+                <span className={styles.ruleIcon}>🎵</span>
+                <span className={styles.ruleText}>1-2 preview files</span>
+              </div>
+              <div className={styles.ruleCard}>
+                <span className={styles.ruleIcon}>⏰</span>
+                <span className={styles.ruleText}>Account must be 3+ days old</span>
+              </div>
+              <div className={styles.ruleCard}>
+                <span className={styles.ruleIcon}>📦</span>
+                <span className={styles.ruleText}>Max 3 packs per day</span>
+              </div>
+              <div className={styles.ruleCard}>
+                <span className={styles.ruleIcon}>👁️</span>
+                <span className={styles.ruleText}>Reviewed by moderators</span>
+              </div>
+              <div className={styles.ruleCard}>
+                <span className={styles.ruleIcon}>💰</span>
+                <span className={styles.ruleText}>15% commission on sales</span>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.actions}>
+            <button
+              type="button"
+              className={styles.buttonSecondary}
+              onClick={() => navigate('/shop')}
+              disabled={loading}
+            >
+              Cancel
+            </button>
+            
+            <button
+              type="submit"
+              className={`${styles.buttonPrimary} ${loading ? styles.loading : ''}`}
+              disabled={loading || !archiveFile || !previewFile1 || !textFile}
+            >
+              {loading ? 'Creating...' : 'Submit for Review'}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

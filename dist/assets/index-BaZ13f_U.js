@@ -19889,7 +19889,7 @@ const sidebar = "_sidebar_q839z_1";
 const item = "_item_q839z_37";
 const menu = "_menu_q839z_50";
 const active$1 = "_active_q839z_95";
-const styles$7 = {
+const styles$8 = {
 	sidebar: sidebar,
 	item: item,
 	menu: menu,
@@ -19925,18 +19925,18 @@ const Sidebar = () => {
       icon: /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M3 3v18h18M3 9l3 3 6-6 6 6 6-6" }) })
     }
   ];
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("aside", { className: styles$7.sidebar, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$7.menu, children: items.map((item) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("aside", { className: styles$8.sidebar, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$8.menu, children: items.map((item) => /* @__PURE__ */ jsxRuntimeExports.jsx(
     Link,
     {
       to: item.path,
-      className: `${styles$7.item} ${location.pathname === item.path ? styles$7.active : ""}`,
+      className: `${styles$8.item} ${location.pathname === item.path ? styles$8.active : ""}`,
       children: item.icon
     },
     item.path
   )) }) });
 };
 
-const header$2 = "_header_1ty9r_3";
+const header$3 = "_header_1ty9r_3";
 const headerContainer = "_headerContainer_1ty9r_15";
 const searchSection = "_searchSection_1ty9r_27";
 const searchButton = "_searchButton_1ty9r_33";
@@ -19949,8 +19949,8 @@ const profileButton = "_profileButton_1ty9r_197";
 const profileAvatar = "_profileAvatar_1ty9r_243";
 const profileName = "_profileName_1ty9r_263";
 const glowEffect = "_glowEffect_1ty9r_457";
-const styles$6 = {
-	header: header$2,
+const styles$7 = {
+	header: header$3,
 	headerContainer: headerContainer,
 	searchSection: searchSection,
 	searchButton: searchButton,
@@ -19991,11 +19991,11 @@ const Header = () => {
   const handleAdminClick = () => {
     navigate("/admin");
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("header", { className: styles$6.header, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$6.headerContainer, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$6.searchSection, children: !isSearchOpen ? /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("header", { className: styles$7.header, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$7.headerContainer, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$7.searchSection, children: !isSearchOpen ? /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "button",
       {
-        className: styles$6.searchButton,
+        className: styles$7.searchButton,
         onClick: () => setIsSearchOpen(true),
         "aria-label": "Поиск",
         children: [
@@ -20003,10 +20003,10 @@ const Header = () => {
             /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "11", cy: "11", r: "8" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "m21 21-4.35-4.35" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$6.glowEffect })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$7.glowEffect })
         ]
       }
-    ) : /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSearch, className: styles$6.searchForm, children: [
+    ) : /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSearch, className: styles$7.searchForm, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "input",
         {
@@ -20014,11 +20014,11 @@ const Header = () => {
           value: searchQuery,
           onChange: handleSearchInputChange,
           placeholder: "Поиск лупов, авторов...",
-          className: styles$6.searchInput,
+          className: styles$7.searchInput,
           autoFocus: true
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "submit", className: styles$6.searchSubmitButton, "aria-label": "Найти", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "submit", className: styles$7.searchSubmitButton, "aria-label": "Найти", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "11", cy: "11", r: "8" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "m21 21-4.35-4.35" })
       ] }) }),
@@ -20030,7 +20030,7 @@ const Header = () => {
             setIsSearchOpen(false);
             setSearchQuery("");
           },
-          className: styles$6.searchCancelButton,
+          className: styles$7.searchCancelButton,
           "aria-label": "Закрыть",
           children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: [
             /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: "18", y1: "6", x2: "6", y2: "18" }),
@@ -20038,34 +20038,34 @@ const Header = () => {
           ] })
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$6.glowEffect })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$7.glowEffect })
     ] }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$6.profileSection, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$7.profileSection, children: [
       isAdmin && /* @__PURE__ */ jsxRuntimeExports.jsxs(
         "button",
         {
-          className: styles$6.profileButton,
+          className: styles$7.profileButton,
           onClick: handleAdminClick,
           "aria-label": "Админ панель",
           style: { marginRight: "10px", backgroundColor: "#dc2626" },
           children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$6.profileName, children: "Admin" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$7.profileName, children: "Admin" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("polyline", { points: "6 9 12 15 18 9" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$6.glowEffect })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$7.glowEffect })
           ]
         }
       ),
       /* @__PURE__ */ jsxRuntimeExports.jsxs(
         "button",
         {
-          className: styles$6.profileButton,
+          className: styles$7.profileButton,
           onClick: handleProfileClick,
           "aria-label": "Профиль",
           children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$6.profileAvatar, children: user?.username ? user.username.charAt(0).toUpperCase() : "U" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$6.profileName, children: user?.username || "Гость" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$7.profileAvatar, children: user?.username ? user.username.charAt(0).toUpperCase() : "U" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$7.profileName, children: user?.username || "Гость" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("polyline", { points: "6 9 12 15 18 9" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$6.glowEffect })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$7.glowEffect })
           ]
         }
       )
@@ -20076,13 +20076,13 @@ const Header = () => {
 const mobileAppBar = "_mobileAppBar_hh0l6_3";
 const navItem = "_navItem_hh0l6_47";
 const iconWrapper = "_iconWrapper_hh0l6_63";
-const label = "_label_hh0l6_80";
+const label$1 = "_label_hh0l6_80";
 const active = "_active_hh0l6_89";
-const styles$5 = {
+const styles$6 = {
 	mobileAppBar: mobileAppBar,
 	navItem: navItem,
 	iconWrapper: iconWrapper,
-	label: label,
+	label: label$1,
 	active: active};
 
 const MobileAppBar = () => {
@@ -20123,7 +20123,7 @@ const MobileAppBar = () => {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
     "nav",
     {
-      className: `${styles$5.mobileAppBar} ${!isVisible ? styles$5.hidden : ""}`,
+      className: `${styles$6.mobileAppBar} ${!isVisible ? styles$6.hidden : ""}`,
       style: {
         transform: isVisible ? "translateY(0)" : "translateY(100%)",
         transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
@@ -20134,10 +20134,10 @@ const MobileAppBar = () => {
           Link,
           {
             to: item.path,
-            className: `${styles$5.navItem} ${isActive ? styles$5.active : ""}`,
+            className: `${styles$6.navItem} ${isActive ? styles$6.active : ""}`,
             children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$5.iconWrapper, children: isActive ? item.activeIcon : item.icon }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$5.label, children: item.label })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$6.iconWrapper, children: isActive ? item.activeIcon : item.icon }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$6.label, children: item.label })
             ]
           },
           item.path
@@ -20151,7 +20151,7 @@ const looperaLogo = "data:image/svg+xml,%3csvg%20width='24'%20height='12'%20view
 
 const logoButton = "_logoButton_1bk4c_1";
 const logoImage = "_logoImage_1bk4c_30";
-const styles$4 = {
+const styles$5 = {
 	logoButton: logoButton,
 	logoImage: logoImage
 };
@@ -20161,7 +20161,7 @@ const LogoButton = () => {
   const handleClick = () => {
     navigate("/");
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: styles$4.logoButton, onClick: handleClick, children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: looperaLogo, alt: "Loopera", className: styles$4.logoImage }) });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: styles$5.logoButton, onClick: handleClick, children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: looperaLogo, alt: "Loopera", className: styles$5.logoImage }) });
 };
 
 const Layout = ({ children }) => {
@@ -21159,7 +21159,7 @@ const likeApi = new LikeApi();
 const overlay$1 = "_overlay_71sf7_1";
 const modal$1 = "_modal_71sf7_16";
 const show$1 = "_show_71sf7_31";
-const header$1 = "_header_71sf7_36";
+const header$2 = "_header_71sf7_36";
 const rules = "_rules_71sf7_58";
 const rule = "_rule_71sf7_58";
 const icon = "_icon_71sf7_81";
@@ -21169,11 +21169,11 @@ const note$1 = "_note_71sf7_111";
 const footer$2 = "_footer_71sf7_129";
 const primary$1 = "_primary_71sf7_134";
 const secondary$1 = "_secondary_71sf7_153";
-const styles$3 = {
+const styles$4 = {
 	overlay: overlay$1,
 	modal: modal$1,
 	show: show$1,
-	header: header$1,
+	header: header$2,
 	rules: rules,
 	rule: rule,
 	icon: icon,
@@ -21224,36 +21224,36 @@ const DownloadRulesModal = ({ isOpen, onClose, onDownload, loopTitle }) => {
   };
   if (!isOpen) return null;
   return reactDomExports.createPortal(
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$3.overlay, onClick: (e) => e.target === e.currentTarget && onClose(), children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `${styles$3.modal} ${isVisible ? styles$3.show : ""}`, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.header, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$4.overlay, onClick: (e) => e.target === e.currentTarget && onClose(), children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `${styles$4.modal} ${isVisible ? styles$4.show : ""}`, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.header, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { children: [
           "Скачивание ",
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "лупа" })
         ] }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: loopTitle || "Прочитай правила использования" })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$3.rules, children: rules.map((rule, i) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.rule, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$3.icon, children: /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" }) }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$4.rules, children: rules.map((rule, i) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.rule, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$4.icon, children: /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" }) }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$3.ruleTitle, children: rule.title }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$3.ruleDesc, children: rule.description })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$4.ruleTitle, children: rule.title }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$4.ruleDesc, children: rule.description })
         ] })
       ] }, i)) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.note, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.note, children: [
         "Нажимая скачать, ты соглашаешься с правилами",
         /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Уважай труд авторов!" })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.footer, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$4.footer, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
-            className: styles$3.primary,
+            className: styles$4.primary,
             onClick: handleDownload,
             children: "Скачать"
           }
         ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: styles$3.secondary, onClick: onClose, children: "Отмена" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: styles$4.secondary, onClick: onClose, children: "Отмена" })
       ] })
     ] }) }),
     document.body
@@ -22173,7 +22173,7 @@ const contactLink = "_contactLink_8bsdy_186";
 const cta = "_cta_8bsdy_222";
 const ctaArrow = "_ctaArrow_8bsdy_252";
 const partner = "_partner_8bsdy_261";
-const styles$2 = {
+const styles$3 = {
 	root: root,
 	wrap: wrap,
 	topRow: topRow,
@@ -22194,16 +22194,16 @@ const styles$2 = {
 const Add = () => {
   const [visible, setVisible] = reactExports.useState(true);
   if (!visible) return null;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$2.root, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.wrap, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.topRow, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.badge, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$2.badgeDot }),
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$3.root, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.wrap, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.topRow, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.badge, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$3.badgeDot }),
         "Реклама"
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
-          className: styles$2.closeBtn,
+          className: styles$3.closeBtn,
           "aria-label": "Закрыть рекламу",
           onClick: () => setVisible(false),
           children: /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { width: "10", height: "10", viewBox: "0 0 10 10", fill: "none", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round", children: [
@@ -22213,31 +22213,31 @@ const Add = () => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: styles$2.headline, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: styles$3.headline, children: [
       "Охватите",
       /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
       /* @__PURE__ */ jsxRuntimeExports.jsx("em", { children: "свою аудиторию" })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$2.sub, children: "Тысячи читателей видят этот блок каждый день. Займите его первым." }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$2.divider }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$2.contacts, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("a", { className: styles$2.contactLink, href: "mailto:ads@loopera.com", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$3.sub, children: "Тысячи читателей видят этот блок каждый день. Займите его первым." }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$3.divider }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$3.contacts, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("a", { className: styles$3.contactLink, href: "mailto:ads@loopera.com", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { width: "14", height: "14", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.8", strokeLinecap: "round", strokeLinejoin: "round", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("rect", { x: "2", y: "4", width: "20", height: "16", rx: "2" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("polyline", { points: "22,6 12,13 2,6" })
       ] }),
       "triphoyprod@gmail.com"
     ] }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.footer, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$3.footer, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs(
         "button",
         {
-          className: styles$2.cta,
+          className: styles$3.cta,
           onClick: () => {
             window.open("https://t.me/triphoyprod", "_blank");
           },
           children: [
             "Разместить рекламу",
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$2.ctaArrow, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$3.ctaArrow, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
               "svg",
               {
                 width: "11",
@@ -22257,7 +22257,7 @@ const Add = () => {
           ]
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$2.partner, children: "Партнёрская программа" })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$3.partner, children: "Партнёрская программа" })
     ] })
   ] }) });
 };
@@ -22265,7 +22265,7 @@ const Add = () => {
 const overlay = "_overlay_10qha_2";
 const modal = "_modal_10qha_14";
 const show = "_show_10qha_29";
-const header = "_header_10qha_35";
+const header$1 = "_header_10qha_35";
 const steps = "_steps_10qha_52";
 const step = "_step_10qha_52";
 const index = "_index_10qha_66";
@@ -22275,11 +22275,11 @@ const note = "_note_10qha_93";
 const footer = "_footer_10qha_112";
 const primary = "_primary_10qha_119";
 const secondary = "_secondary_10qha_135";
-const styles$1 = {
+const styles$2 = {
 	overlay: overlay,
 	modal: modal,
 	show: show,
-	header: header,
+	header: header$1,
 	steps: steps,
 	step: step,
 	index: index,
@@ -22328,31 +22328,31 @@ const LoopGuideModal = ({ isOpen, onClose }) => {
       description: "Добавь обложку и теги"
     }
   ];
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.overlay, onClick: (e) => e.target === e.currentTarget && onClose(), children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `${styles$1.modal} ${isVisible ? styles$1.show : ""}`, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.header, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$2.overlay, onClick: (e) => e.target === e.currentTarget && onClose(), children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `${styles$2.modal} ${isVisible ? styles$2.show : ""}`, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.header, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { children: [
         "Загрузка ",
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "лупа" })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Коротко и по делу" })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.steps, children: steps.map((step, i) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.step, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.index, children: i + 1 }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$2.steps, children: steps.map((step, i) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.step, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$2.index, children: i + 1 }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.stepTitle, children: step.title }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.stepDesc, children: step.description })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$2.stepTitle, children: step.title }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$2.stepDesc, children: step.description })
       ] })
     ] }, i)) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.note, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.note, children: [
       "Добавь Telegram в название",
       /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
       /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "dark trap loop @yourtag" })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.footer, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$2.footer, children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
-          className: styles$1.primary,
+          className: styles$2.primary,
           onClick: () => {
             onClose();
             window.location.href = "/loop-upload";
@@ -22360,7 +22360,7 @@ const LoopGuideModal = ({ isOpen, onClose }) => {
           children: "Начать"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: styles$1.secondary, onClick: onClose, children: "Закрыть" })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: styles$2.secondary, onClick: onClose, children: "Закрыть" })
     ] })
   ] }) });
 };
@@ -22459,7 +22459,7 @@ const homeSection = "_homeSection_14lwq_546";
 const sectionHeader = "_sectionHeader_14lwq_553";
 const sectionTitleWrapper = "_sectionTitleWrapper_14lwq_557";
 const sectionBadge = "_sectionBadge_14lwq_561";
-const sectionTitle = "_sectionTitle_14lwq_557";
+const sectionTitle$1 = "_sectionTitle_14lwq_557";
 const titleAccent = "_titleAccent_14lwq_585";
 const sectionDescription = "_sectionDescription_14lwq_589";
 const featuresEnhancedSection = "_featuresEnhancedSection_14lwq_601";
@@ -22505,7 +22505,7 @@ const telegramStatLabel = "_telegramStatLabel_14lwq_1147";
 const telegramStatDivider = "_telegramStatDivider_14lwq_1154";
 const telegramButtons = "_telegramButtons_14lwq_1160";
 const telegramButton = "_telegramButton_14lwq_1160";
-const styles = {
+const styles$1 = {
 	homePage: homePage,
 	promoSection: promoSection,
 	promoNoise: promoNoise,
@@ -22557,7 +22557,7 @@ const styles = {
 	sectionHeader: sectionHeader,
 	sectionTitleWrapper: sectionTitleWrapper,
 	sectionBadge: sectionBadge,
-	sectionTitle: sectionTitle,
+	sectionTitle: sectionTitle$1,
 	titleAccent: titleAccent,
 	sectionDescription: sectionDescription,
 	featuresEnhancedSection: featuresEnhancedSection,
@@ -22616,66 +22616,66 @@ const Home = () => {
   const handleCloseGuide = () => {
     setShowGuideModal(false);
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.homePage, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: styles.promoSection, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.promoNoise, "aria-hidden": "true" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.promoOrb1, "aria-hidden": "true" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.promoOrb2, "aria-hidden": "true" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.promoInner, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.promoLeft, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles.promoBadge, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.promoBadgeDot }),
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.homePage, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: styles$1.promoSection, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.promoNoise, "aria-hidden": "true" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.promoOrb1, "aria-hidden": "true" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.promoOrb2, "aria-hidden": "true" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.promoInner, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.promoLeft, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles$1.promoBadge, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.promoBadgeDot }),
             "Платформа лупов №1"
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("h1", { className: styles.promoTitle, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.promoTitleLine, children: "Real" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.promoTitleAccent, children: "Loops." }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.promoTitleLine, children: "Real" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.promoTitleLine, children: "Music." })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("h1", { className: styles$1.promoTitle, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.promoTitleLine, children: "Real" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.promoTitleAccent, children: "Loops." }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.promoTitleLine, children: "Real" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.promoTitleLine, children: "Music." })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles.promoSubtitle, children: "Создавай, коллаборируйся, знакомься. Лупы — это огромная часть музыки." }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.promoButtons, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("a", { href: "/loops", className: styles.promoPrimary, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$1.promoSubtitle, children: "Создавай, коллаборируйся, знакомься. Лупы — это огромная часть музыки." }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.promoButtons, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("a", { href: "/loops", className: styles$1.promoPrimary, children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Загрузить луп" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { width: "16", height: "16", viewBox: "0 0 16 16", fill: "none", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M3 8h10M9 4l4 4-4 4", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round" }) })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "/loops", className: styles.promoSecondary, children: "Смотреть все лупы" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "/loops", className: styles$1.promoSecondary, children: "Смотреть все лупы" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.promoStats, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.promoStat, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.promoStatNum, children: "8.5k" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.promoStatLabel, children: "лупов" })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.promoStats, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.promoStat, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.promoStatNum, children: "8.5k" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.promoStatLabel, children: "лупов" })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.promoStatDivider }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.promoStat, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.promoStatNum, children: "500+" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.promoStatLabel, children: "продюсеров" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.promoStatDivider }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.promoStat, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.promoStatNum, children: "500+" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.promoStatLabel, children: "продюсеров" })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.promoStatDivider }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.promoStat, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.promoStatNum, children: "24/7" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.promoStatLabel, children: "онлайн" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.promoStatDivider }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.promoStat, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.promoStatNum, children: "24/7" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.promoStatLabel, children: "онлайн" })
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.promoRight, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.floatingTag, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.floatingTagDot }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.promoRight, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.floatingTag, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.floatingTagDot }),
             "Новый луп загружен"
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.playerCard, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.playerTop, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.playerCover, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.playerCoverInner }) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.playerMeta, children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles.playerName, children: "@triphoymp3" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.playerSub, children: "Telegram Channel" })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.playerCard, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.playerTop, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.playerCover, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.playerCoverInner }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.playerMeta, children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$1.playerName, children: "@triphoymp3" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.playerSub, children: "Telegram Channel" })
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.playerGenre, children: "Trap" })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.playerGenre, children: "Trap" })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.playerWaveform, children: [35, 55, 80, 45, 90, 60, 40, 75, 50, 65, 85, 45, 70, 55, 40].map((h, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.playerWaveform, children: [35, 55, 80, 45, 90, 60, 40, 75, 50, 65, 85, 45, 70, 55, 40].map((h, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(
               "div",
               {
-                className: styles.playerBar,
+                className: styles$1.playerBar,
                 style: {
                   "--bar-h": `${h}%`,
                   "--bar-delay": `${i * 0.07}s`
@@ -22683,94 +22683,94 @@ const Home = () => {
               },
               i
             )) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.playerFooter, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.playerControls, children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: styles.playerBtnSm, "aria-label": "Предыдущий", children: /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { width: "14", height: "14", viewBox: "0 0 14 14", fill: "currentColor", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M2 2h1.5v10H2zM12 2L5 7l7 5V2z" }) }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.playerFooter, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.playerControls, children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: styles$1.playerBtnSm, "aria-label": "Предыдущий", children: /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { width: "14", height: "14", viewBox: "0 0 14 14", fill: "currentColor", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M2 2h1.5v10H2zM12 2L5 7l7 5V2z" }) }) }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(
                   "a",
                   {
                     href: "https://t.me/triphoymp3",
                     target: "_blank",
                     rel: "noreferrer",
-                    className: styles.playerBtnMain,
+                    className: styles$1.playerBtnMain,
                     "aria-label": "Перейти",
                     children: /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { width: "16", height: "16", viewBox: "0 0 16 16", fill: "currentColor", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M5 3l8 5-8 5V3z" }) })
                   }
                 ),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: styles.playerBtnSm, "aria-label": "Следующий", children: /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { width: "14", height: "14", viewBox: "0 0 14 14", fill: "currentColor", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M10.5 2H12v10h-1.5zM2 2l7 5-7 5V2z" }) }) })
+                /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: styles$1.playerBtnSm, "aria-label": "Следующий", children: /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { width: "14", height: "14", viewBox: "0 0 14 14", fill: "currentColor", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M10.5 2H12v10h-1.5zM2 2l7 5-7 5V2z" }) }) })
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.playerDuration, children: "2:34" })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.playerDuration, children: "2:34" })
             ] })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.activityCard, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles.activityTitle, children: "Активность сейчас" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.activityBars, children: [60, 80, 45, 90, 55, 70, 85, 50, 75, 65].map((h, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.activityCard, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$1.activityTitle, children: "Активность сейчас" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.activityBars, children: [60, 80, 45, 90, 55, 70, 85, 50, 75, 65].map((h, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(
               "div",
               {
-                className: styles.activityBar,
+                className: styles$1.activityBar,
                 style: { "--ab-h": `${h}%`, "--ab-delay": `${i * 0.1}s` }
               },
               i
             )) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.activityFooter, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles.activityOnline, children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.activityDot }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.activityFooter, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles$1.activityOnline, children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.activityDot }),
                 "142 онлайн"
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.activityCount, children: "+24 сегодня" })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.activityCount, children: "+24 сегодня" })
             ] })
           ] })
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: styles.homeSection, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.sectionHeader, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.sectionTitleWrapper, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.sectionBadge, children: "Популярное" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: styles.sectionTitle, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: styles$1.homeSection, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.sectionHeader, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.sectionTitleWrapper, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.sectionBadge, children: "Популярное" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: styles$1.sectionTitle, children: [
             "Популярные ",
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.titleAccent, children: "лупы" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.titleAccent, children: "лупы" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles.sectionDescription, children: "Самые скачиваемые лупы этой недели" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$1.sectionDescription, children: "Самые скачиваемые лупы этой недели" })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(RecentLoops, { limit: 6, showAllButton: true, type: "all", title: "", sortBy: "likes" })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: styles.telegramSectionFull, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.sectionHeader, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.sectionTitleWrapper, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.sectionBadge, children: "Сообщество" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: styles.sectionTitle, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: styles$1.telegramSectionFull, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.sectionHeader, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.sectionTitleWrapper, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.sectionBadge, children: "Сообщество" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: styles$1.sectionTitle, children: [
             "Подписывайтесь на ",
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.titleAccent, children: "Telegram" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.titleAccent, children: "Telegram" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles.sectionDescription, children: "Следите за новостями и эксклюзивными лупами в нашем Telegram канале" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$1.sectionDescription, children: "Следите за новостями и эксклюзивными лупами в нашем Telegram канале" })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.telegramContainer, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.telegramCard, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.telegramIcon, children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: "/ava.jpg", alt: "Telegram Avatar", className: styles.telegramAvatar }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.telegramContent, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles.telegramTitle, children: "@triphoymp3" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles.telegramDescription, children: "Эксклюзивные лупы, новости платформы и розыгрыши каждый день" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.telegramStats, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.telegramStat, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.telegramStatNum, children: "8.5k+" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.telegramStatLabel, children: "подписчиков" })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.telegramContainer, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.telegramCard, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.telegramIcon, children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: "/ava.jpg", alt: "Telegram Avatar", className: styles$1.telegramAvatar }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.telegramContent, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles$1.telegramTitle, children: "@triphoymp3" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$1.telegramDescription, children: "Эксклюзивные лупы, новости платформы и розыгрыши каждый день" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.telegramStats, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.telegramStat, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.telegramStatNum, children: "8.5k+" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.telegramStatLabel, children: "подписчиков" })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.telegramStatDivider }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.telegramStat, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.telegramStatNum, children: "24/7" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.telegramStatLabel, children: "онлайн" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.telegramStatDivider }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.telegramStat, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.telegramStatNum, children: "24/7" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.telegramStatLabel, children: "онлайн" })
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.telegramButtons, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.telegramButtons, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
           "a",
           {
             href: "https://t.me/triphoymp3",
             target: "_blank",
             rel: "noreferrer",
-            className: styles.telegramButton,
+            className: styles$1.telegramButton,
             children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Подписаться" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { width: "16", height: "16", viewBox: "0 0 16 16", fill: "none", children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M3 8h10M9 4l4 4-4 4", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round" }) })
@@ -22779,172 +22779,172 @@ const Home = () => {
         ) })
       ] }) })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: styles.homeSection, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.sectionHeader, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.sectionTitleWrapper, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.sectionBadge, children: "Тренды" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: styles.sectionTitle, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: styles$1.homeSection, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.sectionHeader, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.sectionTitleWrapper, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.sectionBadge, children: "Тренды" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: styles$1.sectionTitle, children: [
             "Лучшие ",
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.titleAccent, children: "хэштеги" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.titleAccent, children: "хэштеги" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles.sectionDescription, children: "Популярные жанры и направления" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$1.sectionDescription, children: "Популярные жанры и направления" })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(PopularHashtags, {})
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Add, {}),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: styles.homeSection, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.sectionHeader, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.sectionTitleWrapper, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.sectionBadge, children: "Топ" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: styles.sectionTitle, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: styles$1.homeSection, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.sectionHeader, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.sectionTitleWrapper, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.sectionBadge, children: "Топ" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: styles$1.sectionTitle, children: [
             "Топ ",
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.titleAccent, children: "лупмейкеры" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.titleAccent, children: "лупмейкеры" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles.sectionDescription, children: "Лучшие продюсеры по количеству лупов и лайков" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$1.sectionDescription, children: "Лучшие продюсеры по количеству лупов и лайков" })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(TopLoopmakers, { limit: 6 })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: styles.homeSection, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.sectionHeader, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.sectionTitleWrapper, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.sectionBadge, children: "Новинки" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: styles.sectionTitle, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: styles$1.homeSection, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.sectionHeader, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.sectionTitleWrapper, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.sectionBadge, children: "Новинки" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: styles$1.sectionTitle, children: [
             "Свежие ",
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.titleAccent, children: "лупы" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.titleAccent, children: "лупы" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles.sectionDescription, children: "Только что загруженные лупы от продюсеров" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$1.sectionDescription, children: "Только что загруженные лупы от продюсеров" })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(RecentLoops, { limit: 6, showAllButton: true, type: "all", title: "", sortBy: "created_at" })
     ] }),
-    user && /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: styles.homeSection, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.sectionHeader, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.sectionTitleWrapper, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.sectionBadge, children: "Рекомендации" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: styles.sectionTitle, children: [
+    user && /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: styles$1.homeSection, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.sectionHeader, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.sectionTitleWrapper, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.sectionBadge, children: "Рекомендации" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: styles$1.sectionTitle, children: [
             "Лупы ",
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.titleAccent, children: "для вас" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.titleAccent, children: "для вас" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles.sectionDescription, children: "Лупы от артистов, на которых вы подписаны" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$1.sectionDescription, children: "Лупы от артистов, на которых вы подписаны" })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(SubscribedLoops, { limit: 6, showAllButton: false })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: styles.featuresEnhancedSection, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.featuresBgGlow, "aria-hidden": "true" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.featuresGridPattern, "aria-hidden": "true" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.sectionHeader, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.sectionTitleWrapper, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles.sectionBadge, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.badgeIcon, children: "✨" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: styles$1.featuresEnhancedSection, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.featuresBgGlow, "aria-hidden": "true" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.featuresGridPattern, "aria-hidden": "true" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.sectionHeader, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.sectionTitleWrapper, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles$1.sectionBadge, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.badgeIcon, children: "✨" }),
             "Возможности"
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: styles.sectionTitle, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { className: styles$1.sectionTitle, children: [
             "Почему ",
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.titleAccent, children: "Loopera" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.titleAccent, children: "Loopera" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles.sectionDescription, children: "Инструменты и комьюнити для создания музыки будущего" })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$1.sectionDescription, children: "Инструменты и комьюнити для создания музыки будущего" })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featuresGridEnhanced, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featureCardEnhanced, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featureIconWrapper, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.featureIconGlow }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.featureEmoji, children: "🎵" })
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featuresGridEnhanced, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featureCardEnhanced, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featureIconWrapper, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.featureIconGlow }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.featureEmoji, children: "🎵" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featureContent, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featureHeader, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles.featureTitleEnhanced, children: "Библиотека лупов" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.featureBadge, children: "8.5k+" })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featureContent, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featureHeader, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles$1.featureTitleEnhanced, children: "Библиотека лупов" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.featureBadge, children: "8.5k+" })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles.featureDescriptionEnhanced, children: "Тысячи качественных лупов в разных жанрах от профессиональных продюсеров. Ежедневные обновления и эксклюзивный контент." }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featureTags, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$1.featureDescriptionEnhanced, children: "Тысячи качественных лупов в разных жанрах от профессиональных продюсеров. Ежедневные обновления и эксклюзивный контент." }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featureTags, children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Trap" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Drill" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Lo-Fi" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "+12" })
             ] })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.featureCardGlow })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.featureCardGlow })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featureCardEnhanced, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featureIconWrapper, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.featureIconGlow }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.featureEmoji, children: "🔥" })
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featureCardEnhanced, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featureIconWrapper, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.featureIconGlow }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.featureEmoji, children: "🔥" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featureContent, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featureHeader, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles.featureTitleEnhanced, children: "Подписки на артистов" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.featureBadge, children: "NEW" })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featureContent, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featureHeader, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles$1.featureTitleEnhanced, children: "Подписки на артистов" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.featureBadge, children: "NEW" })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles.featureDescriptionEnhanced, children: "Следите за любимыми продюсерами и получайте их новые лупы первыми. Персональная лента рекомендаций на основе ваших интересов." }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featureStats, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featureStatItem, children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.statValue, children: "500+" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.statLabel, children: "артистов" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$1.featureDescriptionEnhanced, children: "Следите за любимыми продюсерами и получайте их новые лупы первыми. Персональная лента рекомендаций на основе ваших интересов." }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featureStats, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featureStatItem, children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.statValue, children: "500+" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.statLabel, children: "артистов" })
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featureStatItem, children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.statValue, children: "24/7" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.statLabel, children: "обновления" })
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featureStatItem, children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.statValue, children: "24/7" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.statLabel, children: "обновления" })
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.featureCardGlow })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.featureCardGlow })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featureCardEnhanced, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featureIconWrapper, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.featureIconGlow }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.featureEmoji, children: "💬" })
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featureCardEnhanced, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featureIconWrapper, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.featureIconGlow }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.featureEmoji, children: "💬" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featureContent, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featureHeader, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles.featureTitleEnhanced, children: "Сообщество" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.featureBadge, children: "ACTIVE" })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featureContent, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featureHeader, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles$1.featureTitleEnhanced, children: "Сообщество" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.featureBadge, children: "ACTIVE" })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles.featureDescriptionEnhanced, children: "Общайтесь с другими продюсерами, обменивайтесь опытом и находите коллаборации. Еженедельные челленджи и конкурсы." }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featureActivity, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles.activityIndicator, children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.activityDotPulse }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$1.featureDescriptionEnhanced, children: "Общайтесь с другими продюсерами, обменивайтесь опытом и находите коллаборации. Еженедельные челленджи и конкурсы." }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featureActivity, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles$1.activityIndicator, children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.activityDotPulse }),
                 "142 онлайн"
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.activityToday, children: "+24 сегодня" })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.activityToday, children: "+24 сегодня" })
             ] })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.featureCardGlow })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.featureCardGlow })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featureCardEnhanced, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featureIconWrapper, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.featureIconGlow }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.featureEmoji, children: "📤" })
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featureCardEnhanced, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featureIconWrapper, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.featureIconGlow }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.featureEmoji, children: "📤" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featureContent, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featureHeader, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles.featureTitleEnhanced, children: "Загрузка лупов" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.featureBadge, children: "FREE" })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featureContent, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featureHeader, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: styles$1.featureTitleEnhanced, children: "Загрузка лупов" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles$1.featureBadge, children: "FREE" })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles.featureDescriptionEnhanced, children: "Делитесь своими творениями с сообществом и получайте обратную связь. Поддержка WAV, MP3, FLAC и мгновенная модерация." }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featureUploadInfo, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$1.featureDescriptionEnhanced, children: "Делитесь своими творениями с сообществом и получайте обратную связь. Поддержка WAV, MP3, FLAC и мгновенная модерация." }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featureUploadInfo, children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "⚡ Мгновенная загрузка" }),
               /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "🎯 До 500MB" })
             ] })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.featureCardGlow })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles$1.featureCardGlow })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.featuresBottomLine, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.featuresBottomLine, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", {}),
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", {}),
         /* @__PURE__ */ jsxRuntimeExports.jsx("span", {})
       ] })
     ] }),
-    !user && /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: styles.homeCta, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.ctaContent, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: styles.ctaTitle, children: "Готовы создать свой следующий хит?" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles.ctaSubtitle, children: "Присоединяйтесь к тысячам продюсеров, которые уже используют Loopera" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.ctaActions, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "/auth", className: `${styles.btn} ${styles.btnPrimary} ${styles.btnLarge}`, children: "Создать аккаунт" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "/loops", className: `${styles.btn} ${styles.btnOutline} ${styles.btnLarge}`, children: "Смотреть лупы" })
+    !user && /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: styles$1.homeCta, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.ctaContent, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: styles$1.ctaTitle, children: "Готовы создать свой следующий хит?" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles$1.ctaSubtitle, children: "Присоединяйтесь к тысячам продюсеров, которые уже используют Loopera" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles$1.ctaActions, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "/auth", className: `${styles$1.btn} ${styles$1.btnPrimary} ${styles$1.btnLarge}`, children: "Создать аккаунт" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "/loops", className: `${styles$1.btn} ${styles$1.btnOutline} ${styles$1.btnLarge}`, children: "Смотреть лупы" })
       ] })
     ] }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -25711,6 +25711,33 @@ const STYLES = `
     font-size: 0.95rem;
   }
 
+  .sh-create-btn {
+    background: var(--gradient-brand);
+    border: none;
+    border-radius: 14px;
+    padding: 0.7rem 1.4rem;
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(124,58,237,0.4);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+  }
+
+  .sh-create-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 28px rgba(124,58,237,0.6);
+  }
+
+  .sh-create-btn:active {
+    transform: translateY(0) scale(0.97);
+  }
+
   /* ---- FILTERS ---- */
   .sh-filters {
     max-width: 1400px;
@@ -26234,9 +26261,8 @@ const WaveformBars = () => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { classN
   opacity: 0.5 + i % 3 * 0.15
 } }, i)) });
 const StarRating = ({ rating }) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "sh-stars", children: Array.from({ length: 5 }, (_, i) => /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-star", children: i < Math.floor(rating) ? "★" : "☆" }, i)) });
-const PackCard = ({ pack, playingPreview, onPlay, onBuy, userBalance, idx }) => {
+const PackCard = ({ pack, playingPreview, onPlay, onDownload, idx }) => {
   const isPlaying = playingPreview === pack.id;
-  const canBuy = userBalance >= pack.price;
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-card", style: { animationDelay: `${idx * 0.04}s` }, children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-card-cover", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(WaveformBars, {}),
@@ -26291,17 +26317,13 @@ const PackCard = ({ pack, playingPreview, onPlay, onBuy, userBalance, idx }) => 
       /* @__PURE__ */ jsxRuntimeExports.jsx(StarRating, { rating: pack.avg_rating })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-card-footer", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-price", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-price-amount", children: pack.price }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-price-unit", children: "coins" })
-      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "sh-price", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-price-amount", children: "Free" }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           className: "sh-buy-btn",
-          onClick: () => onBuy(pack.id, pack.price),
-          disabled: !canBuy,
-          children: canBuy ? "Buy Pack" : "No funds"
+          onClick: () => onDownload(pack.id),
+          children: "Download"
         }
       )
     ] })
@@ -26372,30 +26394,31 @@ const Shop = () => {
     } catch {
     }
   };
-  const handleBuyPack = async (packId, price) => {
+  const handleDownloadPack = async (packId) => {
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("Please login to purchase packs");
-      return;
-    }
-    if (userBalance < price) {
-      alert("Insufficient balance");
+      alert("Please login to download packs");
       return;
     }
     try {
-      const res = await fetch(`/api/shop/${packId}/buy`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
+      const res = await fetch(`/api/shop/${packId}/download`, {
+        headers: { Authorization: `Bearer ${token}` }
       });
       if (!res.ok) {
         const e = await res.json();
-        throw new Error(e.error || "Failed to purchase");
+        throw new Error(e.error || "Failed to download");
       }
-      alert("Pack purchased successfully!");
-      setUserBalance((prev) => prev - price);
-      fetchPacks();
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `pack-${packId}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to purchase pack");
+      alert(err instanceof Error ? err.message : "Failed to download pack");
     }
   };
   const playPreview = (packId, previewUrl) => {
@@ -26445,12 +26468,18 @@ const Shop = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "sh-subtitle", children: "Premium loops & samples from top creators" })
         ] })
       ] }),
-      userBalance > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-balance", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-balance-icon", children: "💎" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-balance-label", children: "Balance" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "sh-balance-amount", children: [
-          userBalance.toLocaleString(),
-          " coins"
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { display: "flex", gap: "1rem", alignItems: "center" }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("a", { href: "/create-pack", className: "sh-create-btn", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "+" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Create Pack" })
+        ] }),
+        userBalance > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sh-balance", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-balance-icon", children: "💎" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "sh-balance-label", children: "Balance" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "sh-balance-amount", children: [
+            userBalance.toLocaleString(),
+            " coins"
+          ] })
         ] })
       ] })
     ] }),
@@ -26513,8 +26542,7 @@ const Shop = () => {
         idx,
         playingPreview,
         onPlay: playPreview,
-        onBuy: handleBuyPack,
-        userBalance
+        onDownload: handleDownloadPack
       },
       pack.id
     )) }),
@@ -26534,161 +26562,103 @@ const Shop = () => {
   ] });
 };
 
+const container = "_container_1hah6_27";
+const content = "_content_1hah6_36";
+const header = "_header_1hah6_44";
+const title = "_title_1hah6_50";
+const subtitle = "_subtitle_1hah6_62";
+const form = "_form_1hah6_69";
+const section = "_section_1hah6_78";
+const sectionTitle = "_sectionTitle_1hah6_82";
+const fieldGroup = "_fieldGroup_1hah6_93";
+const label = "_label_1hah6_97";
+const required = "_required_1hah6_107";
+const input = "_input_1hah6_112";
+const textarea = "_textarea_1hah6_113";
+const hint = "_hint_1hah6_143";
+const row = "_row_1hah6_149";
+const priceInput = "_priceInput_1hah6_155";
+const priceSymbol = "_priceSymbol_1hah6_171";
+const priceUnit = "_priceUnit_1hah6_187";
+const uploadArea = "_uploadArea_1hah6_192";
+const dragOver = "_dragOver_1hah6_200";
+const fileInput = "_fileInput_1hah6_207";
+const uploadLabel = "_uploadLabel_1hah6_215";
+const uploadIcon = "_uploadIcon_1hah6_229";
+const uploadText = "_uploadText_1hah6_235";
+const uploadTitle = "_uploadTitle_1hah6_241";
+const uploadSubtitle = "_uploadSubtitle_1hah6_247";
+const fileInfo = "_fileInfo_1hah6_252";
+const fileIcon = "_fileIcon_1hah6_264";
+const fileName = "_fileName_1hah6_270";
+const fileSize = "_fileSize_1hah6_278";
+const rulesGrid = "_rulesGrid_1hah6_283";
+const ruleCard = "_ruleCard_1hah6_289";
+const ruleIcon = "_ruleIcon_1hah6_306";
+const ruleText = "_ruleText_1hah6_311";
+const actions = "_actions_1hah6_318";
+const buttonPrimary = "_buttonPrimary_1hah6_327";
+const buttonSecondary = "_buttonSecondary_1hah6_328";
+const loading = "_loading_1hah6_389";
+const alertError = "_alertError_1hah6_408";
+const alertSuccess = "_alertSuccess_1hah6_409";
+const styles = {
+	container: container,
+	content: content,
+	header: header,
+	title: title,
+	subtitle: subtitle,
+	form: form,
+	section: section,
+	sectionTitle: sectionTitle,
+	fieldGroup: fieldGroup,
+	label: label,
+	required: required,
+	input: input,
+	textarea: textarea,
+	hint: hint,
+	row: row,
+	priceInput: priceInput,
+	priceSymbol: priceSymbol,
+	priceUnit: priceUnit,
+	uploadArea: uploadArea,
+	dragOver: dragOver,
+	fileInput: fileInput,
+	uploadLabel: uploadLabel,
+	uploadIcon: uploadIcon,
+	uploadText: uploadText,
+	uploadTitle: uploadTitle,
+	uploadSubtitle: uploadSubtitle,
+	fileInfo: fileInfo,
+	fileIcon: fileIcon,
+	fileName: fileName,
+	fileSize: fileSize,
+	rulesGrid: rulesGrid,
+	ruleCard: ruleCard,
+	ruleIcon: ruleIcon,
+	ruleText: ruleText,
+	actions: actions,
+	buttonPrimary: buttonPrimary,
+	buttonSecondary: buttonSecondary,
+	loading: loading,
+	alertError: alertError,
+	alertSuccess: alertSuccess
+};
+
 const CreatePack = () => {
   const navigate = useNavigate();
   const [title, setTitle] = reactExports.useState("");
   const [description, setDescription] = reactExports.useState("");
   const [price, setPrice] = reactExports.useState("");
   const [voiceTag, setVoiceTag] = reactExports.useState("");
-  const [userLoops, setUserLoops] = reactExports.useState([]);
-  const [selectedLoops, setSelectedLoops] = reactExports.useState([]);
-  const [uploadedLoops, setUploadedLoops] = reactExports.useState([]);
+  const [archiveFile, setArchiveFile] = reactExports.useState(null);
+  const [previewFile1, setPreviewFile1] = reactExports.useState(null);
+  const [previewFile2, setPreviewFile2] = reactExports.useState(null);
   const [voiceTagFile, setVoiceTagFile] = reactExports.useState(null);
   const [textFile, setTextFile] = reactExports.useState(null);
-  const [textFileContent, setTextFileContent] = reactExports.useState("");
   const [loading, setLoading] = reactExports.useState(false);
   const [error, setError] = reactExports.useState("");
   const [success, setSuccess] = reactExports.useState("");
-  const [uploadMode, setUploadMode] = reactExports.useState("existing");
-  const [uploadingFiles, setUploadingFiles] = reactExports.useState(false);
-  reactExports.useEffect(() => {
-    fetchUserLoops();
-  }, []);
-  const fetchUserLoops = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        navigate("/auth");
-        return;
-      }
-      const response = await fetch("/api/loops/my", {
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
-      });
-      if (!response.ok) {
-        throw new Error("Failed to fetch loops");
-      }
-      const data = await response.json();
-      setUserLoops(data.loops || []);
-    } catch (err) {
-      console.error("Failed to fetch loops:", err);
-      setError(err instanceof Error ? err.message : "Failed to fetch loops");
-    }
-  };
-  const handleLoopToggle = (loopId) => {
-    setSelectedLoops((prev) => {
-      if (prev.includes(loopId)) {
-        return prev.filter((id) => id !== loopId);
-      } else if (prev.length < 15) {
-        return [...prev, loopId];
-      } else {
-        setError("Maximum 15 loops allowed per pack");
-        return prev;
-      }
-    });
-  };
-  const handleLoopFileUpload = async (files) => {
-    if (!files || files.length === 0) return;
-    console.log("handleLoopFileUpload called with files:", files.length);
-    setUploadingFiles(true);
-    setError("");
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.error("No token found");
-        return;
-      }
-      const formData = new FormData();
-      Array.from(files).forEach((file) => {
-        formData.append("loops", file);
-        console.log("Adding file to FormData:", file.name, file.size, file.type);
-      });
-      console.log("Sending request to /api/pack-upload/loops");
-      const response = await fetch("/api/pack-upload/loops", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`
-        },
-        body: formData
-      });
-      console.log("Response status:", response.status);
-      const data = await response.json();
-      console.log("Response data:", data);
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to upload loops");
-      }
-      setUploadedLoops((prev) => [...prev, ...data.loops]);
-      setSuccess(`${data.loops.length} loops uploaded successfully`);
-    } catch (err) {
-      console.error("Error in handleLoopFileUpload:", err);
-      setError(err instanceof Error ? err.message : "Failed to upload loops");
-    } finally {
-      setUploadingFiles(false);
-    }
-  };
-  const handleVoiceTagUpload = async (file) => {
-    setUploadingFiles(true);
-    setError("");
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-      const formData = new FormData();
-      formData.append("voice_tag_file", file);
-      const response = await fetch("/api/pack-upload/voice-tag", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`
-        },
-        body: formData
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to upload voice tag");
-      }
-      setVoiceTagFile(file);
-      setSuccess("Voice tag uploaded successfully");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to upload voice tag");
-    } finally {
-      setUploadingFiles(false);
-    }
-  };
-  const handleTextFileUpload = async (file) => {
-    setUploadingFiles(true);
-    setError("");
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-      const formData = new FormData();
-      formData.append("text_file", file);
-      const response = await fetch("/api/pack-upload/text-file", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`
-        },
-        body: formData
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to upload text file");
-      }
-      const data = await response.json();
-      setTextFile(file);
-      setTextFileContent(data.content);
-      setSuccess("Text file uploaded successfully");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to upload text file");
-    } finally {
-      setUploadingFiles(false);
-    }
-  };
-  const removeUploadedLoop = (loopId) => {
-    setUploadedLoops((prev) => prev.filter((loop) => loop.id !== loopId));
-  };
-  const getTotalLoops = () => {
-    return selectedLoops.length + uploadedLoops.length;
-  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim()) {
@@ -26699,13 +26669,12 @@ const CreatePack = () => {
       setError("Valid price is required");
       return;
     }
-    const totalLoops = getTotalLoops();
-    if (totalLoops === 0) {
-      setError("At least one loop must be selected or uploaded");
+    if (!archiveFile) {
+      setError("Archive file is required");
       return;
     }
-    if (totalLoops > 15) {
-      setError("Maximum 15 loops allowed per pack");
+    if (!previewFile1) {
+      setError("At least one preview file is required");
       return;
     }
     if (!textFile) {
@@ -26721,22 +26690,26 @@ const CreatePack = () => {
         navigate("/auth");
         return;
       }
-      const response = await fetch("/api/pack-upload/create", {
+      const formData = new FormData();
+      formData.append("title", title.trim());
+      formData.append("description", description.trim());
+      formData.append("price", price);
+      formData.append("voice_tag", voiceTag.trim());
+      formData.append("archive", archiveFile);
+      formData.append("preview1", previewFile1);
+      if (previewFile2) {
+        formData.append("preview2", previewFile2);
+      }
+      if (voiceTagFile) {
+        formData.append("voiceTag", voiceTagFile);
+      }
+      formData.append("textFile", textFile);
+      const response = await fetch("/api/shop", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
+          "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify({
-          title: title.trim(),
-          description: description.trim(),
-          price: parseInt(price),
-          voice_tag: voiceTag.trim(),
-          voice_tag_file: voiceTagFile?.name || null,
-          text_file: textFile?.name || null,
-          loopIds: selectedLoops,
-          loopFiles: uploadedLoops.map((loop) => loop.id)
-        })
+        body: formData
       });
       if (!response.ok) {
         const errorData = await response.json();
@@ -26752,74 +26725,124 @@ const CreatePack = () => {
       setLoading(false);
     }
   };
-  const formatDuration = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + " " + sizes[i];
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "create-pack-container", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "create-pack-header", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { children: "Create Sound Pack" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Create a pack with your loops to sell on the marketplace" })
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.currentTarget.classList.add(styles.dragOver);
+  };
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.currentTarget.classList.remove(styles.dragOver);
+  };
+  const handleDrop = (e, setter, accept) => {
+    e.preventDefault();
+    e.currentTarget.classList.remove(styles.dragOver);
+    const file = e.dataTransfer.files[0];
+    if (file && accept.some((ext) => file.name.toLowerCase().endsWith(ext))) {
+      setter(file);
+    }
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.container, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.content, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.header, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: styles.title, children: "Create Sound Pack" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles.subtitle, children: "Share your sounds with the world" })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, className: "create-pack-form", children: [
-      error && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "alert alert-error", children: error }),
-      success && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "alert alert-success", children: success }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form-section", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Basic Information" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form-group", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "title", children: "Pack Title *" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { onSubmit: handleSubmit, className: styles.form, children: [
+      error && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.alertError, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { width: "18", height: "18", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("circle", { cx: "12", cy: "12", r: "10" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: "12", y1: "8", x2: "12", y2: "12" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: "12", y1: "16", x2: "12.01", y2: "16" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: error })
+      ] }),
+      success && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.alertSuccess, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { width: "18", height: "18", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M22 11.08V12a10 10 0 1 1-5.93-9.14" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("polyline", { points: "22 4 12 14.01 9 11.01" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: success })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.section, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: styles.sectionTitle, children: "Basic Information" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.fieldGroup, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: styles.label, htmlFor: "title", children: [
+            "Pack Title ",
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.required, children: "*" })
+          ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             "input",
             {
               type: "text",
               id: "title",
+              className: styles.input,
               value: title,
               onChange: (e) => setTitle(e.target.value),
-              placeholder: "Enter pack title...",
+              placeholder: "e.g., 'Midnight Melodies'",
               maxLength: 255,
               required: true
             }
-          )
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: styles.hint, children: "Choose a catchy title for your pack" })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form-group", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "description", children: "Description" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.fieldGroup, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles.label, htmlFor: "description", children: "Description" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             "textarea",
             {
               id: "description",
+              className: styles.textarea,
               value: description,
               onChange: (e) => setDescription(e.target.value),
-              placeholder: "Describe your pack...",
+              placeholder: "Describe your pack, inspiration, and what users can expect...",
               rows: 4,
               maxLength: 1e3
             }
-          )
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: styles.hint, children: [
+            description.length,
+            "/1000 characters"
+          ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form-row", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form-group", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "price", children: "Price (coins) *" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "input",
-              {
-                type: "number",
-                id: "price",
-                value: price,
-                onChange: (e) => setPrice(e.target.value),
-                placeholder: "0",
-                min: "0",
-                max: "10000",
-                required: true
-              }
-            )
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.row, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.fieldGroup, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: styles.label, htmlFor: "price", children: [
+              "Price ",
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.required, children: "*" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.priceInput, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.priceSymbol, children: "💰" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
+                "input",
+                {
+                  type: "number",
+                  id: "price",
+                  className: styles.input,
+                  value: price,
+                  onChange: (e) => setPrice(e.target.value),
+                  placeholder: "0",
+                  min: "0",
+                  max: "10000",
+                  required: true
+                }
+              ),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.priceUnit, children: "coins" })
+            ] })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form-group", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "voiceTag", children: "Voice Tag Text (optional)" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.fieldGroup, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles.label, htmlFor: "voiceTag", children: "Voice Tag Text" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               "input",
               {
                 type: "text",
                 id: "voiceTag",
+                className: styles.input,
                 value: voiceTag,
                 onChange: (e) => setVoiceTag(e.target.value),
                 placeholder: "Your producer tag...",
@@ -26827,233 +26850,283 @@ const CreatePack = () => {
               }
             )
           ] })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form-section", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Voice Tag File (optional)" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "file-upload-area", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "input",
-              {
-                type: "file",
-                id: "voiceTagFile",
-                accept: ".mp3,.wav,.ogg,.m4a,.flac",
-                onChange: (e) => {
-                  if (e.target.files && e.target.files[0]) {
-                    handleVoiceTagUpload(e.target.files[0]);
-                  }
-                },
-                disabled: uploadingFiles
-              }
-            ),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: "voiceTagFile", className: "file-upload-label", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "upload-icon", children: "🎤" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Upload voice tag file" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "upload-hint", children: "MP3, WAV, OGG, M4A, FLAC (Max 50MB)" })
-            ] })
-          ] }),
-          voiceTagFile && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "uploaded-file-info", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
-            "✅ ",
-            voiceTagFile.name
-          ] }) })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form-section", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Text File (required)" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "file-description", children: "Upload a text file with detailed information about your pack, licensing terms, and any additional notes." }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "file-upload-area", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "input",
-              {
-                type: "file",
-                id: "textFile",
-                accept: ".txt,.rtf",
-                onChange: (e) => {
-                  if (e.target.files && e.target.files[0]) {
-                    handleTextFileUpload(e.target.files[0]);
-                  }
-                },
-                disabled: uploadingFiles,
-                required: true
-              }
-            ),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: "textFile", className: "file-upload-label", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "upload-icon", children: "📄" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Upload text file *" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "upload-hint", children: "TXT or RTF format (Max 10MB)" })
-            ] })
-          ] }),
-          textFile && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "uploaded-file-info", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
-              "✅ ",
-              textFile.name
-            ] }),
-            textFileContent && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-preview", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { children: "Preview:" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
-                textFileContent.substring(0, 200),
-                textFileContent.length > 200 ? "..." : ""
-              ] })
-            ] })
-          ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form-section", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("h2", { children: [
-          "Loops Management",
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "loop-count", children: [
-            "(",
-            getTotalLoops(),
-            "/15 total)"
-          ] })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loop-mode-toggle", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "button",
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.section, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: styles.sectionTitle, children: "Files" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.fieldGroup, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: styles.label, children: [
+            "Archive File ",
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.required, children: "*" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "div",
             {
-              type: "button",
-              className: `mode-btn ${uploadMode === "existing" ? "active" : ""}`,
-              onClick: () => setUploadMode("existing"),
-              children: "Use Existing Loops"
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "button",
-            {
-              type: "button",
-              className: `mode-btn ${uploadMode === "new" ? "active" : ""}`,
-              onClick: () => setUploadMode("new"),
-              children: "Upload New Loops"
-            }
-          )
-        ] }),
-        uploadMode === "existing" && /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: userLoops.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "no-loops", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "You don't have any loops yet." }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "button",
-            {
-              type: "button",
-              className: "upload-loops-btn",
-              onClick: () => navigate("/loop-upload"),
-              children: "Upload Loops First"
-            }
-          )
-        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "loops-grid", children: userLoops.map((loop) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
-          "div",
-          {
-            className: `loop-card ${selectedLoops.includes(loop.id) ? "selected" : ""}`,
-            onClick: () => handleLoopToggle(loop.id),
-            children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loop-checkbox", children: [
+              className: styles.uploadArea,
+              onDragOver: handleDragOver,
+              onDragLeave: handleDragLeave,
+              onDrop: (e) => handleDrop(e, setArchiveFile, [".zip"]),
+              children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx(
                   "input",
                   {
-                    type: "checkbox",
-                    checked: selectedLoops.includes(loop.id),
-                    onChange: () => handleLoopToggle(loop.id)
+                    type: "file",
+                    id: "archiveFile",
+                    className: styles.fileInput,
+                    accept: ".zip",
+                    onChange: (e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setArchiveFile(e.target.files[0]);
+                      }
+                    },
+                    disabled: loading
                   }
                 ),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "checkmark", children: "✓" })
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loop-info", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "loop-title", children: loop.title }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "loop-meta", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
-                    "🎵 ",
-                    loop.genre || "Unknown"
-                  ] }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
-                    "⏱️ ",
-                    formatDuration(loop.duration)
-                  ] }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
-                    "💓 ",
-                    loop.bpm,
-                    " BPM"
-                  ] }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
-                    "🎹 ",
-                    loop.key || "N/A"
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: "archiveFile", className: styles.uploadLabel, children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.uploadIcon, children: "📦" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.uploadText, children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.uploadTitle, children: "Upload archive file" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.uploadSubtitle, children: "ZIP format up to 500MB" })
                   ] })
                 ] })
-              ] })
-            ]
-          },
-          loop.id
-        )) }) }),
-        uploadMode === "new" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "upload-section", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "file-upload-area", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "input",
+              ]
+            }
+          ),
+          archiveFile && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.fileInfo, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.fileIcon, children: "✓" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.fileName, children: archiveFile.name }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles.fileSize, children: [
+              "(",
+              formatFileSize(archiveFile.size),
+              ")"
+            ] })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.row, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.fieldGroup, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: styles.label, children: [
+              "Preview 1 ",
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.required, children: "*" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "div",
               {
-                type: "file",
-                id: "loopFiles",
-                multiple: true,
-                accept: ".mp3,.wav,.ogg,.m4a,.flac",
-                onChange: (e) => {
-                  if (e.target.files) {
-                    handleLoopFileUpload(e.target.files);
-                  }
-                },
-                disabled: uploadingFiles
+                className: styles.uploadArea,
+                onDragOver: handleDragOver,
+                onDragLeave: handleDragLeave,
+                onDrop: (e) => handleDrop(e, setPreviewFile1, [".mp3", ".wav", ".ogg", ".m4a", ".flac"]),
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "input",
+                    {
+                      type: "file",
+                      id: "preview1",
+                      className: styles.fileInput,
+                      accept: ".mp3,.wav,.ogg,.m4a,.flac",
+                      onChange: (e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          setPreviewFile1(e.target.files[0]);
+                        }
+                      },
+                      disabled: loading
+                    }
+                  ),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: "preview1", className: styles.uploadLabel, children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.uploadIcon, children: "🎵" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.uploadText, children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.uploadTitle, children: "Upload preview 1" }),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.uploadSubtitle, children: "MP3, WAV, OGG, M4A, FLAC (Max 50MB)" })
+                    ] })
+                  ] })
+                ]
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: "loopFiles", className: `file-upload-label ${uploadingFiles ? "loading" : ""}`, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "upload-icon", children: "📁" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: uploadingFiles ? "Uploading..." : "Click to upload loops or drag and drop" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "upload-hint", children: "MP3, WAV, OGG, M4A, FLAC (Max 50MB each, up to 15 files)" })
+            previewFile1 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.fileInfo, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.fileIcon, children: "✓" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.fileName, children: previewFile1.name }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles.fileSize, children: [
+                "(",
+                formatFileSize(previewFile1.size),
+                ")"
+              ] })
             ] })
           ] }),
-          uploadedLoops.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "uploaded-loops", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("h4", { children: [
-              "Uploaded Loops (",
-              uploadedLoops.length,
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.fieldGroup, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles.label, children: "Preview 2" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "div",
+              {
+                className: styles.uploadArea,
+                onDragOver: handleDragOver,
+                onDragLeave: handleDragLeave,
+                onDrop: (e) => handleDrop(e, setPreviewFile2, [".mp3", ".wav", ".ogg", ".m4a", ".flac"]),
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    "input",
+                    {
+                      type: "file",
+                      id: "preview2",
+                      className: styles.fileInput,
+                      accept: ".mp3,.wav,.ogg,.m4a,.flac",
+                      onChange: (e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          setPreviewFile2(e.target.files[0]);
+                        }
+                      },
+                      disabled: loading
+                    }
+                  ),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: "preview2", className: styles.uploadLabel, children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.uploadIcon, children: "🎵" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.uploadText, children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.uploadTitle, children: "Upload preview 2" }),
+                      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.uploadSubtitle, children: "Optional - MP3, WAV, OGG, M4A, FLAC (Max 50MB)" })
+                    ] })
+                  ] })
+                ]
+              }
+            ),
+            previewFile2 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.fileInfo, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.fileIcon, children: "✓" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.fileName, children: previewFile2.name }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles.fileSize, children: [
+                "(",
+                formatFileSize(previewFile2.size),
+                ")"
+              ] })
+            ] })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.fieldGroup, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: styles.label, children: "Voice Tag File" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "div",
+            {
+              className: styles.uploadArea,
+              onDragOver: handleDragOver,
+              onDragLeave: handleDragLeave,
+              onDrop: (e) => handleDrop(e, setVoiceTagFile, [".mp3", ".wav", ".ogg", ".m4a", ".flac"]),
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "input",
+                  {
+                    type: "file",
+                    id: "voiceTagFile",
+                    className: styles.fileInput,
+                    accept: ".mp3,.wav,.ogg,.m4a,.flac",
+                    onChange: (e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setVoiceTagFile(e.target.files[0]);
+                      }
+                    },
+                    disabled: loading
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: "voiceTagFile", className: styles.uploadLabel, children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.uploadIcon, children: "🎤" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.uploadText, children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.uploadTitle, children: "Upload voice tag" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.uploadSubtitle, children: "Optional - MP3, WAV, OGG, M4A, FLAC (Max 50MB)" })
+                  ] })
+                ] })
+              ]
+            }
+          ),
+          voiceTagFile && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.fileInfo, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.fileIcon, children: "✓" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.fileName, children: voiceTagFile.name }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles.fileSize, children: [
+              "(",
+              formatFileSize(voiceTagFile.size),
               ")"
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "uploaded-loops-list", children: uploadedLoops.map((loop) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "uploaded-loop-item", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "loop-name", children: loop.originalName }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
-                "button",
-                {
-                  type: "button",
-                  className: "remove-btn",
-                  onClick: () => removeUploadedLoop(loop.id),
-                  children: "×"
-                }
-              )
-            ] }, loop.id)) })
+            ] })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.fieldGroup, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: styles.label, children: [
+            "Text File ",
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.required, children: "*" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "div",
+            {
+              className: styles.uploadArea,
+              onDragOver: handleDragOver,
+              onDragLeave: handleDragLeave,
+              onDrop: (e) => handleDrop(e, setTextFile, [".txt", ".rtf", ".pdf"]),
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "input",
+                  {
+                    type: "file",
+                    id: "textFile",
+                    className: styles.fileInput,
+                    accept: ".txt,.rtf,.pdf",
+                    onChange: (e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setTextFile(e.target.files[0]);
+                      }
+                    },
+                    disabled: loading,
+                    required: true
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: "textFile", className: styles.uploadLabel, children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: styles.uploadIcon, children: "📄" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.uploadText, children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.uploadTitle, children: "Upload text file" }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.uploadSubtitle, children: "TXT, RTF, PDF format (Max 10MB)" })
+                  ] })
+                ] })
+              ]
+            }
+          ),
+          textFile && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.fileInfo, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.fileIcon, children: "✓" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.fileName, children: textFile.name }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: styles.fileSize, children: [
+              "(",
+              formatFileSize(textFile.size),
+              ")"
+            ] })
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form-section", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Pack Rules" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rules-info", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rule-item", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "rule-icon", children: "ℹ️" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Maximum 15 loops per pack" })
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.section, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: styles.sectionTitle, children: "Guidelines" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.rulesGrid, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.ruleCard, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.ruleIcon, children: "📦" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.ruleText, children: "ZIP archive with loops" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rule-item", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "rule-icon", children: "⏰" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Account must be at least 3 days old" })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.ruleCard, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.ruleIcon, children: "🎵" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.ruleText, children: "1-2 preview files" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rule-item", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "rule-icon", children: "📦" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Maximum 3 packs per day" })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.ruleCard, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.ruleIcon, children: "⏰" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.ruleText, children: "Account must be 3+ days old" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rule-item", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "rule-icon", children: "👁️" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "All packs are reviewed by moderators" })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.ruleCard, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.ruleIcon, children: "📦" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.ruleText, children: "Max 3 packs per day" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rule-item", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "rule-icon", children: "💰" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "15% commission on all sales" })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.ruleCard, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.ruleIcon, children: "👁️" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.ruleText, children: "Reviewed by moderators" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.ruleCard, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.ruleIcon, children: "💰" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: styles.ruleText, children: "15% commission on sales" })
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "form-actions", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: styles.actions, children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
             type: "button",
-            className: "btn-secondary",
+            className: styles.buttonSecondary,
             onClick: () => navigate("/shop"),
             disabled: loading,
             children: "Cancel"
@@ -27063,14 +27136,14 @@ const CreatePack = () => {
           "button",
           {
             type: "submit",
-            className: "btn-primary",
-            disabled: loading || selectedLoops.length === 0,
+            className: `${styles.buttonPrimary} ${loading ? styles.loading : ""}`,
+            disabled: loading || !archiveFile || !previewFile1 || !textFile,
             children: loading ? "Creating..." : "Submit for Review"
           }
         )
       ] })
     ] })
-  ] });
+  ] }) });
 };
 
 const AdminShop = () => {
@@ -57478,6 +57551,372 @@ const Statistics = () => {
   ] }) });
 };
 
+const Offer = () => {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "offer-container", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "offer-content", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { children: "Оферта (Публичная оферта)" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "offer-date", children: "Дата публикации: 22.05.2026" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "offer-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "1. Общие положения" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "1.1. Настоящая публичная оферта (далее — «Оферта») является официальным предложением ООО «Loopera» (далее — «Исполнитель») заключить договор с любым лицом, которое примет условия настоящей Оферты (далее — «Заказчик»)." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "1.2. Акцептом настоящей Оферты является фактическая оплата цифровых товаров на сайте Loopera или иное выражение согласия Заказчика с условиями настоящей Оферты." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "1.3. Исполнитель оставляет за собой право изменять условия настоящей Оферты в любое время. Новая редакция Оферты вступает в силу с момента её размещения на сайте, если иное не предусмотрено новой редакцией Оферты." })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "offer-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "2. Предмет договора" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "2.1. Исполнитель предоставляет Заказчикам доступ к цифровым товарам, включая но не ограничиваясь: музыкальные лупы (loops), сэмплы (samples), звуковые паки (sound packs), пресеты и другие цифровые материалы (далее — «Товары»)." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "2.2. Товары предоставляются в цифровом виде через сайт Loopera или личный кабинет пользователя." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "2.3. После оплаты Товара Заказчик получает немедленный доступ к скачиванию Товара через личный кабинет или специальную страницу загрузки." })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "offer-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "3. Порядок оплаты и получения товара" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "3.1. Оплата Товаров производится Заказчиком путём безналичного перевода средств через платёжную систему, интегрированную на сайте Loopera." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "3.2. Стоимость Товаров указывается на сайте Loopera в момент оформления заказа." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "3.3. После успешной оплаты Заказчику предоставляется доступ к скачиванию Товара в личном кабинете или через специальную страницу загрузки." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "3.4. Исполнитель гарантирует предоставление доступа к Товару в течение 24 часов с момента успешной оплаты, если иное не указано в описании Товара." })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "offer-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "4. Возврат и обмен" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "4.1. В связи с тем, что Товары являются цифровыми товарами и предоставляются в формате, позволяющем их копирование, возврат и обмен Товаров невозможен после их скачивания." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "4.2. В случае технической ошибки или некорректной работы сайта, препятствующей получению доступа к Товару после оплаты, Заказчик вправе обратиться в службу поддержки для решения проблемы. В этом случае Исполнитель обязуется предоставить доступ к Товару или вернуть денежные средства в течение 5 рабочих дней." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "4.3. Если Товар существенно отличается от описания на сайте, Заказчик вправе обратиться в службу поддержки для решения спорной ситуации." })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "offer-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "5. Права и обязанности сторон" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "5.1. Исполнитель обязуется:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Обеспечить качественную работу сайта и доступ к Товарам;" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Предоставлять достоверную информацию о Товарах;" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Обеспечивать безопасность платежных данных Заказчиков;" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Предоставлять техническую поддержку по вопросам, связанным с получением доступа к Товарам." })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "5.2. Заказчик обязуется:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Своевременно оплачивать Товары;" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Использовать Товары в соответствии с лицензионными условиями;" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Не распространять Товары без соответствующего разрешения;" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Не нарушать авторские права третьих лиц." })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "offer-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "6. Ответственность сторон" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "6.1. Исполнитель не несёт ответственности за использование Товаров Заказчиком в нарушение действующего законодательства или настоящей Оферты." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "6.2. Исполнитель не несёт ответственности за любые убытки, возникшие в результате использования или невозможности использования Товаров, за исключением случаев, предусмотренных действующим законодательством." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "6.3. Заказчик несёт полную ответственность за соблюдение авторских прав при использовании Товаров в своих проектах." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "6.4. Исполнитель не гарантирует совместимость Товаров с оборудованием или программным обеспечением Заказчика." })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "offer-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "7. Интеллектуальная собственность" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "7.1. Все Товары, размещённые на сайте Loopera, являются объектами интеллектуальной собственности и защищены действующим законодательством." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "7.2. Приобретение Товара предоставляет Заказчику право на его использование в соответствии с лицензионными условиями, указанными в описании Товара." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "7.3. Запрещается распространение, копирование, продажа или иное использование Товаров без соответствующего разрешения правообладателя." })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "offer-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "8. Конфиденциальность" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "8.1. Исполнитель обязуется сохранять конфиденциальность персональных данных Заказчика и не передавать их третьим лицам, за исключением случаев, предусмотренных действующим законодательством." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "8.2. Персональные данные Заказчика используются исключительно для целей исполнения договора, обработки заказов и предоставления услуг." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "8.3. Подробная информация об обработке персональных данных содержится в Политике конфиденциальности, доступной на сайте Loopera." })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "offer-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "9. Прочие условия" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "9.1. Отношения между Исполнителем и Заказчиком регулируются настоящей Офертой и действующим законодательством Российской Федерации." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "9.2. Все споры, возникающие из настоящей Оферты, решаются путём переговоров. В случае недостижения соглашения спор подлежит разрешению в судебном порядке в соответствии с действующим законодательством." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "9.3. Признание недействительным какого-либо положения настоящей Оферты не влечёт за собой недействительность остальных положений." })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "offer-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "10. Реквизиты Исполнителя" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "requisites", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Форма собственности:" }),
+          " Самозанятый"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "ИНН:" }),
+          " 550367838850"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Email для связи:" }),
+          " triphoyprod@gmail.com"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Telegram:" }),
+          " @triphoyprod"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Адрес сайта:" }),
+          " https://loopera-lpr.vercel.app"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Страница с реквизитами:" }),
+          " https://loopera-lpr.vercel.app/contacts"
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "offer-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "11. Контактная информация" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "contacts", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "По всем вопросам, связанным с настоящей Офертой, можно связаться с Исполнителем:" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Email: triphoyprod@gmail.com" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Telegram: @triphoyprod" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+          "Страница контактов: ",
+          /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "/contacts", children: "/contacts" })
+        ] })
+      ] })
+    ] })
+  ] }) });
+};
+
+const Contacts = () => {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "contacts-container", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "contacts-content", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { children: "Контакты и реквизиты" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "contacts-subtitle", children: "Информация для связи и платежей" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "contacts-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Реквизиты" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "requisites-card", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "requisite-item", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "requisite-label", children: "Форма собственности:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "requisite-value", children: "Самозанятый" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "requisite-item", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "requisite-label", children: "ИНН:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "requisite-value", children: "550367838850" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "requisite-item", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "requisite-label", children: "Адрес сайта:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "requisite-value", children: "https://loopera-lpr.vercel.app" })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "contacts-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Контактная информация" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "contact-card", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "contact-item", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "contact-icon", children: "📧" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "contact-label", children: "Email:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "mailto:triphoyprod@gmail.com", className: "contact-value", children: "triphoyprod@gmail.com" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "contact-item", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "contact-icon", children: "📱" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "contact-label", children: "Telegram:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "https://t.me/triphoyprod", className: "contact-value", children: "@triphoyprod" })
+          ] })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "contacts-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Сайт" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "site-card", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "site-item", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "site-icon", children: "🌐" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "https://loopera-lpr.vercel.app", className: "site-value", children: "loopera-lpr.vercel.app" })
+      ] }) })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "contacts-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Режим работы" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "work-hours-card", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Сайт работает круглосуточно, 7 дней в неделю." }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Ответ на обращения в службу поддержки предоставляется в течение 24 часов в рабочие дни." })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "contacts-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Для платежных систем" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "payment-info-card", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Данная страница создана для соответствия требованиям платежных систем и содержит всю необходимую информацию для подключения онлайн-кассы." }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+            "✅ Оферта доступна по адресу ",
+            /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "/offer", children: "/offer" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+            "✅ Политика конфиденциальности доступна по адресу ",
+            /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "/privacy", children: "/privacy" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "✅ Контактная информация указана выше" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "✅ Реквизиты для платежей указаны выше" })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "contacts-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "Информация о товарах" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "products-info-card", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Loopera — маркетплейс цифровых музыкальных товаров:" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Музыкальные лупы (loops)" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Сэмплы (samples)" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Звуковые паки (sound packs)" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Пресеты и другие цифровые материалы" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Все товары предоставляются в цифровом виде. После оплаты пользователи получают немедленный доступ к скачиванию через личный кабинет." })
+      ] })
+    ] })
+  ] }) });
+};
+
+const Privacy = () => {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "privacy-container", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "privacy-content", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { children: "Политика конфиденциальности" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "privacy-date", children: "Дата публикации: 22.05.2026" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "privacy-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "1. Общие положения" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "1.1. Настоящая Политика конфиденциальности определяет порядок обработки и защиты персональных данных пользователей сайта Loopera (далее — «Сайт»)." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "1.2. Оператором персональных данных является ООО «Loopera» (далее — «Оператор»)." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "1.3. Настоящая Политика конфиденциальности применяется ко всей информации, которую Оператор может получить о пользователе во время использования Сайта." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "1.4. Использование Сайта означает согласие пользователя с настоящей Политикой конфиденциальности." })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "privacy-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "2. Какие данные мы собираем" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Мы собираем следующие категории персональных данных:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Регистрационные данные:" }),
+          " email, имя пользователя (username), пароль (в зашифрованном виде)"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Профильные данные:" }),
+          " информация, которую пользователь предоставляет в своём профиле (по желанию)"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Платёжные данные:" }),
+          " информация о транзакциях, сумма оплаты, дата и время оплаты"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Технические данные:" }),
+          " IP-адрес, тип браузера, устройство, время посещения, просмотренные страницы"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Данные для связи:" }),
+          " email или Telegram, если пользователь предоставил их для связи"
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "privacy-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "3. Цели обработки данных" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Мы обрабатываем персональные данные в следующих целях:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Предоставление доступа к аккаунту и функциям Сайта" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Обработка заказов и предоставление доступа к цифровым товарам" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Обработка платежей и подтверждение транзакций" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Предоставление технической поддержки" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Улучшение качества работы Сайта" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Связь с пользователем по его запросу" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Соблюдение требований законодательства" })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "privacy-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "4. Защита персональных данных" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "4.1. Оператор принимает все необходимые меры для защиты персональных данных пользователей от несанкционированного доступа, изменения, раскрытия или уничтожения." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "4.2. Пароли пользователей хранятся в зашифрованном виде и не могут быть восстановлены даже сотрудниками Оператора." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "4.3. Платёжные данные передаются через защищённые протоколы (SSL/TLS) и не хранятся на серверах Оператора в открытом виде." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "4.4. Доступ к персональным данным имеют только сотрудники, которым он необходим для выполнения трудовых обязанностей." })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "privacy-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "5. Передача данных третьим лицам" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "5.1. Оператор не передаёт персональные данные третьим лицам, за исключением следующих случаев:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Пользователь выразил согласие на передачу данных" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Передача необходима для обработки платежей (платёжным системам)" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Передача необходима для соблюдения требований законодательства (по запросу правоохранительных органов)" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Передача необходима для защиты прав и законных интересов Оператора" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "5.2. При передаче данных третьим лицам Оператор требует от них соблюдения конфиденциальности и обеспечения защиты передаваемых данных." })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "privacy-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "6. Cookies и аналогичные технологии" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "6.1. Сайт использует cookies для улучшения пользовательского опыта, запоминания настроек и аналитики." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "6.2. Cookies — это небольшие текстовые файлы, которые сохраняются на устройстве пользователя при посещении Сайта." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "6.3. Пользователь может настроить свой браузер для отказа от cookies, но это может ограничить функциональность Сайта." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "6.4. Мы используем следующие типы cookies:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Технические cookies:" }),
+          " необходимы для работы Сайта"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Функциональные cookies:" }),
+          " запоминают настройки пользователя"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Аналитические cookies:" }),
+          " помогают улучшить качество Сайта"
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "privacy-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "7. Права пользователя" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Пользователь имеет следующие права в отношении своих персональных данных:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Право на доступ к своим персональным данным" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Право на исправление неточных или неполных данных" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Право на удаление своих персональных данных" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Право на ограничение обработки данных" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Право на возражение против обработки данных" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Право на отзыв согласия на обработку данных" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Право на перенос данных" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Для реализации этих прав пользователь может связаться с Оператором через форму обратной связи или по электронной почте: triphoyprod@gmail.com" })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "privacy-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "8. Хранение данных" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "8.1. Персональные данные пользователя хранятся до удаления аккаунта или отзыва согласия на обработку данных." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "8.2. Платёжные данные хранятся в течение срока, необходимого для соблюдения требований законодательства (обычно 5 лет)." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "8.3. Технические данные (логи) хранятся в течение 1 года." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "8.4. При удалении аккаунта все персональные данные пользователя удаляются, за исключением данных, которые необходимо сохранить по закону." })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "privacy-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "9. Изменения в Политике конфиденциальности" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "9.1. Оператор вправе вносить изменения в настоящую Политику конфиденциальности в любое время." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "9.2. Новая редакция Политики конфиденциальности вступает в силу с момента её размещения на Сайте, если иное не предусмотрено новой редакцией." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "9.3. Продолжение использования Сайта после внесения изменений означает согласие пользователя с новой редакцией Политики конфиденциальности." })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "privacy-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "10. Возраст пользователей" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "10.1. Сайт предназначен для пользователей старше 18 лет." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "10.2. Мы сознательно не собираем персональные данные лиц моложе 18 лет." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "10.3. Если нам станет известно о сборе данных лица моложе 18 лет, мы предпримем меры для удаления таких данных." })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "privacy-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "11. Международная передача данных" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "11.1. Персональные данные пользователей не передаются за пределы Российской Федерации, за исключением случаев, предусмотренных действующим законодательством." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "11.2. При необходимости передачи данных за пределы РФ Оператор обеспечивает соответствующий уровень защиты в соответствии с требованиями законодательства." })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "privacy-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "12. Контактная информация" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "privacy-contacts", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "По всем вопросам, связанным с обработкой персональных данных, можно связаться с Оператором:" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Email: triphoyprod@gmail.com" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Telegram: @triphoyprod" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+          "Страница контактов: ",
+          /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "/contacts", children: "/contacts" })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "privacy-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "13. Реквизиты Оператора" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "privacy-requisites", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Форма собственности:" }),
+          " Самозанятый"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "ИНН:" }),
+          " 550367838850"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Email:" }),
+          " triphoyprod@gmail.com"
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Адрес сайта:" }),
+          " https://loopera-lpr.vercel.app"
+        ] })
+      ] })
+    ] })
+  ] }) });
+};
+
 function App() {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(BrowserRouter, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(AuthProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Routes, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/auth", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Auth, {}) }),
@@ -57495,6 +57934,10 @@ function App() {
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/statistics", element: /* @__PURE__ */ jsxRuntimeExports.jsx(ProtectedRoute, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Statistics, {}) }) }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/admin", element: /* @__PURE__ */ jsxRuntimeExports.jsx(AdminRoute, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Admin, {}) }) }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/admin/shop", element: /* @__PURE__ */ jsxRuntimeExports.jsx(AdminRoute, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(Layout, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(AdminShop, {}) }) }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/offer", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Offer, {}) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/terms", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Offer, {}) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/contacts", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Contacts, {}) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "/privacy", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Privacy, {}) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "*", element: /* @__PURE__ */ jsxRuntimeExports.jsx(Navigate, { to: "/", replace: true }) })
   ] }) }) });
 }

@@ -690,11 +690,11 @@ interface PackCardProps {
   pack: Pack;
   playingPreview: string | null;
   onPlay: (id: string, url: string) => void;
-  onDownload: (id: string) => void;
+  onBuy: (id: string) => void;
   idx: number;
 }
 
-const PackCard: React.FC<PackCardProps> = ({ pack, playingPreview, onPlay, onDownload, idx }) => {
+const PackCard: React.FC<PackCardProps> = ({ pack, playingPreview, onPlay, onBuy, idx }) => {
   const isPlaying = playingPreview === pack.id;
 
   return (
@@ -757,13 +757,13 @@ const PackCard: React.FC<PackCardProps> = ({ pack, playingPreview, onPlay, onDow
 
       <div className="sh-card-footer">
         <div className="sh-price">
-          <span className="sh-price-amount">Free</span>
+          <span className="sh-price-amount">{pack.price} USDT</span>
         </div>
         <button
           className="sh-buy-btn"
-          onClick={() => onDownload(pack.id)}
+          onClick={() => onBuy(pack.id)}
         >
-          Download
+          Buy
         </button>
       </div>
     </div>
@@ -856,28 +856,54 @@ const Shop = () => {
     } catch {}
   };
 
-  const handleDownloadPack = async (packId: string) => {
+  const handleBuyPack = async (packId: string) => {
     const token = localStorage.getItem('token');
-    if (!token) { alert('Please login to download packs'); return; }
+    if (!token) { alert('Please login to buy packs'); return; }
+    
     try {
-      const res = await fetch(`/api/shop/${packId}/download`, {
-        headers: { Authorization: `Bearer ${token}` }
+      const res = await fetch('/api/shop/crypto/invoice', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ packId })
       });
+      
       if (!res.ok) { 
         const e = await res.json(); 
-        throw new Error(e.error || 'Failed to download'); 
+        throw new Error(e.error || 'Failed to create payment'); 
       }
-      const blob = await res.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `pack-${packId}.zip`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
+      
+      const data = await res.json();
+      
+      // Открываем страницу оплаты Crypto Pay
+      if (data.invoice && data.invoice.pay_url) {
+        window.open(data.invoice.pay_url, '_blank');
+        
+        // Опционально: проверяем статус платежа периодически
+        const checkPaymentStatus = setInterval(async () => {
+          try {
+            const statusRes = await fetch(`/api/shop/crypto/invoice/${data.invoice.id}`, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            const statusData = await statusRes.json();
+            
+            if (statusData.invoice && statusData.invoice.status === 'paid') {
+              clearInterval(checkPaymentStatus);
+              alert('Payment successful! Pack is now yours.');
+              fetchPacks(); // Обновляем список паков
+            }
+          } catch (err) {
+            console.error('Error checking payment status:', err);
+          }
+        }, 5000); // Проверяем каждые 5 секунд
+        
+        // Останавливаем проверку через 10 минут
+        setTimeout(() => clearInterval(checkPaymentStatus), 600000);
+      }
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to download pack');
+      alert(err instanceof Error ? err.message : 'Failed to initiate payment');
     }
   };
 
@@ -1000,7 +1026,7 @@ const Shop = () => {
               idx={idx}
               playingPreview={playingPreview}
               onPlay={playPreview}
-              onDownload={handleDownloadPack}
+              onBuy={handleBuyPack}
             />
           ))}
         </div>

@@ -51,7 +51,7 @@ const Admin: React.FC = () => {
   const [loops, setLoops] = useState<Loop[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'loops'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'loops' | 'balance'>('overview');
   const [userPage, setUserPage] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalLoops, setTotalLoops] = useState(0);
@@ -59,6 +59,8 @@ const Admin: React.FC = () => {
   const [filterStatus, setFilterStatus] = useState<'all' | 'banned' | 'active'>('all');
   const [playingLoopId, setPlayingLoopId] = useState<number | null>(null);
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
+  const [creditUsername, setCreditUsername] = useState('');
+  const [creditAmount, setCreditAmount] = useState('');
 
   const handlePlayLoop = (loopId: number, filename: string) => {
     if (playingLoopId === loopId) {
@@ -215,6 +217,40 @@ const Admin: React.FC = () => {
     }
   };
 
+  const handleManualCreditBalance = async () => {
+    if (!creditUsername || !creditAmount) {
+      alert('Введите имя пользователя и сумму');
+      return;
+    }
+
+    try {
+      const token = tokenStorage.getToken();
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/shop/admin/credit-balance`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: creditUsername,
+          amount: parseInt(creditAmount)
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to credit balance');
+      }
+
+      const data = await response.json();
+      alert(`Успешно начислено ${data.credited_amount} коинов пользователю ${data.username}`);
+      setCreditUsername('');
+      setCreditAmount('');
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Unknown error');
+    }
+  };
+
   const fetchStats = async () => {
     try {
       setLoading(true);
@@ -335,6 +371,15 @@ const Admin: React.FC = () => {
               </svg>
               <span>Лупы</span>
               <span className="tab-count">{totalLoops}</span>
+            </button>
+            <button
+              className={`tab-button ${activeTab === 'balance' ? 'active' : ''}`}
+              onClick={() => setActiveTab('balance')}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2-1.343-2-3-2zm0 0c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2-1.343-2-3-2zm0 0c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2-1.343-2-3-2z" />
+              </svg>
+              <span>Баланс</span>
             </button>
           </div>
         </div>
@@ -729,6 +774,54 @@ const Admin: React.FC = () => {
                   ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+        )}
+
+        {/* Balance Tab */}
+        {activeTab === 'balance' && (
+          <div className="admin-card">
+            <div className="card-header">
+              <h3>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2-1.343-2-3-2zm0 0c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2-1.343-2-3-2zm0 0c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2-1.343-2-3-2z" />
+                </svg>
+                Ручное начисление баланса
+              </h3>
+            </div>
+            <div className="balance-credit-form">
+              <div className="form-group">
+                <label>Имя пользователя:</label>
+                <input
+                  type="text"
+                  value={creditUsername}
+                  onChange={(e) => setCreditUsername(e.target.value)}
+                  placeholder="Введите имя пользователя"
+                />
+              </div>
+              <div className="form-group">
+                <label>Сумма в коинах:</label>
+                <input
+                  type="number"
+                  min="1"
+                  value={creditAmount}
+                  onChange={(e) => setCreditAmount(e.target.value)}
+                  placeholder="Введите сумму"
+                />
+              </div>
+              <button onClick={handleManualCreditBalance} className="btn-credit">
+                Начислить баланс
+              </button>
+            </div>
+            <div className="balance-info">
+              <p>💡 Инструкция:</p>
+              <ul>
+                <li>Пользователь отправляет запрос на пополнение через профиль</li>
+                <li>Администратор получает уведомление в Telegram</li>
+                <li>Администратор предоставляет реквизиты для оплаты</li>
+                <li>После оплаты администратор вводит имя пользователя и сумму для начисления</li>
+                <li>Баланс начисляется автоматически</li>
+              </ul>
             </div>
           </div>
         )}

@@ -831,7 +831,7 @@ const Shop = () => {
     try {
       setLoading(true);
       const params = new URLSearchParams({ page: page.toString(), limit: '20', sort, order, ...(search && { search }) });
-      const res = await fetch(`/api/shop?${params}`);
+      const res = await fetch(`https://loopera-lpr.vercel.app/api/shop?${params}`);
       if (!res.ok) throw new Error('Failed to fetch packs');
       const data = await res.json();
       setPacks(data.packs);
@@ -848,7 +848,7 @@ const Shop = () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) return;
-      const res = await fetch('/api/shop/balance/my', { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch('https://loopera-lpr.vercel.app/api/shop/balance/my', { headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) {
         const b = await res.json();
         setUserBalance(b.available_balance || 0);
@@ -861,7 +861,7 @@ const Shop = () => {
     if (!token) { alert('Please login to buy packs'); return; }
     
     try {
-      const res = await fetch(`/api/shop/${packId}/buy`, {
+      const res = await fetch(`https://loopera-lpr.vercel.app/api/shop/${packId}/buy`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

@@ -859,24 +859,32 @@ const Shop = () => {
   const handleBuyPack = async (packId: string) => {
     const token = localStorage.getItem('token');
     if (!token) { alert('Please login to buy packs'); return; }
-    
+
+    // Find the pack to get price
+    const pack = packs.find(p => p.id === packId);
+    if (!pack) return;
+
+    if (!confirm(`Купить "${pack.title}" за ${pack.price} коинов?`)) {
+      return;
+    }
+
     try {
       const res = await fetch(`https://loopera-lpr.vercel.app/api/shop/${packId}/buy`, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         }
       });
-      
-      if (!res.ok) { 
-        const e = await res.json(); 
-        throw new Error(e.error || 'Failed to buy pack'); 
+
+      if (!res.ok) {
+        const e = await res.json();
+        throw new Error(e.error || 'Failed to buy pack');
       }
-      
+
       const data = await res.json();
-      
-      if (data.success) {
+
+      if (data.message) {
         alert('Pack purchased successfully!');
         fetchUserBalance();
         fetchPacks();

@@ -40,6 +40,8 @@ const Profile = () => {
   const [showWithdrawModal, setShowWithdrawModal] = useState(false)
   const [withdrawAmount, setWithdrawAmount] = useState('')
   const [selectedCurrency, setSelectedCurrency] = useState('RUB')
+  const [purchasedPacks, setPurchasedPacks] = useState<any[]>([])
+  const [isLoadingPacks, setIsLoadingPacks] = useState(true)
 
   const handleTopUp = () => {
     const amount = parseInt(topUpAmount)
@@ -125,9 +127,29 @@ const Profile = () => {
       }
     }
 
+    const fetchPurchasedPacks = async () => {
+      if (token) {
+        try {
+          setIsLoadingPacks(true)
+          const response = await fetch('https://loopera-lpr.vercel.app/api/shop/my/packs', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          })
+          const data = await response.json()
+          setPurchasedPacks(data.packs || [])
+        } catch (error) {
+          console.error('Error fetching purchased packs:', error)
+        } finally {
+          setIsLoadingPacks(false)
+        }
+      }
+    }
+
     fetchUserLoops()
     fetchSubscriptions()
     fetchBalance()
+    fetchPurchasedPacks()
   }, [token])
 
   const handleAddSubscription = async (artist: LoopArtist) => {
@@ -182,6 +204,32 @@ const Profile = () => {
   const handleLogout = () => {
     logout()
     navigate('/auth')
+  }
+
+  const handleDownloadPack = async (packId: number) => {
+    try {
+      const response = await fetch(`https://loopera-lpr.vercel.app/api/shop/${packId}/download`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to download pack')
+      }
+
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `pack-${packId}.zip`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+    } catch (error) {
+      alert('Ошибка скачивания пака')
+    }
   }
 
   const formatDate = (dateString: string) => {
@@ -386,9 +434,9 @@ const Profile = () => {
               </svg>
               Подписки на артистов
             </h2>
-            
+
             {/* Форма добавления подписки */}
-            <ArtistSearch 
+            <ArtistSearch
               onSelect={handleAddSubscription}
               disabled={isAddingSubscription}
               placeholder="Введите имя или хештег артиста..."
@@ -426,6 +474,54 @@ const Profile = () => {
                 </svg>
                 <p>У вас пока нет подписок</p>
                 <p>Подпишитесь на артистов, чтобы видеть их лупы</p>
+              </div>
+            )}
+          </div>
+
+          {/* Купленные паки */}
+          <div className="profile-section">
+            <h2 className="profile-section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <path d="M16 10a4 4 0 0 1-8 0"></path>
+              </svg>
+              Покупки
+            </h2>
+            {isLoadingPacks ? (
+              <div className="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 6v6l4 2"></path>
+                </svg>
+                <p>Загрузка...</p>
+              </div>
+            ) : purchasedPacks.length > 0 ? (
+              <div className="purchased-packs-list">
+                {purchasedPacks.map((pack) => (
+                  <div key={pack.id} className="purchased-pack-item">
+                    <div className="pack-info">
+                      <h3>{pack.title}</h3>
+                      <p>{pack.description}</p>
+                      <p className="pack-price">{pack.price} coins</p>
+                    </div>
+                    <button
+                      onClick={() => handleDownloadPack(pack.id)}
+                      className="download-button"
+                    >
+                      Скачать
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+                <p>У вас пока нет покупок</p>
               </div>
             )}
           </div>

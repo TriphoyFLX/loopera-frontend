@@ -152,7 +152,7 @@ const Profile = () => {
       if (token) {
         try {
           setIsLoadingTransactions(true)
-          const response = await fetch('https://loopera-lpr.vercel.app/api/shop/transactions', {
+          const response = await fetch('https://loopera-lpr.vercel.app/api/shop/history', {
             headers: {
               'Authorization': `Bearer ${token}`
             }

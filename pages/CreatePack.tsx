@@ -446,7 +446,7 @@ const CreatePack: React.FC = () => {
               </div>
               <div className={styles.ruleCard}>
                 <span className={styles.ruleIcon}>📦</span>
-                <span className={styles.ruleText}>Max 3 packs per day</span>
+                <span className={styles.ruleText}>Submit as many packs as you want</span>
               </div>
               <div className={styles.ruleCard}>
                 <span className={styles.ruleIcon}>👁️</span>

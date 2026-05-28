@@ -61,6 +61,9 @@ const Admin: React.FC = () => {
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
   const [creditUsername, setCreditUsername] = useState('');
   const [creditAmount, setCreditAmount] = useState('');
+  const [debitUsername, setDebitUsername] = useState('');
+  const [debitAmount, setDebitAmount] = useState('');
+  const [debitCurrency, setDebitCurrency] = useState('RUB');
 
   const handlePlayLoop = (loopId: number, filename: string) => {
     if (playingLoopId === loopId) {
@@ -246,6 +249,49 @@ const Admin: React.FC = () => {
       alert(`Успешно начислено ${data.credited_amount} коинов пользователю ${data.username}`);
       setCreditUsername('');
       setCreditAmount('');
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Unknown error');
+    }
+  };
+
+  const handleManualDebitBalance = async () => {
+    if (!debitUsername || !debitAmount) {
+      alert('Введите имя пользователя и сумму');
+      return;
+    }
+
+    const amount = parseInt(debitAmount);
+    const commission = Math.round(amount * 0.2);
+    const netAmount = amount - commission;
+
+    if (!confirm(`Списать ${amount} коинов с пользователя ${debitUsername}?\nКомиссия (20%): ${commission} коинов\nК выдаче: ${netAmount} ${debitCurrency}`)) {
+      return;
+    }
+
+    try {
+      const token = tokenStorage.getToken();
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/shop/admin/debit-balance`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: debitUsername,
+          amount: amount,
+          currency: debitCurrency
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to debit balance');
+      }
+
+      const data = await response.json();
+      alert(`Успешно списано ${data.debited_amount} коинов с пользователя ${data.username}\nКомиссия: ${data.commission} коинов\nК выдаче: ${data.net_amount} ${data.currency}`);
+      setDebitUsername('');
+      setDebitAmount('');
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Unknown error');
     }
@@ -786,41 +832,94 @@ const Admin: React.FC = () => {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2-1.343-2-3-2zm0 0c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2-1.343-2-3-2zm0 0c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2-1.343-2-3-2z" />
                 </svg>
-                Ручное начисление баланса
+                Управление балансом
               </h3>
             </div>
-            <div className="balance-credit-form">
-              <div className="form-group">
-                <label>Имя пользователя:</label>
-                <input
-                  type="text"
-                  value={creditUsername}
-                  onChange={(e) => setCreditUsername(e.target.value)}
-                  placeholder="Введите имя пользователя"
-                />
+            
+            {/* Credit Form */}
+            <div className="balance-section">
+              <h4>Начислить баланс</h4>
+              <div className="balance-credit-form">
+                <div className="form-group">
+                  <label>Имя пользователя:</label>
+                  <input
+                    type="text"
+                    value={creditUsername}
+                    onChange={(e) => setCreditUsername(e.target.value)}
+                    placeholder="Введите имя пользователя"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Сумма в коинах:</label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={creditAmount}
+                    onChange={(e) => setCreditAmount(e.target.value)}
+                    placeholder="Введите сумму"
+                  />
+                </div>
+                <button onClick={handleManualCreditBalance} className="btn-credit">
+                  Начислить баланс
+                </button>
               </div>
-              <div className="form-group">
-                <label>Сумма в коинах:</label>
-                <input
-                  type="number"
-                  min="1"
-                  value={creditAmount}
-                  onChange={(e) => setCreditAmount(e.target.value)}
-                  placeholder="Введите сумму"
-                />
-              </div>
-              <button onClick={handleManualCreditBalance} className="btn-credit">
-                Начислить баланс
-              </button>
             </div>
+
+            {/* Debit Form */}
+            <div className="balance-section">
+              <h4>Списать баланс (вывод средств)</h4>
+              <div className="balance-credit-form">
+                <div className="form-group">
+                  <label>Имя пользователя:</label>
+                  <input
+                    type="text"
+                    value={debitUsername}
+                    onChange={(e) => setDebitUsername(e.target.value)}
+                    placeholder="Введите имя пользователя"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Сумма в коинах:</label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={debitAmount}
+                    onChange={(e) => setDebitAmount(e.target.value)}
+                    placeholder="Введите сумму"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Валюта:</label>
+                  <select
+                    value={debitCurrency}
+                    onChange={(e) => setDebitCurrency(e.target.value)}
+                  >
+                    <option value="RUB">🇷🇺 Российский рубль (RUB)</option>
+                    <option value="USD">🇺🇸 Доллар США (USD)</option>
+                    <option value="EUR">🇪🇺 Евро (EUR)</option>
+                    <option value="GBP">🇬🇧 Британский фунт (GBP)</option>
+                  </select>
+                </div>
+                {debitAmount && parseInt(debitAmount) > 0 && (
+                  <div className="commission-info">
+                    <p>Комиссия (20%): {Math.round(parseInt(debitAmount) * 0.2)} коинов</p>
+                    <p>К выдаче: {parseInt(debitAmount) - Math.round(parseInt(debitAmount) * 0.2)} {debitCurrency}</p>
+                  </div>
+                )}
+                <button onClick={handleManualDebitBalance} className="btn-credit" style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)' }}>
+                  Списать баланс
+                </button>
+              </div>
+            </div>
+
             <div className="balance-info">
               <p>💡 Инструкция:</p>
               <ul>
-                <li>Пользователь отправляет запрос на пополнение через профиль</li>
+                <li>Пользователь отправляет запрос на пополнение/вывод через профиль</li>
                 <li>Администратор получает уведомление в Telegram</li>
-                <li>Администратор предоставляет реквизиты для оплаты</li>
-                <li>После оплаты администратор вводит имя пользователя и сумму для начисления</li>
-                <li>Баланс начисляется автоматически</li>
+                <li>Для пополнения: Администратор предоставляет реквизиты, пользователь платит, админ начисляет баланс</li>
+                <li>Для вывода: Администратор списывает баланс с 20% комиссией и отправляет средства</li>
+                <li>Все операции записываются в историю транзакций</li>
               </ul>
             </div>
           </div>

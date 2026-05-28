@@ -814,3 +814,57 @@
   transform: translateY(-2px);
   opacity: 0.9;
 }
+
+/* Currency selector styles */
+.currency-selector {
+  margin: 16px 0;
+}
+
+.currency-selector label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 8px;
+}
+
+.currency-selector select {
+  width: 100%;
+  background: #0f0f20;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px;
+  color: white;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+}
+
+.currency-selector select:hover {
+  border-color: rgba(255, 42, 85, 0.3);
+}
+
+.currency-selector select:focus {
+  border-color: rgba(255, 42, 85, 0.3);
+  box-shadow: 0 0 0 3px rgba(255, 42, 85, 0.1);
+}
+
+.currency-selector select option {
+  background: #1a1a2e;
+  color: white;
+}
+
+/* Commission info styles */
+.commission-info {
+  margin: 16px 0;
+  padding: 12px;
+  background: rgba(255, 42, 85, 0.1);
+  border-radius: 8px;
+  border-left: 3px solid #ff2a55;
+}
+
+.commission-info p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 4px 0;
+}

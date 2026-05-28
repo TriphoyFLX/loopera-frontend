@@ -39,6 +39,7 @@ const Profile = () => {
   const [topUpAmount, setTopUpAmount] = useState('')
   const [showWithdrawModal, setShowWithdrawModal] = useState(false)
   const [withdrawAmount, setWithdrawAmount] = useState('')
+  const [selectedCurrency, setSelectedCurrency] = useState('RUB')
 
   const handleTopUp = () => {
     const amount = parseInt(topUpAmount)
@@ -47,8 +48,8 @@ const Profile = () => {
       return
     }
 
-    const message = `Здравствуйте! Хочу пополнить баланс на loopera на ${amount} коинов. Ожидаю реквизиты. Мой профиль: https://loopera-lpr.vercel.app/profile`
-    const telegramUrl = `https://t.me/TriphoyFLX?text=${encodeURIComponent(message)}`
+    const message = `Здравствуйте! Хочу пополнить баланс на loopera на ${amount} коинов. Валюта: ${selectedCurrency}. Ожидаю реквизиты. Мой профиль: https://loopera-lpr.vercel.app/profile`
+    const telegramUrl = `https://t.me/triphoyprod?text=${encodeURIComponent(message)}`
     window.open(telegramUrl, '_blank')
     setShowTopUpModal(false)
     setTopUpAmount('')
@@ -66,8 +67,11 @@ const Profile = () => {
       return
     }
 
-    const message = `Здравствуйте! Хочу вывести ${amount} коинов с loopera. Мой профиль: https://loopera-lpr.vercel.app/profile`
-    const telegramUrl = `https://t.me/TriphoyFLX?text=${encodeURIComponent(message)}`
+    const commission = Math.round(amount * 0.2) // 20% commission
+    const netAmount = amount - commission
+
+    const message = `Здравствуйте! Хочу вывести ${amount} коинов с loopera (${netAmount} коинов после вычета 20% комиссии = ${commission} коинов). Валюта: ${selectedCurrency}. Мой профиль: https://loopera-lpr.vercel.app/profile`
+    const telegramUrl = `https://t.me/triphoyprod?text=${encodeURIComponent(message)}`
     window.open(telegramUrl, '_blank')
     setShowWithdrawModal(false)
     setWithdrawAmount('')
@@ -228,7 +232,7 @@ const Profile = () => {
             <div className="modal-conditions">
               <h3>Условия пополнения:</h3>
               <ul>
-                <li>1 коин = 1 рубль</li>
+                <li>1 коин = 1 единица выбранной валюты (рубль/доллар/евро/фунт)</li>
                 <li>Минимальная сумма пополнения: 1 коин</li>
                 <li>После нажатия "Хочу пополнить" вы будете перенаправлены в Telegram</li>
                 <li>Администратор предоставит реквизиты для оплаты</li>
@@ -237,6 +241,18 @@ const Profile = () => {
               </ul>
               <p className="modal-note">⚠️ Пожалуйста, указывайте корректную сумму. После отправки заявки изменить её будет невозможно.</p>
             </div>
+            <div className="currency-selector">
+              <label>Выберите валюту:</label>
+              <select
+                value={selectedCurrency}
+                onChange={(e) => setSelectedCurrency(e.target.value)}
+              >
+                <option value="RUB">🇷🇺 Российский рубль (RUB)</option>
+                <option value="USD">🇺🇸 Доллар США (USD)</option>
+                <option value="EUR">🇪🇺 Евро (EUR)</option>
+                <option value="GBP">🇬🇧 Британский фунт (GBP)</option>
+              </select>
+            </div>
             <input
               type="number"
               min="1"
@@ -244,6 +260,11 @@ const Profile = () => {
               onChange={(e) => setTopUpAmount(e.target.value)}
               placeholder="Сумма в коинах"
             />
+            {topUpAmount && parseInt(topUpAmount) > 0 && (
+              <div className="commission-info">
+                <p>К оплате: {parseInt(topUpAmount)} {selectedCurrency}</p>
+              </div>
+            )}
             <div className="modal-buttons">
               <button onClick={handleTopUp}>Хочу пополнить на {topUpAmount || '0'} коинов</button>
               <button onClick={() => setShowTopUpModal(false)}>Отмена</button>
@@ -260,14 +281,27 @@ const Profile = () => {
             <div className="modal-conditions">
               <h3>Условия вывода:</h3>
               <ul>
-                <li>1 коин = 1 рубль</li>
+                <li>1 коин = 1 единица выбранной валюты (рубль/доллар/евро/фунт)</li>
                 <li>Минимальная сумма вывода: 1 коин</li>
+                <li>Комиссия за вывод: 20%</li>
                 <li>После нажатия "Хочу вывести" вы будете перенаправлены в Telegram</li>
                 <li>Администратор запросит реквизиты для вывода</li>
-                <li>После проверки администратор отправит средства</li>
+                <li>После проверки администратор отправит средства за вычетом комиссии</li>
                 <li>Вывод происходит вручную, обычно в течение 24-48 часов</li>
               </ul>
               <p className="modal-note">⚠️ Пожалуйста, указывайте корректную сумму. После отправки заявки изменить её будет невозможно.</p>
+            </div>
+            <div className="currency-selector">
+              <label>Выберите валюту:</label>
+              <select
+                value={selectedCurrency}
+                onChange={(e) => setSelectedCurrency(e.target.value)}
+              >
+                <option value="RUB">🇷🇺 Российский рубль (RUB)</option>
+                <option value="USD">🇺🇸 Доллар США (USD)</option>
+                <option value="EUR">🇪🇺 Евро (EUR)</option>
+                <option value="GBP">🇬🇧 Британский фунт (GBP)</option>
+              </select>
             </div>
             <input
               type="number"
@@ -277,6 +311,12 @@ const Profile = () => {
               onChange={(e) => setWithdrawAmount(e.target.value)}
               placeholder="Сумма в коинах"
             />
+            {withdrawAmount && parseInt(withdrawAmount) > 0 && (
+              <div className="commission-info">
+                <p>Комиссия (20%): {Math.round(parseInt(withdrawAmount) * 0.2)} коинов</p>
+                <p>К получению: {parseInt(withdrawAmount) - Math.round(parseInt(withdrawAmount) * 0.2)} коинов = {parseInt(withdrawAmount) - Math.round(parseInt(withdrawAmount) * 0.2)} {selectedCurrency}</p>
+              </div>
+            )}
             <div className="modal-buttons">
               <button onClick={handleWithdraw}>Хочу вывести {withdrawAmount || '0'} коинов</button>
               <button onClick={() => setShowWithdrawModal(false)}>Отмена</button>

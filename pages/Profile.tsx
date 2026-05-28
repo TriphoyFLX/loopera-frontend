@@ -558,6 +558,7 @@ const Profile = () => {
                       <h3>{pack.title}</h3>
                       <p>{pack.description}</p>
                       <p className="pack-price">{pack.price} coins</p>
+                      <p className="pack-seller">Продавец: {pack.seller_username || 'Неизвестно'}</p>
                     </div>
                     <button
                       onClick={() => handleDownloadPack(pack.id)}

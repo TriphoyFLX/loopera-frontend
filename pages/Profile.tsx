@@ -47,7 +47,7 @@ const Profile = () => {
 
     try {
       const token = localStorage.getItem('token')
-      const res = await fetch('https://loopera-lpr.vercel.app/api/shop/crypto/topup', {
+      const res = await fetch('http://77.73.238.154:5001/api/shop/crypto/topup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

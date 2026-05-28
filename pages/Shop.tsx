@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import Modal from '../components/Modal';
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
@@ -799,6 +800,8 @@ const Shop = () => {
   const [total, setTotal] = useState(0);
   const [playingPreview, setPlayingPreview] = useState<string | null>(null);
   const [userBalance, setUserBalance] = useState(0);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const searchTimeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -859,7 +862,7 @@ const Shop = () => {
 
   const handleBuyPack = async (packId: string) => {
     const token = localStorage.getItem('token');
-    if (!token) { alert('Please login to buy packs'); return; }
+    if (!token) { setModalMessage('Please login to buy packs'); setModalOpen(true); return; }
 
     // Find the pack to get price
     const pack = packs.find(p => p.id === packId);
@@ -886,7 +889,8 @@ const Shop = () => {
       const data = await res.json();
 
       if (data.message) {
-        alert('Pack purchased successfully!');
+        setModalMessage('Pack purchased successfully!');
+        setModalOpen(true);
 
         // Auto-download the pack
         try {
@@ -918,7 +922,8 @@ const Shop = () => {
         window.location.href = '/profile#purchases';
       }
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to buy pack');
+      setModalMessage(err instanceof Error ? err.message : 'Failed to buy pack');
+      setModalOpen(true);
     }
   };
 
@@ -958,8 +963,9 @@ const Shop = () => {
   }
 
   return (
-    <div className="shop-root">
-      <style>{STYLES}</style>
+    <>
+      <div className="shop-root">
+        <style>{STYLES}</style>
 
       <header className="sh-header">
         <div className="sh-brand">
@@ -1059,6 +1065,11 @@ const Shop = () => {
         </div>
       )}
     </div>
+
+    <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Уведомление">
+      <p>{modalMessage}</p>
+    </Modal>
+    </>
   );
 };
 

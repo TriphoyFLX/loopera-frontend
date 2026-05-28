@@ -6,6 +6,7 @@ import { subscriptionApi, type Subscription } from '../utils/subscriptionApi'
 import LikedLoops from '../components/LikedLoops'
 import LoopCard from '../components/LoopCard'
 import ArtistSearch from '../components/ArtistSearch'
+import Modal from '../components/Modal'
 import type { LoopArtist } from '../utils/searchApi'
 import './Profile.css'
 
@@ -46,11 +47,14 @@ const Profile = () => {
   const [isLoadingCreatedPacks, setIsLoadingCreatedPacks] = useState(true)
   const [transactions, setTransactions] = useState<any[]>([])
   const [isLoadingTransactions, setIsLoadingTransactions] = useState(true)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [modalMessage, setModalMessage] = useState('')
 
   const handleTopUp = () => {
     const amount = parseInt(topUpAmount)
-    if (!amount || amount < 1) {
-      alert('Минимальная сумма пополнения: 1 коин')
+    if (!amount || amount < 200) {
+      setModalMessage('Минимальная сумма пополнения: 200 коинов')
+      setModalOpen(true)
       return
     }
 
@@ -63,13 +67,15 @@ const Profile = () => {
 
   const handleWithdraw = () => {
     const amount = parseInt(withdrawAmount)
-    if (!amount || amount < 1) {
-      alert('Минимальная сумма вывода: 1 коин')
+    if (!amount || amount < 1000) {
+      setModalMessage('Минимальная сумма вывода: 1000 коинов')
+      setModalOpen(true)
       return
     }
 
     if (amount > balance) {
-      alert('Недостаточно средств на балансе')
+      setModalMessage('Недостаточно средств на балансе')
+      setModalOpen(true)
       return
     }
 
@@ -222,7 +228,8 @@ const Profile = () => {
       setSubscriptions(response.subscriptions)
     } catch (error) {
       console.error('Error removing subscription:', error)
-      alert(error instanceof Error ? error.message : 'Ошибка удаления подписки')
+      setModalMessage(error instanceof Error ? error.message : 'Ошибка удаления подписки')
+      setModalOpen(true)
     }
   }
 
@@ -241,7 +248,8 @@ const Profile = () => {
       }
     } catch (error) {
       console.error('Error deleting loop:', error)
-      alert(error instanceof Error ? error.message : 'Ошибка удаления лупа')
+      setModalMessage(error instanceof Error ? error.message : 'Ошибка удаления лупа')
+      setModalOpen(true)
     }
   }
 
@@ -272,7 +280,8 @@ const Profile = () => {
       window.URL.revokeObjectURL(url)
       document.body.removeChild(a)
     } catch (error) {
-      alert('Ошибка скачивания пака')
+      setModalMessage('Ошибка скачивания пака')
+      setModalOpen(true)
     }
   }
 
@@ -289,9 +298,10 @@ const Profile = () => {
   }
 
   return (
-    <div className="profile-page">
-      {/* Профиль хедер */}
-      <div className="profile-header">
+    <>
+      <div className="profile-page">
+        {/* Профиль хедер */}
+        <div className="profile-header">
         <div className="profile-header-content">
           <div className="profile-avatar-large">
             {user.username.charAt(0).toUpperCase()}
@@ -702,6 +712,11 @@ const Profile = () => {
         </div>
       </div>
     </div>
+
+    <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Уведомление">
+      <p>{modalMessage}</p>
+    </Modal>
+    </>
   )
 }
 

@@ -64,6 +64,8 @@ const Admin: React.FC = () => {
   const [debitUsername, setDebitUsername] = useState('');
   const [debitAmount, setDebitAmount] = useState('');
   const [debitCurrency, setDebitCurrency] = useState('RUB');
+  const [userSuggestions, setUserSuggestions] = useState<{ id: number; username: string }[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const handlePlayLoop = (loopId: number, filename: string) => {
     if (playingLoopId === loopId) {
@@ -295,6 +297,41 @@ const Admin: React.FC = () => {
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Unknown error');
     }
+  };
+
+  const handleSearchUsers = async (query: string) => {
+    if (!query || query.length < 2) {
+      setUserSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    try {
+      const token = tokenStorage.getToken();
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/shop/admin/search-users?q=${encodeURIComponent(query)}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to search users');
+      }
+
+      const data = await response.json();
+      setUserSuggestions(data.users || []);
+      setShowSuggestions(true);
+    } catch (err) {
+      console.error('Error searching users:', err);
+      setUserSuggestions([]);
+    }
+  };
+
+  const handleSelectUser = (username: string) => {
+    setCreditUsername(username);
+    setDebitUsername(username);
+    setShowSuggestions(false);
+    setUserSuggestions([]);
   };
 
   const fetchStats = async () => {
@@ -842,12 +879,31 @@ const Admin: React.FC = () => {
               <div className="balance-credit-form">
                 <div className="form-group">
                   <label>Имя пользователя:</label>
-                  <input
-                    type="text"
-                    value={creditUsername}
-                    onChange={(e) => setCreditUsername(e.target.value)}
-                    placeholder="Введите имя пользователя"
-                  />
+                  <div className="autocomplete-wrapper">
+                    <input
+                      type="text"
+                      value={creditUsername}
+                      onChange={(e) => {
+                        setCreditUsername(e.target.value);
+                        handleSearchUsers(e.target.value);
+                      }}
+                      placeholder="Введите имя пользователя"
+                      autoComplete="off"
+                    />
+                    {showSuggestions && userSuggestions.length > 0 && (
+                      <div className="suggestions-list">
+                        {userSuggestions.map((user) => (
+                          <div
+                            key={user.id}
+                            className="suggestion-item"
+                            onClick={() => handleSelectUser(user.username)}
+                          >
+                            {user.username}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="form-group">
                   <label>Сумма в коинах:</label>
@@ -871,12 +927,31 @@ const Admin: React.FC = () => {
               <div className="balance-credit-form">
                 <div className="form-group">
                   <label>Имя пользователя:</label>
-                  <input
-                    type="text"
-                    value={debitUsername}
-                    onChange={(e) => setDebitUsername(e.target.value)}
-                    placeholder="Введите имя пользователя"
-                  />
+                  <div className="autocomplete-wrapper">
+                    <input
+                      type="text"
+                      value={debitUsername}
+                      onChange={(e) => {
+                        setDebitUsername(e.target.value);
+                        handleSearchUsers(e.target.value);
+                      }}
+                      placeholder="Введите имя пользователя"
+                      autoComplete="off"
+                    />
+                    {showSuggestions && userSuggestions.length > 0 && (
+                      <div className="suggestions-list">
+                        {userSuggestions.map((user) => (
+                          <div
+                            key={user.id}
+                            className="suggestion-item"
+                            onClick={() => handleSelectUser(user.username)}
+                          >
+                            {user.username}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="form-group">
                   <label>Сумма в коинах:</label>

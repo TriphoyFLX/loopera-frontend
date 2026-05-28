@@ -32,6 +32,41 @@
 
 .modal-body {
   color: #fff;
+  margin-bottom: 20px;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.modal-button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.modal-button-cancel {
+  background: #333;
+  color: #fff;
+}
+
+.modal-button-cancel:hover {
+  background: #444;
+}
+
+.modal-button-confirm {
+  background: #7c3aed;
+  color: #fff;
+}
+
+.modal-button-confirm:hover {
+  background: #9d67f5;
 }
 
 @keyframes fadeIn {

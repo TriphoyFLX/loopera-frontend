@@ -6,9 +6,12 @@ interface ModalProps {
   onClose: () => void;
   title?: string;
   children: React.ReactNode;
+  onConfirm?: () => void;
+  confirmText?: string;
+  cancelText?: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, onConfirm, confirmText = 'OK', cancelText = 'Cancel' }) => {
   if (!isOpen) return null;
 
   return (
@@ -16,6 +19,16 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         {title && <div className="modal-header">{title}</div>}
         <div className="modal-body">{children}</div>
+        {onConfirm && (
+          <div className="modal-footer">
+            <button className="modal-button modal-button-cancel" onClick={onClose}>
+              {cancelText}
+            </button>
+            <button className="modal-button modal-button-confirm" onClick={onConfirm}>
+              {confirmText}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

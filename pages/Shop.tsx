@@ -802,6 +802,9 @@ const Shop = () => {
   const [userBalance, setUserBalance] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState('');
+  const [pendingPackId, setPendingPackId] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const searchTimeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -868,9 +871,20 @@ const Shop = () => {
     const pack = packs.find(p => p.id === packId);
     if (!pack) return;
 
-    if (!confirm(`Купить "${pack.title}" за ${pack.price} коинов?`)) {
-      return;
-    }
+    // Show confirm modal
+    setConfirmMessage(`Купить "${pack.title}" за ${pack.price} коинов?`);
+    setPendingPackId(packId);
+    setConfirmModalOpen(true);
+  };
+
+  const handleConfirmPurchase = async () => {
+    setConfirmModalOpen(false);
+    const packId = pendingPackId;
+    if (!packId) return;
+
+    const token = localStorage.getItem('token');
+    const pack = packs.find(p => p.id === packId);
+    if (!pack) return;
 
     try {
       const res = await fetch(`https://loopera-lpr.vercel.app/api/shop/${packId}/buy`, {
@@ -1068,6 +1082,17 @@ const Shop = () => {
 
     <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Уведомление">
       <p>{modalMessage}</p>
+    </Modal>
+
+    <Modal 
+      isOpen={confirmModalOpen} 
+      onClose={() => setConfirmModalOpen(false)} 
+      title="Подтверждение покупки"
+      onConfirm={handleConfirmPurchase}
+      confirmText="Купить"
+      cancelText="Отмена"
+    >
+      <p>{confirmMessage}</p>
     </Modal>
     </>
   );

@@ -37,40 +37,40 @@ const Profile = () => {
   const [isLoadingBalance, setIsLoadingBalance] = useState(true)
   const [showTopUpModal, setShowTopUpModal] = useState(false)
   const [topUpAmount, setTopUpAmount] = useState('')
+  const [showWithdrawModal, setShowWithdrawModal] = useState(false)
+  const [withdrawAmount, setWithdrawAmount] = useState('')
 
-  const handleTopUp = async () => {
+  const handleTopUp = () => {
     const amount = parseInt(topUpAmount)
     if (!amount || amount < 1) {
-      alert('Минимальная сумма пополнения: 1 рубль')
+      alert('Минимальная сумма пополнения: 1 коин')
       return
     }
 
-    try {
-      const token = localStorage.getItem('token')
-      const res = await fetch('https://loopera-lpr.vercel.app/api/shop/crypto/topup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ amount })
-      })
+    const message = `Здравствуйте! Хочу пополнить баланс на loopera на ${amount} коинов. Ожидаю реквизиты. Мой профиль: https://loopera-lpr.vercel.app/profile`
+    const telegramUrl = `https://t.me/TriphoyFLX?text=${encodeURIComponent(message)}`
+    window.open(telegramUrl, '_blank')
+    setShowTopUpModal(false)
+    setTopUpAmount('')
+  }
 
-      if (!res.ok) {
-        const e = await res.json()
-        throw new Error(e.error || 'Failed to create top-up invoice')
-      }
-
-      const data = await res.json()
-
-      if (data.invoice && data.invoice.pay_url) {
-        window.open(data.invoice.pay_url, '_blank')
-        setShowTopUpModal(false)
-        setTopUpAmount('')
-      }
-    } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to initiate top-up')
+  const handleWithdraw = () => {
+    const amount = parseInt(withdrawAmount)
+    if (!amount || amount < 1) {
+      alert('Минимальная сумма вывода: 1 коин')
+      return
     }
+
+    if (amount > balance) {
+      alert('Недостаточно средств на балансе')
+      return
+    }
+
+    const message = `Здравствуйте! Хочу вывести ${amount} коинов с loopera. Мой профиль: https://loopera-lpr.vercel.app/profile`
+    const telegramUrl = `https://t.me/TriphoyFLX?text=${encodeURIComponent(message)}`
+    window.open(telegramUrl, '_blank')
+    setShowWithdrawModal(false)
+    setWithdrawAmount('')
   }
 
   useEffect(() => {
@@ -212,6 +212,9 @@ const Profile = () => {
               <button className="deposit-button" onClick={() => setShowTopUpModal(true)}>
                 Пополнить
               </button>
+              <button className="withdraw-button" onClick={() => setShowWithdrawModal(true)}>
+                Вывести
+              </button>
             </div>
           </div>
         </div>
@@ -220,19 +223,63 @@ const Profile = () => {
       {/* Top-up modal */}
       {showTopUpModal && (
         <div className="modal-overlay">
-          <div className="modal-content">
-            <h2>Пополнить коины</h2>
-            <p>1 рубль = 1 коин</p>
+          <div className="modal-content modal-content-large">
+            <h2>💎 Пополнить баланс</h2>
+            <div className="modal-conditions">
+              <h3>Условия пополнения:</h3>
+              <ul>
+                <li>1 коин = 1 рубль</li>
+                <li>Минимальная сумма пополнения: 1 коин</li>
+                <li>После нажатия "Хочу пополнить" вы будете перенаправлены в Telegram</li>
+                <li>Администратор предоставит реквизиты для оплаты</li>
+                <li>После оплаты администратор начислит коины на ваш баланс</li>
+                <li>Пополнение происходит вручную, обычно в течение 24 часов</li>
+              </ul>
+              <p className="modal-note">⚠️ Пожалуйста, указывайте корректную сумму. После отправки заявки изменить её будет невозможно.</p>
+            </div>
             <input
               type="number"
               min="1"
               value={topUpAmount}
               onChange={(e) => setTopUpAmount(e.target.value)}
-              placeholder="Сумма в рублях"
+              placeholder="Сумма в коинах"
             />
             <div className="modal-buttons">
-              <button onClick={handleTopUp}>Пополнить</button>
+              <button onClick={handleTopUp}>Хочу пополнить на {topUpAmount || '0'} коинов</button>
               <button onClick={() => setShowTopUpModal(false)}>Отмена</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Withdraw modal */}
+      {showWithdrawModal && (
+        <div className="modal-overlay">
+          <div className="modal-content modal-content-large">
+            <h2>💸 Вывести средства</h2>
+            <div className="modal-conditions">
+              <h3>Условия вывода:</h3>
+              <ul>
+                <li>1 коин = 1 рубль</li>
+                <li>Минимальная сумма вывода: 1 коин</li>
+                <li>После нажатия "Хочу вывести" вы будете перенаправлены в Telegram</li>
+                <li>Администратор запросит реквизиты для вывода</li>
+                <li>После проверки администратор отправит средства</li>
+                <li>Вывод происходит вручную, обычно в течение 24-48 часов</li>
+              </ul>
+              <p className="modal-note">⚠️ Пожалуйста, указывайте корректную сумму. После отправки заявки изменить её будет невозможно.</p>
+            </div>
+            <input
+              type="number"
+              min="1"
+              max={balance}
+              value={withdrawAmount}
+              onChange={(e) => setWithdrawAmount(e.target.value)}
+              placeholder="Сумма в коинах"
+            />
+            <div className="modal-buttons">
+              <button onClick={handleWithdraw}>Хочу вывести {withdrawAmount || '0'} коинов</button>
+              <button onClick={() => setShowWithdrawModal(false)}>Отмена</button>
             </div>
           </div>
         </div>

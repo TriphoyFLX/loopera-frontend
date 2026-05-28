@@ -723,7 +723,7 @@ const PackCard: React.FC<PackCardProps> = ({ pack, playingPreview, onPlay, onBuy
           </div>
           <div className="sh-pack-author">
             <span className="sh-pack-author-dot" />
-            <span>@{pack.hashtag}</span>
+            <span>{pack.username || pack.hashtag || 'Unknown'}</span>
           </div>
         </div>
 
@@ -780,7 +780,9 @@ interface Pack {
   preview_url?: string;
   preview_url_2?: string;
   voice_tag?: string;
-  hashtag: string;
+  hashtag?: string;
+  username?: string;
+  avatar_url?: string;
   avg_rating: number;
   rating_count: number;
   sales_count: number;

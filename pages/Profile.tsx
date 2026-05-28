@@ -47,7 +47,7 @@ const Profile = () => {
 
     try {
       const token = localStorage.getItem('token')
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/shop/crypto/topup`, {
+      const res = await fetch('https://loopera-lpr.vercel.app/api/shop/crypto/topup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -106,13 +106,13 @@ const Profile = () => {
       if (token) {
         try {
           setIsLoadingBalance(true)
-          const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/shop/balance/my`, {
+          const response = await fetch('https://loopera-lpr.vercel.app/api/shop/balance/my', {
             headers: {
               'Authorization': `Bearer ${token}`
             }
           })
           const data = await response.json()
-          setBalance(data.balance || 0)
+          setBalance(data.available_balance || 0)
         } catch (error) {
           console.error('Error fetching balance:', error)
         } finally {

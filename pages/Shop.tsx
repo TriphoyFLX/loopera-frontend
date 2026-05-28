@@ -861,49 +861,28 @@ const Shop = () => {
     if (!token) { alert('Please login to buy packs'); return; }
     
     try {
-      const res = await fetch('/api/shop/crypto/invoice', {
+      const res = await fetch(`/api/shop/${packId}/buy`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ packId })
+        }
       });
       
       if (!res.ok) { 
         const e = await res.json(); 
-        throw new Error(e.error || 'Failed to create payment'); 
+        throw new Error(e.error || 'Failed to buy pack'); 
       }
       
       const data = await res.json();
       
-      // Открываем страницу оплаты Crypto Pay
-      if (data.invoice && data.invoice.pay_url) {
-        window.open(data.invoice.pay_url, '_blank');
-        
-        // Опционально: проверяем статус платежа периодически
-        const checkPaymentStatus = setInterval(async () => {
-          try {
-            const statusRes = await fetch(`/api/shop/crypto/invoice/${data.invoice.id}`, {
-              headers: { Authorization: `Bearer ${token}` }
-            });
-            const statusData = await statusRes.json();
-            
-            if (statusData.invoice && statusData.invoice.status === 'paid') {
-              clearInterval(checkPaymentStatus);
-              alert('Payment successful! Pack is now yours.');
-              fetchPacks(); // Обновляем список паков
-            }
-          } catch (err) {
-            console.error('Error checking payment status:', err);
-          }
-        }, 5000); // Проверяем каждые 5 секунд
-        
-        // Останавливаем проверку через 10 минут
-        setTimeout(() => clearInterval(checkPaymentStatus), 600000);
+      if (data.success) {
+        alert('Pack purchased successfully!');
+        fetchUserBalance();
+        fetchPacks();
       }
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to initiate payment');
+      alert(err instanceof Error ? err.message : 'Failed to buy pack');
     }
   };
 

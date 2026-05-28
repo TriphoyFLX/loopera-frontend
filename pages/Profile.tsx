@@ -35,6 +35,43 @@ const Profile = () => {
   const [isAddingSubscription, setIsAddingSubscription] = useState(false)
   const [balance, setBalance] = useState<number>(0)
   const [isLoadingBalance, setIsLoadingBalance] = useState(true)
+  const [showTopUpModal, setShowTopUpModal] = useState(false)
+  const [topUpAmount, setTopUpAmount] = useState('')
+
+  const handleTopUp = async () => {
+    const amount = parseInt(topUpAmount)
+    if (!amount || amount < 1) {
+      alert('Минимальная сумма пополнения: 1 рубль')
+      return
+    }
+
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/shop/crypto/topup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ amount })
+      })
+
+      if (!res.ok) {
+        const e = await res.json()
+        throw new Error(e.error || 'Failed to create top-up invoice')
+      }
+
+      const data = await res.json()
+
+      if (data.invoice && data.invoice.pay_url) {
+        window.open(data.invoice.pay_url, '_blank')
+        setShowTopUpModal(false)
+        setTopUpAmount('')
+      }
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to initiate top-up')
+    }
+  }
 
   useEffect(() => {
     const fetchUserLoops = async () => {
@@ -143,10 +180,6 @@ const Profile = () => {
     navigate('/auth')
   }
 
-  const handleDeposit = () => {
-    navigate('/deposit')
-  }
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ru-RU', {
       year: 'numeric',
@@ -176,13 +209,34 @@ const Profile = () => {
             <div className="profile-balance">
               <span className="balance-icon">💎</span>
               <span className="balance-amount">{isLoadingBalance ? '...' : balance.toLocaleString()} coins</span>
-              <button className="deposit-button" onClick={handleDeposit}>
+              <button className="deposit-button" onClick={() => setShowTopUpModal(true)}>
                 Пополнить
               </button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Top-up modal */}
+      {showTopUpModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>Пополнить коины</h2>
+            <p>1 рубль = 1 коин</p>
+            <input
+              type="number"
+              min="1"
+              value={topUpAmount}
+              onChange={(e) => setTopUpAmount(e.target.value)}
+              placeholder="Сумма в рублях"
+            />
+            <div className="modal-buttons">
+              <button onClick={handleTopUp}>Пополнить</button>
+              <button onClick={() => setShowTopUpModal(false)}>Отмена</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Основной контент */}
       <div className="profile-content">

@@ -912,6 +912,9 @@ const Shop = () => {
 
         fetchUserBalance();
         fetchPacks();
+
+        // Redirect to profile purchases section
+        window.location.href = '/profile#purchases';
       }
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Failed to buy pack');

@@ -886,6 +886,30 @@ const Shop = () => {
 
       if (data.message) {
         alert('Pack purchased successfully!');
+
+        // Auto-download the pack
+        try {
+          const downloadRes = await fetch(`https://loopera-lpr.vercel.app/api/shop/${packId}/download`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          if (downloadRes.ok) {
+            const blob = await downloadRes.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${pack.title}.zip`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+          }
+        } catch (downloadErr) {
+          console.error('Auto-download failed:', downloadErr);
+        }
+
         fetchUserBalance();
         fetchPacks();
       }

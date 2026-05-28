@@ -42,6 +42,8 @@ const Profile = () => {
   const [selectedCurrency, setSelectedCurrency] = useState('RUB')
   const [purchasedPacks, setPurchasedPacks] = useState<any[]>([])
   const [isLoadingPacks, setIsLoadingPacks] = useState(true)
+  const [transactions, setTransactions] = useState<any[]>([])
+  const [isLoadingTransactions, setIsLoadingTransactions] = useState(true)
 
   const handleTopUp = () => {
     const amount = parseInt(topUpAmount)
@@ -146,10 +148,30 @@ const Profile = () => {
       }
     }
 
+    const fetchTransactionHistory = async () => {
+      if (token) {
+        try {
+          setIsLoadingTransactions(true)
+          const response = await fetch('https://loopera-lpr.vercel.app/api/shop/transactions', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          })
+          const data = await response.json()
+          setTransactions(data.transactions || [])
+        } catch (error) {
+          console.error('Error fetching transaction history:', error)
+        } finally {
+          setIsLoadingTransactions(false)
+        }
+      }
+    }
+
     fetchUserLoops()
     fetchSubscriptions()
     fetchBalance()
     fetchPurchasedPacks()
+    fetchTransactionHistory()
   }, [token])
 
   const handleAddSubscription = async (artist: LoopArtist) => {
@@ -522,6 +544,54 @@ const Profile = () => {
                   <path d="M16 10a4 4 0 0 1-8 0"></path>
                 </svg>
                 <p>У вас пока нет покупок</p>
+              </div>
+            )}
+          </div>
+
+          {/* История транзакций */}
+          <div className="profile-section">
+            <h2 className="profile-section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+              </svg>
+              История транзакций
+            </h2>
+            {isLoadingTransactions ? (
+              <div className="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 6v6l4 2"></path>
+                </svg>
+                <p>Загрузка...</p>
+              </div>
+            ) : transactions.length > 0 ? (
+              <div className="transactions-list">
+                {transactions.map((tx) => (
+                  <div key={tx.invoice_id} className="transaction-item">
+                    <div className="transaction-info">
+                      <span className={`transaction-type transaction-type-${tx.type}`}>
+                        {tx.type === 'purchase' && '🛒 Покупка'}
+                        {tx.type === 'sale' && '💰 Продажа'}
+                        {tx.type === 'topup' && '⬆️ Пополнение'}
+                        {tx.type === 'withdrawal' && '⬇️ Вывод'}
+                      </span>
+                      <span className="transaction-description">{tx.description}</span>
+                      <span className="transaction-date">
+                        {new Date(tx.created_at).toLocaleDateString('ru-RU')}
+                      </span>
+                    </div>
+                    <span className={`transaction-amount ${tx.type === 'purchase' || tx.type === 'withdrawal' ? 'negative' : 'positive'}`}>
+                      {tx.type === 'purchase' || tx.type === 'withdrawal' ? '-' : '+'}{tx.amount} {tx.currency}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+                <p>У вас пока нет транзакций</p>
               </div>
             )}
           </div>

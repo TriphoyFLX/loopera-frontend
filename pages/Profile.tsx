@@ -42,6 +42,8 @@ const Profile = () => {
   const [selectedCurrency, setSelectedCurrency] = useState('RUB')
   const [purchasedPacks, setPurchasedPacks] = useState<any[]>([])
   const [isLoadingPacks, setIsLoadingPacks] = useState(true)
+  const [createdPacks, setCreatedPacks] = useState<any[]>([])
+  const [isLoadingCreatedPacks, setIsLoadingCreatedPacks] = useState(true)
   const [transactions, setTransactions] = useState<any[]>([])
   const [isLoadingTransactions, setIsLoadingTransactions] = useState(true)
 
@@ -148,6 +150,25 @@ const Profile = () => {
       }
     }
 
+    const fetchCreatedPacks = async () => {
+      if (token) {
+        try {
+          setIsLoadingCreatedPacks(true)
+          const response = await fetch('https://loopera-lpr.vercel.app/api/shop/my/created-packs', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          })
+          const data = await response.json()
+          setCreatedPacks(data.packs || [])
+        } catch (error) {
+          console.error('Error fetching created packs:', error)
+        } finally {
+          setIsLoadingCreatedPacks(false)
+        }
+      }
+    }
+
     const fetchTransactionHistory = async () => {
       if (token) {
         try {
@@ -171,6 +192,7 @@ const Profile = () => {
     fetchSubscriptions()
     fetchBalance()
     fetchPurchasedPacks()
+    fetchCreatedPacks()
     fetchTransactionHistory()
   }, [token])
 
@@ -544,6 +566,52 @@ const Profile = () => {
                   <path d="M16 10a4 4 0 0 1-8 0"></path>
                 </svg>
                 <p>У вас пока нет покупок</p>
+              </div>
+            )}
+          </div>
+
+          {/* Ваши паки */}
+          <div className="profile-section">
+            <h2 className="profile-section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+              </svg>
+              Ваши паки
+            </h2>
+            {isLoadingCreatedPacks ? (
+              <div className="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 6v6l4 2"></path>
+                </svg>
+                <p>Загрузка...</p>
+              </div>
+            ) : createdPacks.length > 0 ? (
+              <div className="purchased-packs-list">
+                {createdPacks.map((pack) => (
+                  <div key={pack.id} className="purchased-pack-item">
+                    <div className="pack-info">
+                      <h3>{pack.title}</h3>
+                      <p>{pack.description}</p>
+                      <p className="pack-price">{pack.price} coins</p>
+                      <p className="purchase-count">{pack.purchase_count || 0} покупок</p>
+                    </div>
+                    <span className={`pack-status pack-status-${pack.status}`}>
+                      {pack.status === 'approved' ? 'Одобрено' : pack.status === 'pending' ? 'На модерации' : 'Отклонено'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                  <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+                <p>У вас пока нет созданных паков</p>
               </div>
             )}
           </div>

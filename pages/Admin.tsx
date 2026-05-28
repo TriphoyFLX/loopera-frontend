@@ -306,19 +306,25 @@ const Admin: React.FC = () => {
       return;
     }
 
+    // Strip special characters like colon at the end
+    const cleanQuery = query.replace(/[:\s]/g, '');
+
     try {
       const token = tokenStorage.getToken();
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/shop/admin/search-users?q=${encodeURIComponent(query)}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/shop/admin/search-users?q=${encodeURIComponent(cleanQuery)}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
 
       if (!response.ok) {
-        throw new Error('Failed to search users');
+        const errorData = await response.json();
+        console.error('Search users error:', errorData);
+        throw new Error(errorData.error || 'Failed to search users');
       }
 
       const data = await response.json();
+      console.log('Search results:', data);
       setUserSuggestions(data.users || []);
       setShowSuggestions(true);
     } catch (err) {

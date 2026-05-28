@@ -757,7 +757,7 @@ const PackCard: React.FC<PackCardProps> = ({ pack, playingPreview, onPlay, onBuy
 
       <div className="sh-card-footer">
         <div className="sh-price">
-          <span className="sh-price-amount">{pack.price} USDT</span>
+          <span className="sh-price-amount">{pack.price} coins</span>
         </div>
         <button
           className="sh-buy-btn"

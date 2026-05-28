@@ -48,7 +48,7 @@ const Profile = () => {
       return
     }
 
-    const message = `Здравствуйте! Хочу пополнить баланс на loopera на ${amount} коинов. Валюта: ${selectedCurrency}. Ожидаю реквизиты. Мой профиль: https://loopera-lpr.vercel.app/profile`
+    const message = `Здравствуйте! Хочу пополнить баланс на loopera на ${amount} коинов. Валюта: ${selectedCurrency}. Мой никнейм: ${user?.username || 'не указан'}. Ожидаю реквизиты.`
     const telegramUrl = `https://t.me/triphoyprod?text=${encodeURIComponent(message)}`
     window.open(telegramUrl, '_blank')
     setShowTopUpModal(false)
@@ -70,7 +70,7 @@ const Profile = () => {
     const commission = Math.round(amount * 0.2) // 20% commission
     const netAmount = amount - commission
 
-    const message = `Здравствуйте! Хочу вывести ${amount} коинов с loopera (${netAmount} коинов после вычета 20% комиссии = ${commission} коинов). Валюта: ${selectedCurrency}. Мой профиль: https://loopera-lpr.vercel.app/profile`
+    const message = `Здравствуйте! Хочу вывести ${amount} коинов с loopera (${netAmount} коинов после вычета 20% комиссии = ${commission} коинов). Валюта: ${selectedCurrency}. Мой никнейм: ${user?.username || 'не указан'}. Требуется видео: зайдите на профиль, покажите баланс, обновите страницу.`
     const telegramUrl = `https://t.me/triphoyprod?text=${encodeURIComponent(message)}`
     window.open(telegramUrl, '_blank')
     setShowWithdrawModal(false)

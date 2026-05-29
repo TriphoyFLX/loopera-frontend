@@ -165,7 +165,9 @@ const Profile = () => {
               'Authorization': `Bearer ${token}`
             }
           })
+          console.log('Created packs response status:', response.status);
           const data = await response.json()
+          console.log('Created packs data:', data);
           setCreatedPacks(data.packs || [])
         } catch (error) {
           console.error('Error fetching created packs:', error)

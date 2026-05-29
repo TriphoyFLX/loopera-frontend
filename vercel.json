@@ -11,28 +11,16 @@
   ],
   "rewrites": [
     {
-      "source": "/api/loops/upload",
-      "destination": "http://77.73.238.154:5001/api/loops/upload"
+      "source": "/api/shop/:match*",
+      "destination": "http://77.73.238.154:5001/api/shop/:match*"
     },
     {
-      "source": "/api/beats/upload",
-      "destination": "http://77.73.238.154:5001/api/beats/upload"
+      "source": "/api/:match*",
+      "destination": "http://77.73.238.154:5001/api/:match*"
     },
     {
-      "source": "/api/shop/debug/:path*",
-      "destination": "http://77.73.238.154:5001/api/shop/debug/:path*"
-    },
-    {
-      "source": "/api/shop/:path*",
-      "destination": "http://77.73.238.154:5001/api/shop/:path*"
-    },
-    {
-      "source": "/api/(.*)",
-      "destination": "http://77.73.238.154:5001/api/$1"
-    },
-    {
-      "source": "/uploads/(.*)",
-      "destination": "http://77.73.238.154:5001/uploads/$1"
+      "source": "/uploads/:match*",
+      "destination": "http://77.73.238.154:5001/uploads/:match*"
     },
     {
       "source": "/((?!api|uploads).*)",

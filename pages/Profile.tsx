@@ -122,12 +122,7 @@ const Profile = () => {
       if (token) {
         try {
           setIsLoadingBalance(true)
-          const response = await fetch('https://loopera-lpr.vercel.app/api/shop/balance/my', {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          })
-          const data = await response.json()
+          const data = await api.getUserBalance(token)
           setBalance(data.available_balance || 0)
         } catch (error) {
           console.error('Error fetching balance:', error)
@@ -141,12 +136,7 @@ const Profile = () => {
       if (token) {
         try {
           setIsLoadingPacks(true)
-          const response = await fetch('https://loopera-lpr.vercel.app/api/shop/my/packs', {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          })
-          const data = await response.json()
+          const data = await api.getUserPurchasedPacks(token)
           setPurchasedPacks(data.packs || [])
         } catch (error) {
           console.error('Error fetching purchased packs:', error)
@@ -160,14 +150,7 @@ const Profile = () => {
       if (token) {
         try {
           setIsLoadingCreatedPacks(true)
-          const response = await fetch('https://loopera-lpr.vercel.app/api/shop/my/created-packs', {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          })
-          console.log('Created packs response status:', response.status);
-          const data = await response.json()
-          console.log('Created packs data:', data);
+          const data = await api.getUserCreatedPacks(token)
           setCreatedPacks(data.packs || [])
         } catch (error) {
           console.error('Error fetching created packs:', error)
@@ -181,12 +164,7 @@ const Profile = () => {
       if (token) {
         try {
           setIsLoadingTransactions(true)
-          const response = await fetch('https://loopera-lpr.vercel.app/api/shop/history', {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          })
-          const data = await response.json()
+          const data = await api.getTransactionHistory(token)
           setTransactions(data.transactions || [])
         } catch (error) {
           console.error('Error fetching transaction history:', error)

@@ -192,6 +192,62 @@ class API {
     }
   }
 
+  async getUserCreatedPacks(token: string) {
+    try {
+      const response = await fetch(`${this.baseURL}/shop/my/created-packs`, {
+        method: 'GET',
+        headers: this.getHeaders(token)
+      });
+
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Get user created packs error:', error);
+      throw error;
+    }
+  }
+
+  async getUserPurchasedPacks(token: string) {
+    try {
+      const response = await fetch(`${this.baseURL}/shop/my/packs`, {
+        method: 'GET',
+        headers: this.getHeaders(token)
+      });
+
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Get user purchased packs error:', error);
+      throw error;
+    }
+  }
+
+  async getUserBalance(token: string) {
+    try {
+      const response = await fetch(`${this.baseURL}/shop/balance/my`, {
+        method: 'GET',
+        headers: this.getHeaders(token)
+      });
+
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Get user balance error:', error);
+      throw error;
+    }
+  }
+
+  async getTransactionHistory(token: string) {
+    try {
+      const response = await fetch(`${this.baseURL}/shop/history`, {
+        method: 'GET',
+        headers: this.getHeaders(token)
+      });
+
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Get transaction history error:', error);
+      throw error;
+    }
+  }
+
   async deleteLoop(id: number, token: string) {
     try {
       const response = await fetch(`${this.baseURL}/loops/${id}`, {

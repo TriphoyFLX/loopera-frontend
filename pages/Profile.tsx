@@ -59,7 +59,10 @@ const Profile = () => {
       return
     }
 
-    const message = `Здравствуйте! Хочу пополнить баланс на loopera на ${amount} коинов. Валюта: ${selectedCurrency}. Мой никнейм: ${user?.username || 'не указан'}. Ожидаю реквизиты.`
+    const platformCommission = Math.round(amount * 0.03) // 3% платформа
+    const totalAmount = amount + platformCommission
+
+    const message = `Здравствуйте! Хочу пополнить баланс на loopera на ${amount} коинов (с учетом 3% комиссии платформы = ${platformCommission} коинов, к оплате ${totalAmount} ${selectedCurrency}). Валюта: ${selectedCurrency}. Мой никнейм: ${user?.username || 'не указан'}. Ожидаю реквизиты.`
     const telegramUrl = `https://t.me/triphoyprod?text=${encodeURIComponent(message)}`
     window.open(telegramUrl, '_blank')
     setShowTopUpModal(false)
@@ -80,24 +83,26 @@ const Profile = () => {
       return
     }
 
-    // Расчет комиссии в зависимости от метода
-    let commission = 0
+    // Расчет комиссии: 15% платформа + метод%
+    const platformCommission = Math.round(amount * 0.15) // 15% платформа
+    let methodCommission = 0
     let methodName = ''
     switch (withdrawMethod) {
       case 'paypal':
-        commission = Math.round(amount * 0.05) // 5%
+        methodCommission = Math.round(amount * 0.05) // 5% PayPal
         methodName = 'PayPal'
         break
       case 'card':
-        commission = Math.round(amount * 0.02) // 2%
+        methodCommission = Math.round(amount * 0.02) // 2% Карта
         methodName = 'Банковская карта РФ'
         break
       case 'sbp':
       default:
-        commission = 0 // 0%
+        methodCommission = 0 // 0% СБП
         methodName = 'СБП'
         break
     }
+    const commission = platformCommission + methodCommission
 
     const netAmount = amount - commission
 
@@ -396,7 +401,18 @@ const Profile = () => {
               />
               {topUpAmount && parseInt(topUpAmount) > 0 && (
                 <div className="commission-info">
-                  <p>К оплате: {parseInt(topUpAmount)} {selectedCurrency}</p>
+                  {(() => {
+                    const amount = parseInt(topUpAmount)
+                    const platformCommission = Math.round(amount * 0.03) // 3% платформа
+                    const totalAmount = amount + platformCommission
+                    return (
+                      <>
+                        <p>Сумма пополнения: {amount} коинов</p>
+                        <p>Комиссия платформы (3%): {platformCommission} коинов</p>
+                        <p>К оплате: {totalAmount} {selectedCurrency}</p>
+                      </>
+                    )
+                  })()}
                 </div>
               )}
             </div>
@@ -462,27 +478,31 @@ const Profile = () => {
                 <div className="commission-info">
                   {(() => {
                     const amount = parseInt(withdrawAmount)
-                    let commission = 0
-                    let commissionText = ''
+                    const platformCommission = Math.round(amount * 0.15) // 15% платформа
+                    let methodCommission = 0
+                    let methodText = ''
                     switch (withdrawMethod) {
                       case 'paypal':
-                        commission = Math.round(amount * 0.05)
-                        commissionText = '5% (PayPal)'
+                        methodCommission = Math.round(amount * 0.05)
+                        methodText = '5% (PayPal)'
                         break
                       case 'card':
-                        commission = Math.round(amount * 0.02)
-                        commissionText = '2% (Карта РФ)'
+                        methodCommission = Math.round(amount * 0.02)
+                        methodText = '2% (Карта РФ)'
                         break
                       case 'sbp':
                       default:
-                        commission = 0
-                        commissionText = '0% (СБП)'
+                        methodCommission = 0
+                        methodText = '0% (СБП)'
                         break
                     }
-                    const netAmount = amount - commission
+                    const totalCommission = platformCommission + methodCommission
+                    const netAmount = amount - totalCommission
                     return (
                       <>
-                        <p>Комиссия ({commissionText}): {commission} коинов</p>
+                        <p>Комиссия платформы (15%): {platformCommission} коинов</p>
+                        <p>Комиссия метода ({methodText}): {methodCommission} коинов</p>
+                        <p>Итого комиссия: {totalCommission} коинов</p>
                         <p>К получению: {netAmount} коинов = {netAmount} {selectedCurrency}</p>
                       </>
                     )

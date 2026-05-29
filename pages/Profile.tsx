@@ -160,8 +160,7 @@ const Profile = () => {
       if (token) {
         try {
           setIsLoadingCreatedPacks(true)
-          // Use debug endpoint to test without auth issues
-          const response = await fetch('https://loopera-lpr.vercel.app/api/shop/debug/packs/824', {
+          const response = await fetch('https://loopera-lpr.vercel.app/api/shop/my/created-packs', {
             headers: {
               'Authorization': `Bearer ${token}`
             }

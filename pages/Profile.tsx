@@ -41,6 +41,7 @@ const Profile = () => {
   const [showWithdrawModal, setShowWithdrawModal] = useState(false)
   const [withdrawAmount, setWithdrawAmount] = useState('')
   const [selectedCurrency, setSelectedCurrency] = useState('RUB')
+  const [withdrawMethod, setWithdrawMethod] = useState('sbp')
   const [purchasedPacks, setPurchasedPacks] = useState<any[]>([])
   const [isLoadingPacks, setIsLoadingPacks] = useState(true)
   const [createdPacks, setCreatedPacks] = useState<any[]>([])
@@ -79,10 +80,28 @@ const Profile = () => {
       return
     }
 
-    const commission = Math.round(amount * 0.2) // 20% commission
+    // Расчет комиссии в зависимости от метода
+    let commission = 0
+    let methodName = ''
+    switch (withdrawMethod) {
+      case 'paypal':
+        commission = Math.round(amount * 0.05) // 5%
+        methodName = 'PayPal'
+        break
+      case 'card':
+        commission = Math.round(amount * 0.02) // 2%
+        methodName = 'Банковская карта РФ'
+        break
+      case 'sbp':
+      default:
+        commission = 0 // 0%
+        methodName = 'СБП'
+        break
+    }
+
     const netAmount = amount - commission
 
-    const message = `Здравствуйте! Хочу вывести ${amount} коинов с loopera (${netAmount} коинов после вычета 20% комиссии = ${commission} коинов). Валюта: ${selectedCurrency}. Мой никнейм: ${user?.username || 'не указан'}. Требуется видео: зайдите на профиль, покажите баланс, обновите страницу.`
+    const message = `Здравствуйте! Хочу вывести ${amount} коинов с loopera через ${methodName} (${netAmount} коинов после вычета комиссии = ${commission} коинов). Валюта: ${selectedCurrency}. Мой никнейм: ${user?.username || 'не указан'}. Требуется видео: зайдите на профиль, покажите баланс, обновите страницу.`
     const telegramUrl = `https://t.me/triphoyprod?text=${encodeURIComponent(message)}`
     window.open(telegramUrl, '_blank')
     setShowWithdrawModal(false)
@@ -347,7 +366,7 @@ const Profile = () => {
               <h3>Условия пополнения:</h3>
               <ul>
                 <li>1 коин = 1 единица выбранной валюты (рубль/доллар/евро/фунт)</li>
-                <li>Минимальная сумма пополнения: 1 коин</li>
+                <li>Минимальная сумма пополнения: 200 коинов</li>
                 <li>После нажатия "Хочу пополнить" вы будете перенаправлены в Telegram</li>
                 <li>Администратор предоставит реквизиты для оплаты</li>
                 <li>После оплаты администратор начислит коины на ваш баланс</li>
@@ -396,8 +415,8 @@ const Profile = () => {
               <h3>Условия вывода:</h3>
               <ul>
                 <li>1 коин = 1 единица выбранной валюты (рубль/доллар/евро/фунт)</li>
-                <li>Минимальная сумма вывода: 1 коин</li>
-                <li>Комиссия за вывод: 20%</li>
+                <li>Минимальная сумма вывода: 1000 коинов</li>
+                <li>Комиссия зависит от метода вывода</li>
                 <li>После нажатия "Хочу вывести" вы будете перенаправлены в Telegram</li>
                 <li>Администратор запросит реквизиты для вывода</li>
                 <li>После проверки администратор отправит средства за вычетом комиссии</li>
@@ -417,9 +436,20 @@ const Profile = () => {
                 <option value="GBP">🇬🇧 Британский фунт (GBP)</option>
               </select>
             </div>
+            <div className="currency-selector">
+              <label>Способ вывода:</label>
+              <select
+                value={withdrawMethod}
+                onChange={(e) => setWithdrawMethod(e.target.value)}
+              >
+                <option value="sbp">🏦 СБП (0% комиссия)</option>
+                <option value="card">💳 Банковская карта РФ (+2% комиссия)</option>
+                <option value="paypal">🌐 PayPal (+5% комиссия)</option>
+              </select>
+            </div>
             <input
               type="number"
-              min="1"
+              min="1000"
               max={balance}
               value={withdrawAmount}
               onChange={(e) => setWithdrawAmount(e.target.value)}
@@ -427,8 +457,33 @@ const Profile = () => {
             />
             {withdrawAmount && parseInt(withdrawAmount) > 0 && (
               <div className="commission-info">
-                <p>Комиссия (20%): {Math.round(parseInt(withdrawAmount) * 0.2)} коинов</p>
-                <p>К получению: {parseInt(withdrawAmount) - Math.round(parseInt(withdrawAmount) * 0.2)} коинов = {parseInt(withdrawAmount) - Math.round(parseInt(withdrawAmount) * 0.2)} {selectedCurrency}</p>
+                {(() => {
+                  const amount = parseInt(withdrawAmount)
+                  let commission = 0
+                  let commissionText = ''
+                  switch (withdrawMethod) {
+                    case 'paypal':
+                      commission = Math.round(amount * 0.05)
+                      commissionText = '5% (PayPal)'
+                      break
+                    case 'card':
+                      commission = Math.round(amount * 0.02)
+                      commissionText = '2% (Карта РФ)'
+                      break
+                    case 'sbp':
+                    default:
+                      commission = 0
+                      commissionText = '0% (СБП)'
+                      break
+                  }
+                  const netAmount = amount - commission
+                  return (
+                    <>
+                      <p>Комиссия ({commissionText}): {commission} коинов</p>
+                      <p>К получению: {netAmount} коинов = {netAmount} {selectedCurrency}</p>
+                    </>
+                  )
+                })()}
               </div>
             )}
             <div className="modal-buttons">

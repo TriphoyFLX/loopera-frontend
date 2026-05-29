@@ -122,7 +122,7 @@ const Profile = () => {
       if (token) {
         try {
           setIsLoadingBalance(true)
-          const response = await fetch('http://77.73.238.154:5001/api/shop/balance/my', {
+          const response = await fetch('https://loopera-lpr.vercel.app/api/shop/balance/my', {
             headers: {
               'Authorization': `Bearer ${token}`
             }
@@ -141,7 +141,7 @@ const Profile = () => {
       if (token) {
         try {
           setIsLoadingPacks(true)
-          const response = await fetch('http://77.73.238.154:5001/api/shop/my/packs', {
+          const response = await fetch('https://loopera-lpr.vercel.app/api/shop/my/packs', {
             headers: {
               'Authorization': `Bearer ${token}`
             }
@@ -160,7 +160,7 @@ const Profile = () => {
       if (token) {
         try {
           setIsLoadingCreatedPacks(true)
-          const response = await fetch('http://77.73.238.154:5001/api/shop/my/created-packs', {
+          const response = await fetch('https://loopera-lpr.vercel.app/api/shop/my/created-packs', {
             headers: {
               'Authorization': `Bearer ${token}`
             }
@@ -179,7 +179,7 @@ const Profile = () => {
       if (token) {
         try {
           setIsLoadingTransactions(true)
-          const response = await fetch('http://77.73.238.154:5001/api/shop/history', {
+          const response = await fetch('https://loopera-lpr.vercel.app/api/shop/history', {
             headers: {
               'Authorization': `Bearer ${token}`
             }
@@ -260,7 +260,7 @@ const Profile = () => {
 
   const handleDownloadPack = async (packId: number) => {
     try {
-      const response = await fetch(`http://77.73.238.154:5001/api/shop/${packId}/download`, {
+      const response = await fetch(`https://loopera-lpr.vercel.app/api/shop/${packId}/download`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

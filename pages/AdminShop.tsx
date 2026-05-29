@@ -266,11 +266,43 @@ const AdminShop: React.FC = () => {
       });
 
       if (!response.ok) throw new Error('Failed to resolve report');
-      
+
       setSuccess('Report resolved successfully');
       fetchReports();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to resolve report');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeletePack = async (packId: number) => {
+    if (!window.confirm('Вы уверены, что хотите удалить этот пак? Это действие нельзя отменить.')) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await fetch(`https://loopera-lpr.vercel.app/api/shop/${packId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete pack');
+      }
+
+      setSuccess('Pack deleted successfully');
+      fetchPendingPacks();
+      setSelectedPack(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete pack');
     } finally {
       setLoading(false);
     }
@@ -374,6 +406,14 @@ const AdminShop: React.FC = () => {
                         disabled={loading}
                       >
                         Reject
+                      </button>
+                      <button
+                        className="btn-reject"
+                        onClick={() => handleDeletePack(pack.id)}
+                        disabled={loading}
+                        style={{ backgroundColor: '#dc3545' }}
+                      >
+                        Delete
                       </button>
                     </div>
                   </div>
@@ -618,6 +658,14 @@ const AdminShop: React.FC = () => {
                 disabled={loading}
               >
                 Reject Pack
+              </button>
+              <button
+                className="btn-reject"
+                onClick={() => handleDeletePack(selectedPack.id)}
+                disabled={loading}
+                style={{ backgroundColor: '#dc3545' }}
+              >
+                Delete Pack
               </button>
             </div>
           </div>

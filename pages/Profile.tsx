@@ -265,6 +265,38 @@ const Profile = () => {
     }
   }
 
+  const handleDeletePack = async (packId: number) => {
+    if (!window.confirm('Вы уверены, что хотите удалить этот пак? Это действие нельзя отменить.')) {
+      return
+    }
+
+    try {
+      const response = await fetch(`https://loopera-lpr.vercel.app/api/shop/${packId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to delete pack')
+      }
+
+      setModalMessage('Пак успешно удален')
+      setModalOpen(true)
+
+      // Обновляем список созданных паков
+      if (token) {
+        const data = await api.getUserCreatedPacks(token)
+        setCreatedPacks(data.packs || [])
+      }
+    } catch (error) {
+      setModalMessage(error instanceof Error ? error.message : 'Ошибка удаления пака')
+      setModalOpen(true)
+    }
+  }
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ru-RU', {
       year: 'numeric',
@@ -619,11 +651,29 @@ const Profile = () => {
                       <h3>{pack.title}</h3>
                       <p>{pack.description}</p>
                       <p className="pack-price">{pack.price} coins</p>
-                      <p className="purchase-count">{pack.purchase_count || 0} покупок</p>
+                      <p className="purchase-count">{pack.sales_count || 0} покупок</p>
                     </div>
-                    <span className={`pack-status pack-status-${pack.status}`}>
-                      {pack.status === 'approved' ? 'Одобрено' : pack.status === 'pending' ? 'На модерации' : 'Отклонено'}
-                    </span>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-end' }}>
+                      <span className={`pack-status pack-status-${pack.status}`}>
+                        {pack.status === 'approved' ? 'Одобрено' : pack.status === 'pending' ? 'На модерации' : 'Отклонено'}
+                      </span>
+                      {(pack.sales_count === 0 || !pack.sales_count) && (
+                        <button
+                          onClick={() => handleDeletePack(pack.id)}
+                          style={{
+                            padding: '6px 12px',
+                            backgroundColor: '#dc3545',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            fontSize: '12px'
+                          }}
+                        >
+                          Удалить
+                        </button>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>

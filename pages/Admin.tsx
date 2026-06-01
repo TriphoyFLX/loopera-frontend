@@ -64,6 +64,7 @@ const Admin: React.FC = () => {
   const [debitUsername, setDebitUsername] = useState('');
   const [debitAmount, setDebitAmount] = useState('');
   const [debitCurrency, setDebitCurrency] = useState('RUB');
+  const [balanceUsername, setBalanceUsername] = useState('');
   const [userSuggestions, setUserSuggestions] = useState<{ id: number; username: string }[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
@@ -336,8 +337,35 @@ const Admin: React.FC = () => {
   const handleSelectUser = (username: string) => {
     setCreditUsername(username);
     setDebitUsername(username);
+    setBalanceUsername(username);
     setShowSuggestions(false);
     setUserSuggestions([]);
+  };
+
+  const handleViewBalance = async () => {
+    if (!balanceUsername) {
+      alert('Введите имя пользователя');
+      return;
+    }
+
+    try {
+      const token = tokenStorage.getToken();
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/shop/admin/balance/${encodeURIComponent(balanceUsername)}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to get user balance');
+      }
+
+      const data = await response.json();
+      alert(`Баланс пользователя ${data.username}:\n\nДоступно: ${data.available_balance} коинов\nВ ожидании: ${data.pending_balance} коинов\nВсего заработано: ${data.total_earned} коинов\n\nEmail: ${data.email}`);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Unknown error');
+    }
   };
 
   const fetchStats = async () => {
@@ -989,6 +1017,44 @@ const Admin: React.FC = () => {
                 )}
                 <button onClick={handleManualDebitBalance} className="btn-credit" style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)' }}>
                   Списать баланс
+                </button>
+              </div>
+            </div>
+
+            {/* View Balance Form */}
+            <div className="balance-section">
+              <h4>Просмотреть баланс</h4>
+              <div className="balance-credit-form">
+                <div className="form-group">
+                  <label>Имя пользователя:</label>
+                  <div className="autocomplete-wrapper">
+                    <input
+                      type="text"
+                      value={balanceUsername}
+                      onChange={(e) => {
+                        setBalanceUsername(e.target.value);
+                        handleSearchUsers(e.target.value);
+                      }}
+                      placeholder="Введите имя пользователя"
+                      autoComplete="off"
+                    />
+                    {showSuggestions && userSuggestions.length > 0 && (
+                      <div className="suggestions-list">
+                        {userSuggestions.map((user) => (
+                          <div
+                            key={user.id}
+                            className="suggestion-item"
+                            onClick={() => handleSelectUser(user.username)}
+                          >
+                            {user.username}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <button onClick={handleViewBalance} className="btn-credit" style={{ background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)' }}>
+                  Просмотреть баланс
                 </button>
               </div>
             </div>

@@ -264,10 +264,10 @@ const Admin: React.FC = () => {
     }
 
     const amount = parseInt(debitAmount);
-    const commission = Math.round(amount * 0.2);
+    const commission = Math.round(amount * 0.15);
     const netAmount = amount - commission;
 
-    if (!confirm(`Списать ${amount} коинов с пользователя ${debitUsername}?\nКомиссия (20%): ${commission} коинов\nК выдаче: ${netAmount} ${debitCurrency}`)) {
+    if (!confirm(`Списать ${amount} коинов с пользователя ${debitUsername}?\nКомиссия (15%): ${commission} коинов\nК выдаче: ${netAmount} ${debitCurrency}`)) {
       return;
     }
 
@@ -1011,8 +1011,8 @@ const Admin: React.FC = () => {
                 </div>
                 {debitAmount && parseInt(debitAmount) > 0 && (
                   <div className="commission-info">
-                    <p>Комиссия (20%): {Math.round(parseInt(debitAmount) * 0.2)} коинов</p>
-                    <p>К выдаче: {parseInt(debitAmount) - Math.round(parseInt(debitAmount) * 0.2)} {debitCurrency}</p>
+                    <p>Комиссия (15%): {Math.round(parseInt(debitAmount) * 0.15)} коинов</p>
+                    <p>К выдаче: {parseInt(debitAmount) - Math.round(parseInt(debitAmount) * 0.15)} {debitCurrency}</p>
                   </div>
                 )}
                 <button onClick={handleManualDebitBalance} className="btn-credit" style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)' }}>

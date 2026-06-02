@@ -101,7 +101,7 @@ const AdminShop: React.FC = () => {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const url = `/api/proxy/admin/shop/packs/all?page=${currentPage}&limit=50&status=${statusFilter}`;
+      const url = `/api/admin/shop/packs/all?page=${currentPage}&limit=50&status=${statusFilter}`;
       console.log('Fetching all packs from:', url);
 
       const response = await fetch(url, {

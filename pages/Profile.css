@@ -1050,6 +1050,64 @@
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
+.pack-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.rate-button {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.rate-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(240, 147, 251, 0.4);
+}
+
+.rating-modal-content {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.rating-modal-content p {
+  color: #fff;
+  margin-bottom: 1.5rem;
+}
+
+.rating-stars {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.rating-star {
+  background: transparent;
+  border: none;
+  font-size: 2.5rem;
+  color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0.25rem;
+}
+
+.rating-star:hover {
+  color: #f093fb;
+  transform: scale(1.1);
+}
+
+.rating-star.active {
+  color: #f093fb;
+}
+
 /* Transaction history styles */
 .transactions-list {
   display: flex;

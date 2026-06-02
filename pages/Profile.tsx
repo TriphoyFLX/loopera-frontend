@@ -48,6 +48,9 @@ const Profile = () => {
   const [isLoadingCreatedPacks, setIsLoadingCreatedPacks] = useState(true)
   const [transactions, setTransactions] = useState<any[]>([])
   const [isLoadingTransactions, setIsLoadingTransactions] = useState(true)
+  const [ratingModalOpen, setRatingModalOpen] = useState(false)
+  const [selectedPackForRating, setSelectedPackForRating] = useState<any>(null)
+  const [selectedRating, setSelectedRating] = useState(0)
   const [modalOpen, setModalOpen] = useState(false)
   const [modalMessage, setModalMessage] = useState('')
 
@@ -285,6 +288,44 @@ const Profile = () => {
       document.body.removeChild(a)
     } catch (error) {
       setModalMessage('Ошибка скачивания пака')
+      setModalOpen(true)
+    }
+  }
+
+  const handleRatePack = (pack: any) => {
+    setSelectedPackForRating(pack)
+    setSelectedRating(0)
+    setRatingModalOpen(true)
+  }
+
+  const handleConfirmRating = async () => {
+    if (selectedRating === 0) {
+      setModalMessage('Пожалуйста, выберите оценку')
+      setModalOpen(true)
+      return
+    }
+
+    try {
+      const response = await fetch(`https://loopera-lpr.vercel.app/api/shop/${selectedPackForRating.id}/rate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ rating: selectedRating })
+      })
+      const data = await response.json()
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to rate pack')
+      }
+      setRatingModalOpen(false)
+      setSelectedPackForRating(null)
+      setSelectedRating(0)
+      setModalMessage('Спасибо за вашу оценку!')
+      setModalOpen(true)
+    } catch (err: any) {
+      console.error('Error rating pack:', err)
+      setModalMessage(err.message || 'Не удалось оценить пак')
       setModalOpen(true)
     }
   }
@@ -651,12 +692,20 @@ const Profile = () => {
                       <p className="pack-price">{pack.price} coins</p>
                       <p className="pack-seller">Продавец: {pack.seller_username || 'Неизвестно'}</p>
                     </div>
-                    <button
-                      onClick={() => handleDownloadPack(pack.id)}
-                      className="download-button"
-                    >
-                      Скачать
-                    </button>
+                    <div className="pack-actions">
+                      <button
+                        onClick={() => handleDownloadPack(pack.id)}
+                        className="download-button"
+                      >
+                        Скачать
+                      </button>
+                      <button
+                        onClick={() => handleRatePack(pack)}
+                        className="rate-button"
+                      >
+                        Оценить
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -857,6 +906,30 @@ const Profile = () => {
 
     <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Уведомление">
       <p>{modalMessage}</p>
+    </Modal>
+
+    <Modal
+      isOpen={ratingModalOpen}
+      onClose={() => setRatingModalOpen(false)}
+      title="Оцените пак"
+      onConfirm={handleConfirmRating}
+      confirmText="Отправить оценку"
+      cancelText="Пропустить"
+    >
+      <div className="rating-modal-content">
+        <p>Как вам пакет? Оцените от 1 до 5 звезд:</p>
+        <div className="rating-stars">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <button
+              key={star}
+              className={`rating-star ${star <= selectedRating ? 'active' : ''}`}
+              onClick={() => setSelectedRating(star)}
+            >
+              ★
+            </button>
+          ))}
+        </div>
+      </div>
     </Modal>
     </>
   )

@@ -55,6 +55,8 @@ const Pack: React.FC = () => {
   const [audioLoading, setAudioLoading] = useState<number | null>(null);
   const [buyModalOpen, setBuyModalOpen] = useState(false);
   const [buyModalMessage, setBuyModalMessage] = useState('');
+  const [ratingModalOpen, setRatingModalOpen] = useState(false);
+  const [selectedRating, setSelectedRating] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const getHeaders = () => {
@@ -146,14 +148,40 @@ const Pack: React.FC = () => {
       if (!response.ok) {
         throw new Error(data.error || 'Failed to purchase pack');
       }
-      setBuyModalMessage('Пак успешно куплен!');
-      setBuyModalOpen(true);
       setIsPurchased(true);
       fetchUserBalance();
+      // Открываем модальное окно для оценки
+      setRatingModalOpen(true);
     } catch (err: any) {
       console.error('Error buying pack:', err);
       setBuyModalMessage(err.message || 'Не удалось купить пак');
       setBuyModalOpen(true);
+    }
+  };
+
+  const handleRatePack = async () => {
+    if (selectedRating === 0) {
+      alert('Пожалуйста, выберите оценку');
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://loopera-lpr.vercel.app/api/shop/${packId}/rate`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({ rating: selectedRating })
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to rate pack');
+      }
+      setRatingModalOpen(false);
+      setSelectedRating(0);
+      setBuyModalMessage('Спасибо за вашу оценку!');
+      setBuyModalOpen(true);
+    } catch (err: any) {
+      console.error('Error rating pack:', err);
+      alert(err.message || 'Не удалось оценить пак');
     }
   };
 
@@ -356,6 +384,30 @@ const Pack: React.FC = () => {
         cancelText="Отмена"
       >
         <p>{buyModalMessage}</p>
+      </Modal>
+
+      <Modal
+        isOpen={ratingModalOpen}
+        onClose={() => setRatingModalOpen(false)}
+        title="Оцените пак"
+        onConfirm={handleRatePack}
+        confirmText="Отправить оценку"
+        cancelText="Пропустить"
+      >
+        <div className="rating-modal-content">
+          <p>Как вам пакет? Оцените от 1 до 5 звезд:</p>
+          <div className="rating-stars">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                className={`rating-star ${star <= selectedRating ? 'active' : ''}`}
+                onClick={() => setSelectedRating(star)}
+              >
+                ★
+              </button>
+            ))}
+          </div>
+        </div>
       </Modal>
     </div>
   );

@@ -51,7 +51,7 @@ const Admin: React.FC = () => {
   const [loops, setLoops] = useState<Loop[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'loops' | 'balance'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'loops' | 'balance' | 'shop'>('overview');
   const [userPage, setUserPage] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalLoops, setTotalLoops] = useState(0);
@@ -497,6 +497,15 @@ const Admin: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2-1.343-2-3-2zm0 0c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2-1.343-2-3-2zm0 0c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2-1.343-2-3-2z" />
               </svg>
               <span>Баланс</span>
+            </button>
+            <button
+              className={`tab-button ${activeTab === 'shop' ? 'active' : ''}`}
+              onClick={() => window.location.href = '/admin/shop'}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              <span>Shop</span>
             </button>
           </div>
         </div>

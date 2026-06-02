@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Modal from '../components/Modal';
 
 const STYLES = `
@@ -697,15 +698,23 @@ interface PackCardProps {
 
 const PackCard: React.FC<PackCardProps> = ({ pack, playingPreview, onPlay, onBuy, idx }) => {
   const isPlaying = playingPreview === pack.id;
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    navigate(`/shop/pack/${pack.id}`);
+  };
 
   return (
-    <div className="sh-card" style={{ animationDelay: `${idx * 0.04}s` }}>
+    <div className="sh-card" style={{ animationDelay: `${idx * 0.04}s` }} onClick={handleCardClick}>
       <div className="sh-card-cover">
         <WaveformBars />
         {pack.preview_url ? (
           <button
             className={`sh-play-btn ${isPlaying ? 'playing' : ''}`}
-            onClick={() => onPlay(pack.id, pack.preview_url!)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onPlay(pack.id, pack.preview_url!);
+            }}
             aria-label={isPlaying ? 'Pause preview' : 'Play preview'}
           >
             {isPlaying ? '⏸' : '▶'}
@@ -763,7 +772,10 @@ const PackCard: React.FC<PackCardProps> = ({ pack, playingPreview, onPlay, onBuy
         </div>
         <button
           className="sh-buy-btn"
-          onClick={() => onBuy(pack.id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onBuy(pack.id);
+          }}
         >
           Buy
         </button>

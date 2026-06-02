@@ -12,6 +12,7 @@ import LoopUpload from './pages/LoopUpload'
 import Search from './pages/Search'
 import Admin from './pages/Admin'
 import Shop from './pages/Shop'
+import Pack from './pages/Pack'
 import CreatePack from './pages/CreatePack'
 import AdminShop from './pages/AdminShop'
 import AdminRoute from './components/AdminRoute'
@@ -78,6 +79,11 @@ function App() {
           <Route path="/shop" element={
             <Layout>
               <Shop />
+            </Layout>
+          } />
+          <Route path="/shop/pack/:packId" element={
+            <Layout>
+              <Pack />
             </Layout>
           } />
           <Route path="/create-pack" element={

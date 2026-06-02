@@ -101,7 +101,7 @@ const AdminShop: React.FC = () => {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const url = `https://loopera-lpr.vercel.app/api/admin/shop/packs/all?page=${currentPage}&limit=50&status=${statusFilter}`;
+      const url = `http://77.73.238.154:3000/api/admin/shop/packs/all?page=${currentPage}&limit=50&status=${statusFilter}`;
       console.log('Fetching all packs from:', url);
 
       const response = await fetch(url, {

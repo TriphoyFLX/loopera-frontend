@@ -322,8 +322,8 @@ const AdminShop: React.FC = () => {
   return (
     <div className={styles.adminShopContainer}>
       <div className={styles.adminHeader}>
-        <h1>Shop Administration</h1>
-        <p>Manage packs, withdrawals, and reports</p>
+        <h1>Администрирование Shop</h1>
+        <p>Управление паками, выводами и жалобами</p>
       </div>
 
       {error && (
@@ -345,25 +345,25 @@ const AdminShop: React.FC = () => {
           className={`${styles.tab} ${activeTab === 'pending' ? styles.active : ''}`}
           onClick={() => setActiveTab('pending')}
         >
-          Pending Packs ({pendingPacks.length})
+          Паки на модерации ({pendingPacks.length})
         </button>
         <button
           className={`${styles.tab} ${activeTab === 'withdrawals' ? styles.active : ''}`}
           onClick={() => setActiveTab('withdrawals')}
         >
-          Withdrawals
+          Заявки на вывод
         </button>
         <button
           className={`${styles.tab} ${activeTab === 'reports' ? styles.active : ''}`}
           onClick={() => setActiveTab('reports')}
         >
-          Reports ({reports.filter(r => r.status === 'pending').length})
+          Жалобы ({reports.filter(r => r.status === 'pending').length})
         </button>
         <button
           className={`${styles.tab} ${activeTab === 'stats' ? styles.active : ''}`}
           onClick={() => setActiveTab('stats')}
         >
-          Statistics
+          Статистика
         </button>
       </div>
 
@@ -377,8 +377,8 @@ const AdminShop: React.FC = () => {
                   <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
                   <line x1="12" y1="22.08" x2="12" y2="12"></line>
                 </svg>
-                <h3>No pending packs</h3>
-                <p>All packs have been reviewed</p>
+                <h3>Нет паков на модерации</h3>
+                <p>Все паки рассмотрены</p>
               </div>
             ) : (
               <div className={styles.packsList}>
@@ -388,28 +388,28 @@ const AdminShop: React.FC = () => {
                       <h3>{pack.title}</h3>
                       <p className={styles.packAuthor}>@{pack.hashtag} ({pack.username})</p>
                       <p className={styles.packPrice}>{pack.price} coins</p>
-                      <p className={styles.packDate}>Created: {new Date(pack.created_at).toLocaleDateString()}</p>
+                      <p className={styles.packDate}>Создан: {new Date(pack.created_at).toLocaleDateString()}</p>
                     </div>
                     <div className={styles.packActions}>
                       <button
                         className={styles.btnView}
                         onClick={() => fetchPackDetails(pack.id)}
                       >
-                        View Details
+                        Просмотр
                       </button>
                       <button
                         className={styles.btnApprove}
                         onClick={() => handleApprovePack(pack.id)}
                         disabled={loading}
                       >
-                        Approve
+                        Одобрить
                       </button>
                       <button
                         className={styles.btnReject}
                         onClick={() => openRejectModal(pack.id)}
                         disabled={loading}
                       >
-                        Reject
+                        Отклонить
                       </button>
                       <button
                         className={styles.btnReject}
@@ -417,7 +417,7 @@ const AdminShop: React.FC = () => {
                         disabled={loading}
                         style={{ backgroundColor: '#dc3545' }}
                       >
-                        Delete
+                        Удалить
                       </button>
                     </div>
                   </div>
@@ -435,7 +435,7 @@ const AdminShop: React.FC = () => {
                   <line x1="12" y1="1" x2="12" y2="23"></line>
                   <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
                 </svg>
-                <h3>No withdrawal requests</h3>
+                <h3>Нет заявок на вывод</h3>
               </div>
             ) : (
               <div className={styles.withdrawalsList}>
@@ -445,7 +445,7 @@ const AdminShop: React.FC = () => {
                       <h3>{withdrawal.amount} coins</h3>
                       <p>@{withdrawal.hashtag} ({withdrawal.username})</p>
                       <p>{withdrawal.bank} - {withdrawal.phone}</p>
-                      <p>Requested: {new Date(withdrawal.created_at).toLocaleDateString()}</p>
+                      <p>Запрошено: {new Date(withdrawal.created_at).toLocaleDateString()}</p>
                       <span className={`${styles.status} ${styles[withdrawal.status]}`}>
                         {withdrawal.status}
                       </span>
@@ -457,14 +457,14 @@ const AdminShop: React.FC = () => {
                           onClick={() => handleProcessWithdrawal(withdrawal.id, 'approve')}
                           disabled={loading}
                         >
-                          Approve
+                          Одобрить
                         </button>
                         <button
                           className={styles.btnReject}
                           onClick={() => handleProcessWithdrawal(withdrawal.id, 'reject')}
                           disabled={loading}
                         >
-                          Reject
+                          Отклонить
                         </button>
                       </div>
                     )}
@@ -484,7 +484,7 @@ const AdminShop: React.FC = () => {
                   <line x1="12" y1="9" x2="12" y2="13"></line>
                   <line x1="12" y1="17" x2="12.01" y2="17"></line>
                 </svg>
-                <h3>No reports</h3>
+                <h3>Нет жалоб</h3>
               </div>
             ) : (
               <div className={styles.reportsList}>
@@ -492,11 +492,11 @@ const AdminShop: React.FC = () => {
                   <div key={report.id} className={styles.reportItem}>
                     <div className={styles.reportInfo}>
                       <h3>{report.reason.replace('_', ' ')}</h3>
-                      <p>By: {report.reporter_name}</p>
-                      {report.pack_title && <p>Pack: {report.pack_title}</p>}
-                      {report.reported_user_name && <p>Reported: {report.reported_user_name}</p>}
+                      <p>От: {report.reporter_name}</p>
+                      {report.pack_title && <p>Пак: {report.pack_title}</p>}
+                      {report.reported_user_name && <p>Жалоба на: {report.reported_user_name}</p>}
                       <p>{report.description}</p>
-                      <p>Reported: {new Date(report.created_at).toLocaleDateString()}</p>
+                      <p>Отправлено: {new Date(report.created_at).toLocaleDateString()}</p>
                       <span className={`${styles.status} ${styles[report.status]}`}>
                         {report.status}
                       </span>
@@ -508,7 +508,7 @@ const AdminShop: React.FC = () => {
                           onClick={() => handleResolveReport(report.id)}
                           disabled={loading}
                         >
-                          Resolve
+                          Решить
                         </button>
                       </div>
                     )}
@@ -524,43 +524,43 @@ const AdminShop: React.FC = () => {
             {stats ? (
               <div className={styles.statsGrid}>
                 <div className={styles.statCard}>
-                  <h3>General Statistics</h3>
+                  <h3>Общая статистика</h3>
                   <div className={styles.statItem}>
-                    <span>Total Packs:</span>
+                    <span>Всего паков:</span>
                     <span>{stats.general.total_packs}</span>
                   </div>
                   <div className={styles.statItem}>
-                    <span>Approved Packs:</span>
+                    <span>Одобрено паков:</span>
                     <span>{stats.general.approved_packs}</span>
                   </div>
                   <div className={styles.statItem}>
-                    <span>Pending Packs:</span>
+                    <span>На модерации:</span>
                     <span>{stats.general.pending_packs}</span>
                   </div>
                   <div className={styles.statItem}>
-                    <span>Total Revenue:</span>
+                    <span>Общий доход:</span>
                     <span>{stats.general.total_revenue} coins</span>
                   </div>
                 </div>
 
                 <div className={styles.statCard}>
-                  <h3>Weekly Statistics</h3>
+                  <h3>Недельная статистика</h3>
                   <div className={styles.statItem}>
-                    <span>Weekly Orders:</span>
+                    <span>Заказов за неделю:</span>
                     <span>{stats.weekly.weekly_orders}</span>
                   </div>
                   <div className={styles.statItem}>
-                    <span>Weekly Revenue:</span>
+                    <span>Доход за неделю:</span>
                     <span>{stats.weekly.weekly_revenue} coins</span>
                   </div>
                   <div className={styles.statItem}>
-                    <span>New Packs:</span>
+                    <span>Новых паков:</span>
                     <span>{stats.weekly.weekly_packs}</span>
                   </div>
                 </div>
 
                 <div className={styles.statCard}>
-                  <h3>Top Sellers</h3>
+                  <h3>Топ продавцов</h3>
                   {stats.top_sellers.map((seller: any, index: number) => (
                     <div key={index} className={styles.statItem}>
                       <span>@{seller.hashtag}</span>
@@ -570,17 +570,17 @@ const AdminShop: React.FC = () => {
                 </div>
 
                 <div className={styles.statCard}>
-                  <h3>Top Packs</h3>
+                  <h3>Топ паков</h3>
                   {stats.top_packs.map((pack: any, index: number) => (
                     <div key={index} className={styles.statItem}>
                       <span>{pack.title}</span>
-                      <span>{pack.sales_count} sales</span>
+                      <span>{pack.sales_count} продаж</span>
                     </div>
                   ))}
                 </div>
               </div>
             ) : (
-              <div className={styles.loading}>Loading statistics...</div>
+              <div className={styles.loading}>Загрузка статистики...</div>
             )}
           </div>
         )}
@@ -596,18 +596,18 @@ const AdminShop: React.FC = () => {
             </div>
             <div className={styles.modalBody}>
               <div className={styles.packDetails}>
-                <p><strong>Author:</strong> @{selectedPack.hashtag} ({selectedPack.username})</p>
+                <p><strong>Автор:</strong> @{selectedPack.hashtag} ({selectedPack.username})</p>
                 <p><strong>Email:</strong> {selectedPack.email}</p>
-                <p><strong>Price:</strong> {selectedPack.price} coins</p>
-                <p><strong>Voice Tag:</strong> {selectedPack.voice_tag || 'None'}</p>
-                <p><strong>Description:</strong> {selectedPack.description || 'None'}</p>
-                <p><strong>Created:</strong> {new Date(selectedPack.created_at).toLocaleDateString()}</p>
-                <p><strong>Member Since:</strong> {new Date(selectedPack.user_created_at || '').toLocaleDateString()}</p>
+                <p><strong>Цена:</strong> {selectedPack.price} coins</p>
+                <p><strong>Voice Tag:</strong> {selectedPack.voice_tag || 'Нет'}</p>
+                <p><strong>Описание:</strong> {selectedPack.description || 'Нет'}</p>
+                <p><strong>Создан:</strong> {new Date(selectedPack.created_at).toLocaleDateString()}</p>
+                <p><strong>Участник с:</strong> {new Date(selectedPack.user_created_at || '').toLocaleDateString()}</p>
               </div>
 
               {selectedPack.loops && (
                 <div className={styles.loopsSection}>
-                  <h3>Loops ({selectedPack.loops.length})</h3>
+                  <h3>Лупы ({selectedPack.loops.length})</h3>
                   <div className={styles.loopsList}>
                     {selectedPack.loops.map((loop: any) => (
                       <div key={loop.id} className={styles.loopItem}>
@@ -621,22 +621,22 @@ const AdminShop: React.FC = () => {
 
               {selectedPack.user_stats && (
                 <div className={styles.userStats}>
-                  <h3>User Statistics</h3>
+                  <h3>Статистика пользователя</h3>
                   <div className={styles.statsGridSmall}>
                     <div className={styles.statItem}>
-                      <span>Total Packs:</span>
+                      <span>Всего паков:</span>
                       <span>{selectedPack.user_stats.total_packs}</span>
                     </div>
                     <div className={styles.statItem}>
-                      <span>Approved:</span>
+                      <span>Одобрено:</span>
                       <span>{selectedPack.user_stats.approved_packs}</span>
                     </div>
                     <div className={styles.statItem}>
-                      <span>Rejected:</span>
+                      <span>Отклонено:</span>
                       <span>{selectedPack.user_stats.rejected_packs}</span>
                     </div>
                     <div className={styles.statItem}>
-                      <span>Total Sales:</span>
+                      <span>Всего продаж:</span>
                       <span>{selectedPack.user_stats.total_sales}</span>
                     </div>
                   </div>
@@ -645,11 +645,11 @@ const AdminShop: React.FC = () => {
 
               {selectedPack.reports && selectedPack.reports.length > 0 && (
                 <div className={styles.reportsSection}>
-                  <h3>Reports Against User</h3>
+                  <h3>Жалобы на пользователя</h3>
                   {selectedPack.reports.map((report: any) => (
                     <div key={report.id} className={styles.reportItemSmall}>
                       <p><strong>{report.reason}:</strong> {report.description}</p>
-                      <p>By: {report.reporter_name}</p>
+                      <p>От: {report.reporter_name}</p>
                     </div>
                   ))}
                 </div>
@@ -661,14 +661,14 @@ const AdminShop: React.FC = () => {
                 onClick={() => handleApprovePack(selectedPack.id)}
                 disabled={loading}
               >
-                Approve Pack
+                Одобрить пак
               </button>
               <button
                 className={styles.btnReject}
                 onClick={() => openRejectModal(selectedPack.id)}
                 disabled={loading}
               >
-                Reject Pack
+                Отклонить пак
               </button>
               <button
                 className={styles.btnReject}
@@ -676,7 +676,7 @@ const AdminShop: React.FC = () => {
                 disabled={loading}
                 style={{ backgroundColor: '#dc3545' }}
               >
-                Delete Pack
+                Удалить пак
               </button>
             </div>
           </div>
@@ -688,17 +688,17 @@ const AdminShop: React.FC = () => {
         <div className={styles.modalOverlay} onClick={closeRejectModal}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
-              <h2>Reject Pack</h2>
+              <h2>Отклонить пак</h2>
               <button className={styles.closeBtn} onClick={closeRejectModal}>×</button>
             </div>
             <div className={styles.modalBody}>
               <div className={styles.formGroup}>
-                <label htmlFor="rejectionReason">Rejection Reason *</label>
+                <label htmlFor="rejectionReason">Причина отклонения *</label>
                 <textarea
                   id="rejectionReason"
                   value={rejectionReason}
                   onChange={(e) => setRejectionReason(e.target.value)}
-                  placeholder="Please explain why this pack is being rejected..."
+                  placeholder="Пожалуйста, объясните, почему этот пак отклоняется..."
                   rows={4}
                   required
                 />
@@ -710,14 +710,14 @@ const AdminShop: React.FC = () => {
                 onClick={closeRejectModal}
                 disabled={loading}
               >
-                Cancel
+                Отмена
               </button>
               <button
                 className={styles.btnReject}
                 onClick={handleRejectPack}
                 disabled={loading}
               >
-                Reject Pack
+                Отклонить пак
               </button>
             </div>
           </div>

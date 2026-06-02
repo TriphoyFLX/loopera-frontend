@@ -16,6 +16,7 @@ interface Pack {
   user_created_at?: string;
   email?: string;
   loops?: any[];
+  sales_count?: number;
   user_stats?: {
     total_packs: number;
     approved_packs: number;
@@ -51,8 +52,9 @@ interface Report {
 }
 
 const AdminShop: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'pending' | 'withdrawals' | 'reports' | 'stats'>('pending');
+  const [activeTab, setActiveTab] = useState<'pending' | 'all' | 'withdrawals' | 'reports' | 'stats'>('pending');
   const [pendingPacks, setPendingPacks] = useState<Pack[]>([]);
+  const [allPacks, setAllPacks] = useState<Pack[]>([]);
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
   const [selectedPack, setSelectedPack] = useState<Pack | null>(null);
@@ -63,13 +65,17 @@ const AdminShop: React.FC = () => {
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectingPackId, setRejectingPackId] = useState<number | null>(null);
   const [stats, setStats] = useState<any>(null);
+  const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected' | 'deleted'>('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPacks, setTotalPacks] = useState(0);
 
   useEffect(() => {
     fetchPendingPacks();
+    if (activeTab === 'all') fetchAllPacks();
     if (activeTab === 'withdrawals') fetchWithdrawals();
     if (activeTab === 'reports') fetchReports();
     if (activeTab === 'stats') fetchStats();
-  }, [activeTab]);
+  }, [activeTab, currentPage, statusFilter]);
 
   const fetchPendingPacks = async () => {
     try {
@@ -85,6 +91,26 @@ const AdminShop: React.FC = () => {
       if (!response.ok) throw new Error('Failed to fetch pending packs');
       const packs = await response.json();
       setPendingPacks(packs);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch data');
+    }
+  };
+
+  const fetchAllPacks = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await fetch(`/api/admin/shop/packs/all?page=${currentPage}&limit=50&status=${statusFilter}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch all packs');
+      const data = await response.json();
+      setAllPacks(data.packs);
+      setTotalPacks(data.pagination.totalPacks);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch data');
     }
@@ -348,6 +374,12 @@ const AdminShop: React.FC = () => {
           Паки на модерации ({pendingPacks.length})
         </button>
         <button
+          className={`${styles.tab} ${activeTab === 'all' ? styles.active : ''}`}
+          onClick={() => setActiveTab('all')}
+        >
+          Все паки ({totalPacks})
+        </button>
+        <button
           className={`${styles.tab} ${activeTab === 'withdrawals' ? styles.active : ''}`}
           onClick={() => setActiveTab('withdrawals')}
         >
@@ -422,6 +454,84 @@ const AdminShop: React.FC = () => {
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'all' && (
+          <div className={styles.pendingPacks}>
+            <div className={styles.filterBar}>
+              <select
+                value={statusFilter}
+                onChange={(e) => {
+                  setStatusFilter(e.target.value as any);
+                  setCurrentPage(1);
+                }}
+              >
+                <option value="all">Все статусы</option>
+                <option value="pending">На модерации</option>
+                <option value="approved">Одобрено</option>
+                <option value="rejected">Отклонено</option>
+                <option value="deleted">Удалено</option>
+              </select>
+            </div>
+            {allPacks.length === 0 ? (
+              <div className={styles.emptyState}>
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                  <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
+                <h3>Нет паков</h3>
+              </div>
+            ) : (
+              <div className={styles.packsList}>
+                {allPacks.map((pack) => (
+                  <div key={pack.id} className={styles.packItem}>
+                    <div className={styles.packInfo}>
+                      <h3>{pack.title}</h3>
+                      <p className={styles.packAuthor}>@{pack.hashtag} ({pack.username})</p>
+                      <p className={styles.packPrice}>{pack.price} coins</p>
+                      <p className={styles.packDate}>Создан: {new Date(pack.created_at).toLocaleDateString()}</p>
+                      <span className={`${styles.status} ${styles[pack.status]}`}>{pack.status}</span>
+                      <p className={styles.packSales}>Продаж: {pack.sales_count || 0}</p>
+                    </div>
+                    <div className={styles.packActions}>
+                      <button
+                        className={styles.btnView}
+                        onClick={() => fetchPackDetails(pack.id)}
+                      >
+                        Просмотр
+                      </button>
+                      <button
+                        className={styles.btnReject}
+                        onClick={() => handleDeletePack(pack.id)}
+                        disabled={loading}
+                        style={{ backgroundColor: '#dc3545' }}
+                      >
+                        Удалить
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {totalPacks > 50 && (
+              <div className={styles.pagination}>
+                <button
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                >
+                  Назад
+                </button>
+                <span>Страница {currentPage}</span>
+                <button
+                  onClick={() => setCurrentPage(p => p + 1)}
+                  disabled={currentPage * 50 >= totalPacks}
+                >
+                  Вперед
+                </button>
               </div>
             )}
           </div>

@@ -273,6 +273,12 @@
   padding: 2rem;
 }
 
+.pack-description-text {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
 .pack-loops-list {
   display: flex;
   flex-direction: column;

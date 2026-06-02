@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { getUploadsUrl } from '../utils/urls';
+import Modal from '../components/Modal';
 import './Pack.css';
 
 interface Pack {
@@ -52,6 +53,8 @@ const Pack: React.FC = () => {
   const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioLoading, setAudioLoading] = useState<number | null>(null);
+  const [buyModalOpen, setBuyModalOpen] = useState(false);
+  const [buyModalMessage, setBuyModalMessage] = useState('');
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const getHeaders = () => {
@@ -109,27 +112,31 @@ const Pack: React.FC = () => {
     }
   };
 
-  const handleBuyPack = async () => {
+  const handleBuyPack = () => {
     if (!currentUser) {
-      alert('Please login to purchase packs');
-      navigate('/auth');
+      setBuyModalMessage('Пожалуйста, войдите в систему для покупки паков');
+      setBuyModalOpen(true);
       return;
     }
 
     if (isPurchased) {
-      alert('You already own this pack');
+      setBuyModalMessage('Вы уже владеете этим паком');
+      setBuyModalOpen(true);
       return;
     }
 
     if (userBalance < (pack?.price || 0)) {
-      alert('Insufficient balance');
+      setBuyModalMessage(`Недостаточно средств. У вас ${userBalance} коинов, нужно ${pack?.price} коинов`);
+      setBuyModalOpen(true);
       return;
     }
 
-    if (!confirm(`Buy "${pack?.title}" for ${pack?.price} coins?`)) {
-      return;
-    }
+    setBuyModalMessage(`Купить "${pack?.title}" за ${pack?.price} коинов?`);
+    setBuyModalOpen(true);
+  };
 
+  const handleConfirmBuy = async () => {
+    setBuyModalOpen(false);
     try {
       const response = await fetch(`https://loopera-lpr.vercel.app/api/shop/${packId}/buy`, {
         method: 'POST',
@@ -139,12 +146,14 @@ const Pack: React.FC = () => {
       if (!response.ok) {
         throw new Error(data.error || 'Failed to purchase pack');
       }
-      alert('Pack purchased successfully!');
+      setBuyModalMessage('Пак успешно куплен!');
+      setBuyModalOpen(true);
       setIsPurchased(true);
       fetchUserBalance();
     } catch (err: any) {
       console.error('Error buying pack:', err);
-      alert(err.message || 'Failed to purchase pack');
+      setBuyModalMessage(err.message || 'Не удалось купить пак');
+      setBuyModalOpen(true);
     }
   };
 
@@ -277,25 +286,33 @@ const Pack: React.FC = () => {
 
             {!isPurchased && (
               <button className="pack-buy-btn" onClick={handleBuyPack}>
-                Buy for {pack.price} coins
+                Купить за {pack.price} коинов
               </button>
             )}
 
             {isPurchased && (
               <div className="pack-owned">
-                <span>✓ You own this pack</span>
+                <span>✓ Вы владеете этим паком</span>
               </div>
             )}
           </div>
 
-          {/* Right Column - Loops */}
+          {/* Right Column - Description */}
           <div className="pack-loops">
-            <h3 className="pack-loops-title">
-              {isPurchased ? 'Лупы для скачивания' : 'ОПИСАНИЕ ТОВАРА'}
-            </h3>
-            {loops.length === 0 ? (
-              <p className="pack-no-loops">No loops in this pack</p>
+            <h3 className="pack-loops-title">ОПИСАНИЕ ТОВАРА</h3>
+            {pack.description ? (
+              <p className="pack-description-text">{pack.description}</p>
             ) : (
+              <p className="pack-no-loops">Описание отсутствует</p>
+            )}
+          </div>
+
+          {/* Loops Section */}
+          {loops.length > 0 && (
+            <div className="pack-loops">
+              <h3 className="pack-loops-title">
+                {isPurchased ? 'Лупы для скачивания' : 'Включенные лупы'}
+              </h3>
               <div className="pack-loops-list">
                 {loops.map((loop) => (
                   <div key={loop.id} className="pack-loop-item">
@@ -311,7 +328,7 @@ const Pack: React.FC = () => {
                         download={loop.original_name}
                         className="pack-loop-download"
                       >
-                        ⬇ Download
+                        ⬇ Скачать
                       </a>
                     ) : (
                       <button
@@ -325,10 +342,21 @@ const Pack: React.FC = () => {
                   </div>
                 ))}
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
+
+      <Modal
+        isOpen={buyModalOpen}
+        onClose={() => setBuyModalOpen(false)}
+        title={buyModalMessage.includes('Купить') ? 'Подтверждение покупки' : 'Уведомление'}
+        onConfirm={buyModalMessage.includes('Купить') ? handleConfirmBuy : undefined}
+        confirmText={buyModalMessage.includes('Купить') ? 'Купить' : undefined}
+        cancelText="Отмена"
+      >
+        <p>{buyModalMessage}</p>
+      </Modal>
     </div>
   );
 };

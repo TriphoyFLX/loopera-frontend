@@ -31,6 +31,11 @@ const CreatePack: React.FC = () => {
       return;
     }
 
+    if (!description.trim() || description.trim().length < 100) {
+      setError('Описание должно содержать минимум 100 символов');
+      return;
+    }
+
     if (!archiveFile) {
       setError('Archive file is required');
       return;

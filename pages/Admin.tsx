@@ -29,6 +29,21 @@ interface Loop {
   duration?: number;
 }
 
+interface Pack {
+  id: number;
+  title: string;
+  description: string;
+  price: number;
+  username: string;
+  hashtag: string;
+  avatar_url?: string;
+  voice_tag?: string;
+  status: string;
+  created_at: string;
+  loops_count?: number;
+  sales_count?: number;
+}
+
 interface AdminStats {
   overview: {
     totalUsers: number;
@@ -49,14 +64,17 @@ const Admin: React.FC = () => {
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [loops, setLoops] = useState<Loop[]>([]);
+  const [packs, setPacks] = useState<Pack[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'loops' | 'balance' | 'shop'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'loops' | 'balance' | 'shop' | 'packs'>('overview');
   const [userPage, setUserPage] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalLoops, setTotalLoops] = useState(0);
+  const [totalPacks, setTotalPacks] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'banned' | 'active'>('all');
+  const [packStatusFilter, setPackStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected' | 'deleted'>('all');
   const [playingLoopId, setPlayingLoopId] = useState<number | null>(null);
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
   const [creditUsername, setCreditUsername] = useState('');
@@ -155,6 +173,73 @@ const Admin: React.FC = () => {
       setError(err instanceof Error ? err.message : 'Unknown error');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchPacks = async () => {
+    try {
+      setLoading(true);
+      const token = tokenStorage.getToken();
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/shop/packs/all?status=${packStatusFilter}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!response.ok) throw new Error('Failed to fetch packs');
+      const data = await response.json();
+      setPacks(data.packs);
+      setTotalPacks(data.pagination.totalPacks);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deletePack = async (packId: number) => {
+    if (!confirm('Вы уверены, что хотите удалить этот пак?')) return;
+
+    try {
+      const token = tokenStorage.getToken();
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/shop/packs/${packId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+      });
+
+      if (!response.ok) throw new Error('Failed to delete pack');
+
+      fetchPacks();
+      fetchStats();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Unknown error');
+    }
+  };
+
+  const downloadPack = async (packId: number) => {
+    try {
+      const token = tokenStorage.getToken();
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/shop/${packId}/download`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) throw new Error('Failed to download pack');
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `pack_${packId}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Unknown error');
     }
   };
 
@@ -389,8 +474,10 @@ const Admin: React.FC = () => {
       fetchUsers(userPage, searchQuery, filterStatus);
     } else if (activeTab === 'loops') {
       fetchLoops();
+    } else if (activeTab === 'packs') {
+      fetchPacks();
     }
-  }, [activeTab, userPage, searchQuery, filterStatus]);
+  }, [activeTab, userPage, searchQuery, filterStatus, packStatusFilter]);
 
   if (loading && !stats) {
     return (
@@ -506,6 +593,16 @@ const Admin: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
               <span>Shop</span>
+            </button>
+            <button
+              className={`tab-button ${activeTab === 'packs' ? 'active' : ''}`}
+              onClick={() => setActiveTab('packs')}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              </svg>
+              <span>Паки</span>
+              <span className="tab-count">{totalPacks}</span>
             </button>
           </div>
         </div>
@@ -915,7 +1012,7 @@ const Admin: React.FC = () => {
                 Управление балансом
               </h3>
             </div>
-            
+
             {/* Credit Form */}
             <div className="balance-section">
               <h4>Начислить баланс</h4>
@@ -1077,6 +1174,95 @@ const Admin: React.FC = () => {
                 <li>Для вывода: Администратор списывает баланс с 20% комиссией и отправляет средства</li>
                 <li>Все операции записываются в историю транзакций</li>
               </ul>
+            </div>
+          </div>
+        )}
+
+        {/* Packs Tab */}
+        {activeTab === 'packs' && (
+          <div className="admin-card">
+            <div className="card-header">
+              <h3>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+                Управление паками
+              </h3>
+            </div>
+            <div className="search-filters-container">
+              <div className="filter-box">
+                <select
+                  value={packStatusFilter}
+                  onChange={(e) => setPackStatusFilter(e.target.value as any)}
+                >
+                  <option value="all">Все статусы</option>
+                  <option value="pending">На модерации</option>
+                  <option value="approved">Одобрено</option>
+                  <option value="rejected">Отклонено</option>
+                  <option value="deleted">Удалено</option>
+                </select>
+              </div>
+            </div>
+            <div className="table-container">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Название</th>
+                    <th>Автор</th>
+                    <th>Цена</th>
+                    <th>Статус</th>
+                    <th>Продаж</th>
+                    <th>Дата</th>
+                    <th>Действия</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {packs.map((pack) => (
+                    <tr key={pack.id}>
+                      <td>
+                        <p>{pack.title}</p>
+                        <p>ID: {pack.id}</p>
+                      </td>
+                      <td>
+                        <div>
+                          <p className="artist-name">@{pack.hashtag}</p>
+                          <p className="artist-email">{pack.username}</p>
+                        </div>
+                      </td>
+                      <td>
+                        <p>{pack.price} coins</p>
+                      </td>
+                      <td>
+                        <span className={`status-badge ${pack.status}`}>
+                          {pack.status}
+                        </span>
+                      </td>
+                      <td>
+                        <p>{pack.sales_count || 0}</p>
+                      </td>
+                      <td>
+                        <p>{formatDate(pack.created_at)}</p>
+                      </td>
+                      <td>
+                        <div className="action-buttons">
+                          <button
+                            onClick={() => downloadPack(pack.id)}
+                            className="btn-download"
+                          >
+                            Скачать
+                          </button>
+                          <button
+                            onClick={() => deletePack(pack.id)}
+                            className="btn-delete"
+                          >
+                            Удалить
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         )}

@@ -18,7 +18,7 @@ interface Pack {
   user_id?: number;
   avg_rating: number;
   rating_count: number;
-  sales_count: number;
+  sales_count?: number;
   created_at: string;
   loops_count?: number;
   status?: string;
@@ -73,18 +73,12 @@ const Pack: React.FC = () => {
   const fetchPack = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`https://loopera-lpr.vercel.app/api/shop/packs/${packId}`, {
+      const response = await fetch(`https://loopera-lpr.vercel.app/api/shop/${packId}`, {
         headers: getHeaders()
       });
       const data = await response.json();
       setPack(data);
-      
-      // Fetch loops for this pack
-      const loopsResponse = await fetch(`https://loopera-lpr.vercel.app/api/shop/packs/${packId}/loops`, {
-        headers: getHeaders()
-      });
-      const loopsData = await loopsResponse.json();
-      setLoops(loopsData.loops || []);
+      setLoops(data.loops || []);
       
       // Check if user has purchased this pack
       if (currentUser) {
@@ -137,7 +131,7 @@ const Pack: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`https://loopera-lpr.vercel.app/api/shop/packs/${packId}/buy`, {
+      const response = await fetch(`https://loopera-lpr.vercel.app/api/shop/${packId}/buy`, {
         method: 'POST',
         headers: getHeaders()
       });

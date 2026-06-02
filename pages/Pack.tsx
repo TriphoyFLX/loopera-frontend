@@ -282,12 +282,7 @@ const Pack: React.FC = () => {
               <img src={`https://loopera-lpr.vercel.app${pack.cover_url}`} alt={pack.title} />
             </div>
           )}
-          {pack.description && (
-            <div className={styles.description}>
-              <h3>Description</h3>
-              <p>{pack.description}</p>
-            </div>
-          )}
+          
 
           <div className={styles.stats}>
             <div className={styles.stat}>

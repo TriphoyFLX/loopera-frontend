@@ -23,12 +23,12 @@ const CreatePack: React.FC = () => {
     e.preventDefault();
     
     if (!title.trim()) {
-      setError('Title is required');
+      setError('Название обязательно');
       return;
     }
 
     if (!price || parseInt(price) < 0) {
-      setError('Valid price is required');
+      setError('Укажите корректную цену');
       return;
     }
 
@@ -38,17 +38,17 @@ const CreatePack: React.FC = () => {
     }
 
     if (!archiveFile) {
-      setError('Archive file is required');
+      setError('Архив обязателен');
       return;
     }
 
     if (!previewFile1) {
-      setError('At least one preview file is required');
+      setError('Минимум один превью файл обязателен');
       return;
     }
 
     if (!textFile) {
-      setError('Text file is required');
+      setError('Текстовый файл обязателен');
       return;
     }
 
@@ -91,17 +91,17 @@ const CreatePack: React.FC = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create pack');
+        throw new Error(errorData.error || 'Не удалось создать пак');
       }
 
-      setSuccess('Pack submitted successfully! It will be reviewed by moderators.');
+      setSuccess('Пак успешно отправлен! Он будет проверен модераторами.');
       
       setTimeout(() => {
         navigate('/shop');
       }, 2000);
       
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create pack');
+      setError(err instanceof Error ? err.message : 'Не удалось создать пак');
     } finally {
       setLoading(false);
     }
@@ -139,8 +139,8 @@ const CreatePack: React.FC = () => {
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.header}>
-          <h1 className={styles.title}>Create Sound Pack</h1>
-          <p className={styles.subtitle}>Share your sounds with the world</p>
+          <h1 className={styles.title}>Создать пак звуков</h1>
+          <p className={styles.subtitle}>Поделитесь своими звуками со всем миром</p>
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
@@ -166,11 +166,11 @@ const CreatePack: React.FC = () => {
           )}
 
           <div className={styles.section}>
-            <h2 className={styles.sectionTitle}>Basic Information</h2>
+            <h2 className={styles.sectionTitle}>Основная информация</h2>
             
             <div className={styles.fieldGroup}>
               <label className={styles.label} htmlFor="title">
-                Pack Title <span className={styles.required}>*</span>
+                Название пака <span className={styles.required}>*</span>
               </label>
               <input
                 type="text"
@@ -178,16 +178,16 @@ const CreatePack: React.FC = () => {
                 className={styles.input}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g., 'Midnight Melodies'"
+                placeholder="например, 'Полуночные мелодии'"
                 maxLength={255}
                 required
               />
-              <p className={styles.hint}>Choose a catchy title for your pack</p>
+              <p className={styles.hint}>Выберите запоминающееся название для вашего пака</p>
             </div>
 
             <div className={styles.fieldGroup}>
               <label className={styles.label}>
-                Cover Image
+                Обложка
               </label>
               <div
                 className={styles.uploadArea}
@@ -210,8 +210,8 @@ const CreatePack: React.FC = () => {
                 <label htmlFor="coverFile" className={styles.uploadLabel}>
                   <div className={styles.uploadIcon}>🖼️</div>
                   <div className={styles.uploadText}>
-                    <span className={styles.uploadTitle}>Upload cover image</span>
-                    <span className={styles.uploadSubtitle}>Optional - JPG, PNG, WEBP (Max 10MB)</span>
+                    <span className={styles.uploadTitle}>Загрузить обложку</span>
+                    <span className={styles.uploadSubtitle}>Необязательно - JPG, PNG, WEBP (Макс 10МБ)</span>
                   </div>
                 </label>
                 {coverFile && (
@@ -226,24 +226,24 @@ const CreatePack: React.FC = () => {
 
             <div className={styles.fieldGroup}>
               <label className={styles.label} htmlFor="description">
-                Description
+                Описание
               </label>
               <textarea
                 id="description"
                 className={styles.textarea}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Describe your pack, inspiration, and what users can expect..."
+                placeholder="Опишите ваш пак, вдохновение и чего ожидать пользователям..."
                 rows={4}
                 maxLength={1000}
               />
-              <p className={styles.hint}>{description.length}/1000 characters</p>
+              <p className={styles.hint}>{description.length}/1000 символов</p>
             </div>
 
             <div className={styles.row}>
               <div className={styles.fieldGroup}>
                 <label className={styles.label} htmlFor="price">
-                  Price <span className={styles.required}>*</span>
+                  Цена <span className={styles.required}>*</span>
                 </label>
                 <div className={styles.priceInput}>
                   <span className={styles.priceSymbol}>💰</span>
@@ -264,7 +264,7 @@ const CreatePack: React.FC = () => {
 
               <div className={styles.fieldGroup}>
                 <label className={styles.label} htmlFor="voiceTag">
-                  Voice Tag Text
+                  Текст голосового тега
                 </label>
                 <input
                   type="text"
@@ -272,7 +272,7 @@ const CreatePack: React.FC = () => {
                   className={styles.input}
                   value={voiceTag}
                   onChange={(e) => setVoiceTag(e.target.value)}
-                  placeholder="Your producer tag..."
+                  placeholder="Ваш продюсерский тег..."
                   maxLength={100}
                 />
               </div>
@@ -280,11 +280,11 @@ const CreatePack: React.FC = () => {
           </div>
 
           <div className={styles.section}>
-            <h2 className={styles.sectionTitle}>Files</h2>
+            <h2 className={styles.sectionTitle}>Файлы</h2>
             
             <div className={styles.fieldGroup}>
               <label className={styles.label}>
-                Archive File <span className={styles.required}>*</span>
+                Архив <span className={styles.required}>*</span>
               </label>
               <div 
                 className={styles.uploadArea}
@@ -307,8 +307,8 @@ const CreatePack: React.FC = () => {
                 <label htmlFor="archiveFile" className={styles.uploadLabel}>
                   <div className={styles.uploadIcon}>📦</div>
                   <div className={styles.uploadText}>
-                    <span className={styles.uploadTitle}>Upload archive file</span>
-                    <span className={styles.uploadSubtitle}>ZIP format up to 500MB</span>
+                    <span className={styles.uploadTitle}>Загрузить архив</span>
+                    <span className={styles.uploadSubtitle}>Формат ZIP до 500МБ</span>
                   </div>
                 </label>
               </div>
@@ -324,7 +324,7 @@ const CreatePack: React.FC = () => {
             <div className={styles.row}>
               <div className={styles.fieldGroup}>
                 <label className={styles.label}>
-                  Preview 1 <span className={styles.required}>*</span>
+                  Превью 1 <span className={styles.required}>*</span>
                 </label>
                 <div 
                   className={styles.uploadArea}
@@ -347,8 +347,8 @@ const CreatePack: React.FC = () => {
                   <label htmlFor="preview1" className={styles.uploadLabel}>
                     <div className={styles.uploadIcon}>🎵</div>
                     <div className={styles.uploadText}>
-                      <span className={styles.uploadTitle}>Upload preview 1</span>
-                      <span className={styles.uploadSubtitle}>MP3, WAV, OGG, M4A, FLAC (Max 50MB)</span>
+                      <span className={styles.uploadTitle}>Загрузить превью 1</span>
+                      <span className={styles.uploadSubtitle}>MP3, WAV, OGG, M4A, FLAC (Макс 50МБ)</span>
                     </div>
                   </label>
                 </div>
@@ -362,7 +362,7 @@ const CreatePack: React.FC = () => {
               </div>
 
               <div className={styles.fieldGroup}>
-                <label className={styles.label}>Preview 2</label>
+                <label className={styles.label}>Превью 2</label>
                 <div 
                   className={styles.uploadArea}
                   onDragOver={handleDragOver}
@@ -384,8 +384,8 @@ const CreatePack: React.FC = () => {
                   <label htmlFor="preview2" className={styles.uploadLabel}>
                     <div className={styles.uploadIcon}>🎵</div>
                     <div className={styles.uploadText}>
-                      <span className={styles.uploadTitle}>Upload preview 2</span>
-                      <span className={styles.uploadSubtitle}>Optional - MP3, WAV, OGG, M4A, FLAC (Max 50MB)</span>
+                      <span className={styles.uploadTitle}>Загрузить превью 2</span>
+                      <span className={styles.uploadSubtitle}>Необязательно - MP3, WAV, OGG, M4A, FLAC (Макс 50МБ)</span>
                     </div>
                   </label>
                 </div>
@@ -400,7 +400,7 @@ const CreatePack: React.FC = () => {
             </div>
 
             <div className={styles.fieldGroup}>
-              <label className={styles.label}>Voice Tag File</label>
+              <label className={styles.label}>Файл голосового тега</label>
               <div 
                 className={styles.uploadArea}
                 onDragOver={handleDragOver}
@@ -422,8 +422,8 @@ const CreatePack: React.FC = () => {
                 <label htmlFor="voiceTagFile" className={styles.uploadLabel}>
                   <div className={styles.uploadIcon}>🎤</div>
                   <div className={styles.uploadText}>
-                    <span className={styles.uploadTitle}>Upload voice tag</span>
-                    <span className={styles.uploadSubtitle}>Optional - MP3, WAV, OGG, M4A, FLAC (Max 50MB)</span>
+                    <span className={styles.uploadTitle}>Загрузить голосовой тег</span>
+                    <span className={styles.uploadSubtitle}>Необязательно - MP3, WAV, OGG, M4A, FLAC (Макс 50МБ)</span>
                   </div>
                 </label>
               </div>
@@ -438,7 +438,7 @@ const CreatePack: React.FC = () => {
 
             <div className={styles.fieldGroup}>
               <label className={styles.label}>
-                Text File <span className={styles.required}>*</span>
+                Текстовый файл <span className={styles.required}>*</span>
               </label>
               <div 
                 className={styles.uploadArea}
@@ -462,8 +462,8 @@ const CreatePack: React.FC = () => {
                 <label htmlFor="textFile" className={styles.uploadLabel}>
                   <div className={styles.uploadIcon}>📄</div>
                   <div className={styles.uploadText}>
-                    <span className={styles.uploadTitle}>Upload text file</span>
-                    <span className={styles.uploadSubtitle}>TXT, RTF, PDF format (Max 10MB)</span>
+                    <span className={styles.uploadTitle}>Загрузить текстовый файл</span>
+                    <span className={styles.uploadSubtitle}>Формат TXT, RTF, PDF (Макс 10МБ)</span>
                   </div>
                 </label>
               </div>
@@ -478,31 +478,31 @@ const CreatePack: React.FC = () => {
           </div>
 
           <div className={styles.section}>
-            <h2 className={styles.sectionTitle}>Guidelines</h2>
+            <h2 className={styles.sectionTitle}>Правила</h2>
             <div className={styles.rulesGrid}>
               <div className={styles.ruleCard}>
                 <span className={styles.ruleIcon}>📦</span>
-                <span className={styles.ruleText}>ZIP archive with loops</span>
+                <span className={styles.ruleText}>ZIP архив с лупами</span>
               </div>
               <div className={styles.ruleCard}>
                 <span className={styles.ruleIcon}>🎵</span>
-                <span className={styles.ruleText}>1-2 preview files</span>
+                <span className={styles.ruleText}>1-2 превью файла</span>
               </div>
               <div className={styles.ruleCard}>
                 <span className={styles.ruleIcon}>⏰</span>
-                <span className={styles.ruleText}>Account must be 3+ days old</span>
+                <span className={styles.ruleText}>Аккаунт должен быть старше 3 дней</span>
               </div>
               <div className={styles.ruleCard}>
                 <span className={styles.ruleIcon}>📦</span>
-                <span className={styles.ruleText}>Submit as many packs as you want</span>
+                <span className={styles.ruleText}>Отправляйте сколько угодно паков</span>
               </div>
               <div className={styles.ruleCard}>
                 <span className={styles.ruleIcon}>👁️</span>
-                <span className={styles.ruleText}>Reviewed by moderators</span>
+                <span className={styles.ruleText}>Проверяется модераторами</span>
               </div>
               <div className={styles.ruleCard}>
                 <span className={styles.ruleIcon}>💰</span>
-                <span className={styles.ruleText}>15% commission on sales</span>
+                <span className={styles.ruleText}>15% комиссия с продаж</span>
               </div>
             </div>
           </div>
@@ -514,7 +514,7 @@ const CreatePack: React.FC = () => {
               onClick={() => navigate('/shop')}
               disabled={loading}
             >
-              Cancel
+              Отмена
             </button>
             
             <button
@@ -522,7 +522,7 @@ const CreatePack: React.FC = () => {
               className={`${styles.buttonPrimary} ${loading ? styles.loading : ''}`}
               disabled={loading || !archiveFile || !previewFile1 || !textFile}
             >
-              {loading ? 'Creating...' : 'Submit for Review'}
+              {loading ? 'Создание...' : 'Отправить на проверку'}
             </button>
           </div>
         </form>

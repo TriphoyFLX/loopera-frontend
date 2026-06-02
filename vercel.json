@@ -12,15 +12,15 @@
   "rewrites": [
     {
       "source": "/api/shop/:match*",
-      "destination": "http://77.73.238.154:3000/api/shop/:match*"
+      "destination": "http://77.73.238.154:5001/api/shop/:match*"
     },
     {
       "source": "/api/:match*",
-      "destination": "http://77.73.238.154:3000/api/:match*"
+      "destination": "http://77.73.238.154:5001/api/:match*"
     },
     {
       "source": "/uploads/:match*",
-      "destination": "http://77.73.238.154:3000/uploads/:match*"
+      "destination": "http://77.73.238.154:5001/uploads/:match*"
     },
     {
       "source": "/((?!api|uploads).*)",

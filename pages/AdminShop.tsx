@@ -101,7 +101,7 @@ const AdminShop: React.FC = () => {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const response = await fetch(`/api/admin/shop/packs/all?page=${currentPage}&limit=50&status=${statusFilter}`, {
+      const response = await fetch(`https://loopera-lpr.vercel.app/api/admin/shop/packs/all?page=${currentPage}&limit=50&status=${statusFilter}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

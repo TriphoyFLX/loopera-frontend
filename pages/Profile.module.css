@@ -1,0 +1,515 @@
+.profileContainer {
+  --bg-primary: #0a0a0f;
+  --bg-card: #14141a;
+  --bg-card-hover: #1a1a22;
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --border-color: #27272a;
+  --accent-pink: #ff2a55;
+  --accent-pink-hover: #ff2a55;
+  --font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+  
+  font-family: var(--font-family);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  padding: 2rem 2rem 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-pink), #f472b6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+}
+
+.info {
+  flex: 1;
+}
+
+.username {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  letter-spacing: -0.02em;
+}
+
+.email {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.joinDate {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.balanceSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.balance {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.balanceAmount {
+  font-weight: 600;
+  color: var(--accent-pink);
+}
+
+.actionBtn {
+  background: var(--accent-pink);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.actionBtn:hover {
+  background: var(--accent-pink-hover);
+}
+
+.actionBtn.secondary {
+  background: transparent;
+  border: 1.5px solid var(--accent-pink);
+  color: var(--accent-pink);
+}
+
+.actionBtn.secondary:hover {
+  background: var(--accent-pink);
+  color: white;
+}
+
+.section {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.sectionTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.sectionTitle svg {
+  width: 20px;
+  height: 20px;
+  color: var(--accent-pink);
+}
+
+.loopsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  gap: 0.75rem;
+  color: var(--text-muted);
+}
+
+.emptyState svg {
+  width: 48px;
+  height: 48px;
+  opacity: 0.5;
+}
+
+.subscriptionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.subscriptionItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: var(--bg-card-hover);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.subscriptionInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.subscriptionHashtag {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.subscriptionDate {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.removeBtn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.removeBtn:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.packsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.packItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: var(--bg-card-hover);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.packInfo {
+  flex: 1;
+}
+
+.packInfo h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.packInfo p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.packPrice {
+  font-weight: 600;
+  color: var(--accent-pink);
+}
+
+.packActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.packActions button {
+  background: transparent;
+  border: 1.5px solid var(--accent-pink);
+  color: var(--accent-pink);
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.packActions button:hover {
+  background: var(--accent-pink);
+  color: white;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modalContent {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalScrollContent {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modalContent h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modalConditions {
+  background: var(--bg-card-hover);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.modalConditions h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.modalConditions ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.modalConditions li {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  padding: 0.25rem 0;
+  padding-left: 1rem;
+  position: relative;
+}
+
+.modalConditions li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--accent-pink);
+}
+
+.modalNote {
+  font-size: 0.8rem;
+  color: #fbbf24;
+  margin-top: 0.5rem;
+}
+
+.currencySelector {
+  margin-bottom: 1rem;
+}
+
+.currencySelector label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.currencySelector select {
+  width: 100%;
+  background: var(--bg-card-hover);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  outline: none;
+}
+
+.currencySelector select:focus {
+  border-color: var(--accent-pink);
+}
+
+.modalContent input {
+  width: 100%;
+  background: var(--bg-card-hover);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  outline: none;
+  margin-bottom: 1rem;
+}
+
+.modalContent input:focus {
+  border-color: var(--accent-pink);
+}
+
+.commissionInfo {
+  background: var(--bg-card-hover);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.commissionInfo p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0.25rem 0;
+}
+
+.modalButtons {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.modalButtons button {
+  flex: 1;
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modalButtons button:first-child {
+  background: var(--accent-pink);
+  color: white;
+  border: none;
+}
+
+.modalButtons button:first-child:hover {
+  background: var(--accent-pink-hover);
+}
+
+.modalButtons button:last-child {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.modalButtons button:last-child:hover {
+  border-color: var(--accent-pink);
+  color: var(--accent-pink);
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.sectionActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.packStatus {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.packStatusApproved {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.packStatusPending {
+  background: rgba(251, 191, 36, 0.1);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.2);
+}
+
+.packStatusRejected {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.deleteBtn {
+  background: transparent;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.deleteBtn:hover {
+  background: #ef4444;
+  color: white;
+}
+
+.logoutBtn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  border-radius: 12px;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 1rem;
+}
+
+.logoutBtn:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}

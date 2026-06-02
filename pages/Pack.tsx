@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { getUploadsUrl } from '../utils/urls';
 import Modal from '../components/Modal';
-import './Pack.css';
+import styles from './Pack.module.css';
 
 interface Pack {
   id: string;
@@ -230,155 +230,189 @@ const Pack: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="pack-loading">Loading...</div>;
+    return <div className={styles.loading}>Loading...</div>;
   }
 
   if (error || !pack) {
-    return <div className="pack-error">{error || 'Pack not found'}</div>;
+    return <div className={styles.error}>{error || 'Pack not found'}</div>;
   }
 
   return (
-    <div className="pack-root">
-      <div className="pack-container">
-        {/* Header */}
-        <div className="pack-header">
-          <button className="pack-back-btn" onClick={() => navigate('/shop')}>
-            ← Back to Shop
-          </button>
-          <div className="pack-info">
-            <h1 className="pack-title">{pack.title}</h1>
-            {pack.voice_tag && <span className="pack-voice-tag">{pack.voice_tag}</span>}
-          </div>
-          <div className="pack-author">
-            <span>by </span>
-            <span 
-              className="pack-author-link"
-              onClick={() => pack.user_id && navigate(`/profile/${pack.user_id}`)}
-            >
-              {pack.username || pack.hashtag || 'Unknown'}
+    <div className={styles.packContainer}>
+      {/* Header */}
+      <div className={styles.header}>
+        <button className={styles.backBtn} onClick={() => navigate('/shop')}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Back to Shop
+        </button>
+        <div className={styles.packInfo}>
+          <h1 className={styles.packTitle}>{pack.title}</h1>
+          {pack.voice_tag && (
+            <span className={styles.voiceTag}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="23"></line>
+                <line x1="8" y1="23" x2="16" y2="23"></line>
+              </svg>
+              {pack.voice_tag}
             </span>
-          </div>
+          )}
         </div>
+        <div className={styles.author}>
+          <span>by </span>
+          <span 
+            className={styles.authorLink}
+            onClick={() => pack.user_id && navigate(`/profile/${pack.user_id}`)}
+          >
+            {pack.username || pack.hashtag || 'Unknown'}
+          </span>
+        </div>
+      </div>
 
-        {/* Main Content */}
-        <div className="pack-content">
-          {/* Left Column - Pack Details */}
-          <div className="pack-details">
-            {pack.cover_url && (
-              <div className="pack-cover-display">
-                <img src={`https://loopera-lpr.vercel.app${pack.cover_url}`} alt={pack.title} />
-              </div>
-            )}
-            {pack.description && (
-              <div className="pack-description">
-                <h3>Description</h3>
-                <p>{pack.description}</p>
-              </div>
-            )}
-
-            <div className="pack-stats">
-              <div className="pack-stat">
-                <span className="pack-stat-label">Цена</span>
-                <span className="pack-stat-value">{pack.price} коинов</span>
-              </div>
-              {pack.loops_count && (
-                <div className="pack-stat">
-                  <span className="pack-stat-label">Лупов</span>
-                  <span className="pack-stat-value">{pack.loops_count}</span>
-                </div>
-              )}
-              <div className="pack-stat">
-                <span className="pack-stat-label">Создан</span>
-                <span className="pack-stat-value">
-                  {new Date(pack.created_at).toLocaleDateString('ru-RU', { 
-                    day: 'numeric', 
-                    month: 'short', 
-                    year: 'numeric' 
-                  })}
-                </span>
-              </div>
+      {/* Main Content */}
+      <div className={styles.content}>
+        {/* Left Column - Pack Details */}
+        <div className={styles.details}>
+          {pack.cover_url && (
+            <div className={styles.coverDisplay}>
+              <img src={`https://loopera-lpr.vercel.app${pack.cover_url}`} alt={pack.title} />
             </div>
+          )}
+          {pack.description && (
+            <div className={styles.description}>
+              <h3>Description</h3>
+              <p>{pack.description}</p>
+            </div>
+          )}
 
-            {pack.preview_url && (
-              <div className="pack-preview">
-                <h3>Preview</h3>
-                <button
-                  className="pack-preview-btn"
-                  onClick={() => {
-                    if (audioRef.current) {
-                      audioRef.current.pause();
-                    }
-                    const audio = new Audio(pack.preview_url);
-                    audioRef.current = audio;
-                    audio.play();
-                  }}
-                >
-                  ▶ Play Preview
-                </button>
+          <div className={styles.stats}>
+            <div className={styles.stat}>
+              <span className={styles.statLabel}>Цена</span>
+              <span className={styles.statValue}>{pack.price} коинов</span>
+            </div>
+            {pack.loops_count && (
+              <div className={styles.stat}>
+                <span className={styles.statLabel}>Лупов</span>
+                <span className={styles.statValue}>{pack.loops_count}</span>
               </div>
             )}
+            <div className={styles.stat}>
+              <span className={styles.statLabel}>Создан</span>
+              <span className={styles.statValue}>
+                {new Date(pack.created_at).toLocaleDateString('ru-RU', { 
+                  day: 'numeric', 
+                  month: 'short', 
+                  year: 'numeric' 
+                })}
+              </span>
+            </div>
+          </div>
 
-            {!isPurchased && (
-              <button className="pack-buy-btn" onClick={handleBuyPack}>
-                Купить за {pack.price} коинов
+          {pack.preview_url && (
+            <div className={styles.preview}>
+              <h3>Preview</h3>
+              <button
+                className={styles.previewBtn}
+                onClick={() => {
+                  if (audioRef.current) {
+                    audioRef.current.pause();
+                  }
+                  const audio = new Audio(pack.preview_url);
+                  audioRef.current = audio;
+                  audio.play();
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                Play Preview
               </button>
-            )}
+            </div>
+          )}
 
-            {isPurchased && (
-              <div className="pack-owned">
-                <span>✓ Вы владеете этим паком</span>
-              </div>
-            )}
-          </div>
+          {!isPurchased && (
+            <button className={styles.buyBtn} onClick={handleBuyPack}>
+              Купить за {pack.price} коинов
+            </button>
+          )}
 
-          {/* Right Column - Description */}
-          <div className="pack-loops">
-            <h3 className="pack-loops-title">ОПИСАНИЕ ТОВАРА</h3>
-            {pack.description ? (
-              <p className="pack-description-text">{pack.description}</p>
-            ) : (
-              <p className="pack-no-loops">Описание отсутствует</p>
-            )}
-          </div>
-
-          {/* Loops Section */}
-          {loops.length > 0 && (
-            <div className="pack-loops">
-              <h3 className="pack-loops-title">
-                {isPurchased ? 'Лупы для скачивания' : 'Включенные лупы'}
-              </h3>
-              <div className="pack-loops-list">
-                {loops.map((loop) => (
-                  <div key={loop.id} className="pack-loop-item">
-                    <div className="pack-loop-info">
-                      <span className="pack-loop-title">{loop.title}</span>
-                      {loop.bpm && <span className="pack-loop-bpm">{loop.bpm} BPM</span>}
-                      {loop.key && <span className="pack-loop-key">{loop.key}</span>}
-                      {loop.genre && <span className="pack-loop-genre">{loop.genre}</span>}
-                    </div>
-                    {isPurchased ? (
-                      <a
-                        href={getUploadsUrl(loop.filename)}
-                        download={loop.original_name}
-                        className="pack-loop-download"
-                      >
-                        ⬇ Скачать
-                      </a>
-                    ) : (
-                      <button
-                        className="pack-loop-play"
-                        onClick={() => handlePlay(loop)}
-                        disabled={audioLoading === loop.id}
-                      >
-                        {audioLoading === loop.id ? '...' : currentlyPlaying === loop.id && isPlaying ? '⏸' : '▶'}
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
+          {isPurchased && (
+            <div className={styles.owned}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Вы владеете этим паком
             </div>
           )}
         </div>
+
+        {/* Right Column - Description */}
+        <div className={styles.loopsSection}>
+          <h3 className={styles.loopsTitle}>ОПИСАНИЕ ТОВАРА</h3>
+          {pack.description ? (
+            <p className={styles.descriptionText}>{pack.description}</p>
+          ) : (
+            <p className={styles.noLoops}>Описание отсутствует</p>
+          )}
+        </div>
+
+        {/* Loops Section */}
+        {loops.length > 0 && (
+          <div className={styles.loopsSection}>
+            <h3 className={styles.loopsTitle}>
+              {isPurchased ? 'Лупы для скачивания' : 'Включенные лупы'}
+            </h3>
+            <div className={styles.loopsList}>
+              {loops.map((loop) => (
+                <div key={loop.id} className={styles.loopItem}>
+                  <div className={styles.loopInfo}>
+                    <span className={styles.loopTitle}>{loop.title}</span>
+                    {loop.bpm && <span className={styles.loopBpm}>{loop.bpm} BPM</span>}
+                    {loop.key && <span className={styles.loopKey}>{loop.key}</span>}
+                    {loop.genre && <span className={styles.loopGenre}>{loop.genre}</span>}
+                  </div>
+                  {isPurchased ? (
+                    <a
+                      href={getUploadsUrl(loop.filename)}
+                      download={loop.original_name}
+                      className={styles.downloadLink}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                      </svg>
+                      Скачать
+                    </a>
+                  ) : (
+                    <button
+                      className={styles.playBtn}
+                      onClick={() => handlePlay(loop)}
+                      disabled={audioLoading === loop.id}
+                    >
+                      {audioLoading === loop.id ? (
+                        '...'
+                      ) : currentlyPlaying === loop.id && isPlaying ? (
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                          <rect x="6" y="4" width="4" height="16"></rect>
+                          <rect x="14" y="4" width="4" height="16"></rect>
+                        </svg>
+                      ) : (
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                      )}
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       <Modal
@@ -400,13 +434,13 @@ const Pack: React.FC = () => {
         confirmText="Отправить оценку"
         cancelText="Пропустить"
       >
-        <div className="rating-modal-content">
+        <div className={styles.ratingModalContent}>
           <p>Как вам пакет? Оцените от 1 до 5 звезд:</p>
-          <div className="rating-stars">
+          <div className={styles.ratingStars}>
             {[1, 2, 3, 4, 5].map((star) => (
               <button
                 key={star}
-                className={`rating-star ${star <= selectedRating ? 'active' : ''}`}
+                className={`${styles.ratingStar} ${star <= selectedRating ? styles.active : ''}`}
                 onClick={() => setSelectedRating(star)}
               >
                 ★

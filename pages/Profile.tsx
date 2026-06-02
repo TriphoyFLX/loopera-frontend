@@ -8,7 +8,7 @@ import LoopCard from '../components/LoopCard'
 import ArtistSearch from '../components/ArtistSearch'
 import Modal from '../components/Modal'
 import type { LoopArtist } from '../utils/searchApi'
-import './Profile.css'
+import styles from './Profile.module.css'
 
 interface UserLoop {
   id: number
@@ -376,26 +376,30 @@ const Profile = () => {
 
   return (
     <>
-      <div className="profile-page">
+      <div className={styles.profileContainer}>
         {/* Профиль хедер */}
-        <div className="profile-header">
-        <div className="profile-header-content">
-          <div className="profile-avatar-large">
+        <div className={styles.header}>
+        <div className={styles.headerContent}>
+          <div className={styles.avatar}>
             {user.username.charAt(0).toUpperCase()}
           </div>
-          <div className="profile-info">
-            <h1>{user.username}</h1>
-            <p className="profile-email">{user.email}</p>
-            <p className="profile-join-date">
+          <div className={styles.info}>
+            <h1 className={styles.username}>{user.username}</h1>
+            <p className={styles.email}>{user.email}</p>
+            <p className={styles.joinDate}>
               Присоединился {user.createdAt ? formatDate(user.createdAt) : 'недавно'}
             </p>
-            <div className="profile-balance">
-              <span className="balance-icon">💎</span>
-              <span className="balance-amount">{isLoadingBalance ? '...' : balance.toLocaleString()} coins</span>
-              <button className="deposit-button" onClick={() => setShowTopUpModal(true)}>
+            <div className={styles.balanceSection}>
+              <div className={styles.balance}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                <span className={styles.balanceAmount}>{isLoadingBalance ? '...' : balance.toLocaleString()}</span>
+              </div>
+              <button className={styles.actionBtn} onClick={() => setShowTopUpModal(true)}>
                 Пополнить
               </button>
-              <button className="withdraw-button" onClick={() => setShowWithdrawModal(true)}>
+              <button className={`${styles.actionBtn} ${styles.secondary}`} onClick={() => setShowWithdrawModal(true)}>
                 Вывести
               </button>
             </div>
@@ -405,11 +409,16 @@ const Profile = () => {
 
       {/* Top-up modal */}
       {showTopUpModal && (
-        <div className="modal-overlay">
-          <div className="modal-content modal-content-large">
-            <div className="modal-scroll-content">
-              <h2>💎 Пополнить баланс</h2>
-              <div className="modal-conditions">
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <div className={styles.modalScrollContent}>
+              <h2>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                Пополнить баланс
+              </h2>
+              <div className={styles.modalConditions}>
                 <h3>Условия пополнения:</h3>
                 <ul>
                   <li>1 коин = 1 единица выбранной валюты (рубль/доллар/евро/фунт)</li>
@@ -419,18 +428,18 @@ const Profile = () => {
                   <li>После оплаты администратор начислит коины на ваш баланс</li>
                   <li>Пополнение происходит вручную, обычно в течение 24 часов</li>
                 </ul>
-                <p className="modal-note">⚠️ Пожалуйста, указывайте корректную сумму. После отправки заявки изменить её будет невозможно.</p>
+                <p className={styles.modalNote}>Пожалуйста, указывайте корректную сумму. После отправки заявки изменить её будет невозможно.</p>
               </div>
-              <div className="currency-selector">
+              <div className={styles.currencySelector}>
                 <label>Выберите валюту:</label>
                 <select
                   value={selectedCurrency}
                   onChange={(e) => setSelectedCurrency(e.target.value)}
                 >
-                  <option value="RUB">🇷🇺 Российский рубль (RUB)</option>
-                  <option value="USD">🇺🇸 Доллар США (USD)</option>
-                  <option value="EUR">🇪🇺 Евро (EUR)</option>
-                  <option value="GBP">🇬🇧 Британский фунт (GBP)</option>
+                  <option value="RUB">Российский рубль (RUB)</option>
+                  <option value="USD">Доллар США (USD)</option>
+                  <option value="EUR">Евро (EUR)</option>
+                  <option value="GBP">Британский фунт (GBP)</option>
                 </select>
               </div>
               <input
@@ -441,7 +450,7 @@ const Profile = () => {
                 placeholder="Сумма в коинах"
               />
               {topUpAmount && parseInt(topUpAmount) > 0 && (
-                <div className="commission-info">
+                <div className={styles.commissionInfo}>
                   {(() => {
                     const amount = parseInt(topUpAmount)
                     const platformCommission = Math.round(amount * 0.03) // 3% платформа
@@ -457,7 +466,7 @@ const Profile = () => {
                 </div>
               )}
             </div>
-            <div className="modal-buttons">
+            <div className={styles.modalButtons}>
               <button onClick={handleTopUp}>Хочу пополнить на {topUpAmount || '0'} коинов</button>
               <button onClick={() => setShowTopUpModal(false)}>Отмена</button>
             </div>
@@ -467,11 +476,17 @@ const Profile = () => {
 
       {/* Withdraw modal */}
       {showWithdrawModal && (
-        <div className="modal-overlay">
-          <div className="modal-content modal-content-large">
-            <div className="modal-scroll-content">
-              <h2>💸 Вывести средства</h2>
-              <div className="modal-conditions">
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <div className={styles.modalScrollContent}>
+              <h2>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="12" y1="1" x2="12" y2="23"></line>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+                Вывести средства
+              </h2>
+              <div className={styles.modalConditions}>
                 <h3>Условия вывода:</h3>
                 <ul>
                   <li>1 коин = 1 единица выбранной валюты (рубль/доллар/евро/фунт)</li>
@@ -482,29 +497,29 @@ const Profile = () => {
                   <li>После проверки администратор отправит средства за вычетом комиссии</li>
                   <li>Вывод происходит вручную, обычно в течение 24-48 часов</li>
                 </ul>
-                <p className="modal-note">⚠️ Пожалуйста, указывайте корректную сумму. После отправки заявки изменить её будет невозможно.</p>
+                <p className={styles.modalNote}>Пожалуйста, указывайте корректную сумму. После отправки заявки изменить её будет невозможно.</p>
               </div>
-              <div className="currency-selector">
+              <div className={styles.currencySelector}>
                 <label>Выберите валюту:</label>
                 <select
                   value={selectedCurrency}
                   onChange={(e) => setSelectedCurrency(e.target.value)}
                 >
-                  <option value="RUB">🇷🇺 Российский рубль (RUB)</option>
-                  <option value="USD">🇺🇸 Доллар США (USD)</option>
-                  <option value="EUR">🇪🇺 Евро (EUR)</option>
-                  <option value="GBP">🇬🇧 Британский фунт (GBP)</option>
+                  <option value="RUB">Российский рубль (RUB)</option>
+                  <option value="USD">Доллар США (USD)</option>
+                  <option value="EUR">Евро (EUR)</option>
+                  <option value="GBP">Британский фунт (GBP)</option>
                 </select>
               </div>
-              <div className="currency-selector">
+              <div className={styles.currencySelector}>
                 <label>Способ вывода:</label>
                 <select
                   value={withdrawMethod}
                   onChange={(e) => setWithdrawMethod(e.target.value)}
                 >
-                  <option value="sbp">🏦 СБП (0% комиссия)</option>
-                  <option value="card">💳 Банковская карта РФ (+2% комиссия)</option>
-                  <option value="paypal">🌐 PayPal (+5% комиссия)</option>
+                  <option value="sbp">СБП (0% комиссия)</option>
+                  <option value="card">Банковская карта РФ (+2% комиссия)</option>
+                  <option value="paypal">PayPal (+5% комиссия)</option>
                 </select>
               </div>
               <input
@@ -516,7 +531,7 @@ const Profile = () => {
                 placeholder="Сумма в коинах"
               />
               {withdrawAmount && parseInt(withdrawAmount) > 0 && (
-                <div className="commission-info">
+                <div className={styles.commissionInfo}>
                   {(() => {
                     const amount = parseInt(withdrawAmount)
                     const platformCommission = Math.round(amount * 0.15) // 15% платформа
@@ -551,7 +566,7 @@ const Profile = () => {
                 </div>
               )}
             </div>
-            <div className="modal-buttons">
+            <div className={styles.modalButtons}>
               <button onClick={handleWithdraw}>Хочу вывести {withdrawAmount || '0'} коинов</button>
               <button onClick={() => setShowWithdrawModal(false)}>Отмена</button>
             </div>
@@ -560,243 +575,218 @@ const Profile = () => {
       )}
 
       {/* Основной контент */}
-      <div className="profile-content">
-        {/* Левая колонка */}
-        <div>
-          {/* Ваши лупы */}
-          <div className="profile-section">
-            <h2 className="profile-section-title">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+      <div>
+        {/* Ваши лупы */}
+        <div className={styles.section}>
+          <h2 className={styles.sectionTitle}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            </svg>
+            Ваши лупы
+          </h2>
+          {isLoadingLoops ? (
+            <div className={styles.emptyState}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 6v6l4 2"></path>
               </svg>
-              Ваши лупы
-            </h2>
-            {isLoadingLoops ? (
-              <div className="empty-state">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <path d="M12 6v6l4 2"></path>
-                </svg>
-                <p>Загрузка...</p>
-              </div>
-            ) : userLoops.length > 0 ? (
-              <div className="loops-grid">
-                {userLoops.map((loop) => (
-                  <LoopCard
-                    key={loop.id}
-                    loop={{
-                      ...loop,
-                      author: user?.username || 'Unknown',
-                      user_id: user?.id || 0,
-                      created_at: loop.created_at || new Date().toISOString(),
-                      tags: loop.tags || []
-                    }}
-                    currentUserId={user?.id}
-                    onDelete={handleDeleteLoop}
-                    showLike={true}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="empty-state">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <path d="M12 6v6l4 2"></path>
-                </svg>
-                <p>У вас пока нет лупов</p>
-              </div>
-            )}
-          </div>
+              <p>Загрузка...</p>
+            </div>
+          ) : userLoops.length > 0 ? (
+            <div className={styles.loopsGrid}>
+              {userLoops.map((loop) => (
+                <LoopCard
+                  key={loop.id}
+                  loop={{
+                    ...loop,
+                    author: user?.username || 'Unknown',
+                    user_id: user?.id || 0,
+                    created_at: loop.created_at || new Date().toISOString(),
+                    tags: loop.tags || []
+                  }}
+                  currentUserId={user?.id}
+                  onDelete={handleDeleteLoop}
+                  showLike={true}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className={styles.emptyState}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 6v6l4 2"></path>
+              </svg>
+              <p>У вас пока нет лупов</p>
+            </div>
+          )}
+        </div>
 
-          {/* Подписки на артистов */}
-          <div className="profile-section">
-            <h2 className="profile-section-title">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        {/* Подписки на артистов */}
+        <div className={styles.section}>
+          <h2 className={styles.sectionTitle}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="m22 21-3-3 3-3"></path>
+            </svg>
+            Подписки на артистов
+          </h2>
+
+          {/* Форма добавления подписки */}
+          <ArtistSearch
+            onSelect={handleAddSubscription}
+            disabled={isAddingSubscription}
+            placeholder="Введите имя или хештег артиста..."
+          />
+
+          {/* Список подписок */}
+          {isLoadingSubscriptions ? (
+            <div className={styles.emptyState}>
+              <p>Загрузка подписок...</p>
+            </div>
+          ) : subscriptions.length > 0 ? (
+            <div className={styles.subscriptionsList}>
+              {subscriptions.map((subscription) => (
+                <div key={subscription.id} className={styles.subscriptionItem}>
+                  <div className={styles.subscriptionInfo}>
+                    <span className={styles.subscriptionHashtag}>#{subscription.artist_hashtag}</span>
+                    <span className={styles.subscriptionDate}>
+                      Подписан {new Date(subscription.created_at).toLocaleDateString('ru-RU')}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => handleRemoveSubscription(subscription.id)}
+                    className={styles.removeBtn}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className={styles.emptyState}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
                 <circle cx="9" cy="7" r="4"></circle>
-                <path d="m22 21-3-3 3-3"></path>
               </svg>
-              Подписки на артистов
-            </h2>
+              <p>У вас пока нет подписок</p>
+              <p>Подпишитесь на артистов, чтобы видеть их лупы</p>
+            </div>
+          )}
+        </div>
 
-            {/* Форма добавления подписки */}
-            <ArtistSearch
-              onSelect={handleAddSubscription}
-              disabled={isAddingSubscription}
-              placeholder="Введите имя или хештег артиста..."
-            />
-
-            {/* Список подписок */}
-            {isLoadingSubscriptions ? (
-              <div className="empty-state">
-                <p>Загрузка подписок...</p>
-              </div>
-            ) : subscriptions.length > 0 ? (
-              <div className="subscriptions-list">
-                {subscriptions.map((subscription) => (
-                  <div key={subscription.id} className="subscription-item">
-                    <div className="subscription-info">
-                      <span className="subscription-hashtag">#{subscription.artist_hashtag}</span>
-                      <span className="subscription-date">
-                        Подписан {new Date(subscription.created_at).toLocaleDateString('ru-RU')}
-                      </span>
-                    </div>
+        {/* Купленные паки */}
+        <div id="purchases" className={styles.section}>
+          <h2 className={styles.sectionTitle}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+            Покупки
+          </h2>
+          {isLoadingPacks ? (
+            <div className={styles.emptyState}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 6v6l4 2"></path>
+              </svg>
+              <p>Загрузка...</p>
+            </div>
+          ) : purchasedPacks.length > 0 ? (
+            <div className={styles.packsList}>
+              {purchasedPacks.map((pack) => (
+                <div key={pack.id} className={styles.packItem}>
+                  <div className={styles.packInfo}>
+                    <h3>{pack.title}</h3>
+                    <p>{pack.description}</p>
+                    <p className={styles.packPrice}>{pack.price} coins</p>
+                    <p>Продавец: {pack.seller_username || 'Неизвестно'}</p>
+                  </div>
+                  <div className={styles.packActions}>
                     <button
-                      onClick={() => handleRemoveSubscription(subscription.id)}
-                      className="subscription-remove-button"
+                      onClick={() => handleDownloadPack(pack.id)}
                     >
-                      ✕
+                      Скачать
+                    </button>
+                    <button
+                      onClick={() => handleRatePack(pack)}
+                    >
+                      Оценить
                     </button>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <div className="empty-state">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="9" cy="7" r="4"></circle>
-                </svg>
-                <p>У вас пока нет подписок</p>
-                <p>Подпишитесь на артистов, чтобы видеть их лупы</p>
-              </div>
-            )}
-          </div>
-
-          {/* Купленные паки */}
-          <div id="purchases" className="profile-section">
-            <h2 className="profile-section-title">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className={styles.emptyState}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
                 <line x1="3" y1="6" x2="21" y2="6"></line>
                 <path d="M16 10a4 4 0 0 1-8 0"></path>
               </svg>
-              Покупки
-            </h2>
-            {isLoadingPacks ? (
-              <div className="empty-state">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <path d="M12 6v6l4 2"></path>
-                </svg>
-                <p>Загрузка...</p>
-              </div>
-            ) : purchasedPacks.length > 0 ? (
-              <div className="purchased-packs-list">
-                {purchasedPacks.map((pack) => (
-                  <div key={pack.id} className="purchased-pack-item">
-                    <div className="pack-info">
-                      <h3>{pack.title}</h3>
-                      <p>{pack.description}</p>
-                      <p className="pack-price">{pack.price} coins</p>
-                      <p className="pack-seller">Продавец: {pack.seller_username || 'Неизвестно'}</p>
-                    </div>
-                    <div className="pack-actions">
-                      <button
-                        onClick={() => handleDownloadPack(pack.id)}
-                        className="download-button"
-                      >
-                        Скачать
-                      </button>
-                      <button
-                        onClick={() => handleRatePack(pack)}
-                        className="rate-button"
-                      >
-                        Оценить
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="empty-state">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                  <line x1="3" y1="6" x2="21" y2="6"></line>
-                  <path d="M16 10a4 4 0 0 1-8 0"></path>
-                </svg>
-                <p>У вас пока нет покупок</p>
-              </div>
-            )}
-          </div>
-
-          {/* Ваши паки */}
-          <div className="profile-section">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h2 className="profile-section-title">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                  <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                </svg>
-                Ваши паки
-              </h2>
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <button
-                  onClick={() => navigate('/create-pack')}
-                  style={{
-                    padding: '10px 20px',
-                    backgroundColor: '#28a745',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                    fontSize: '14px'
-                  }}
-                >
-                  Создать пак
-                </button>
-                <button
-                  onClick={() => navigate('/shop')}
-                  style={{
-                    padding: '10px 20px',
-                    backgroundColor: '#007bff',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                    fontSize: '14px'
-                  }}
-                >
-                  Перейти в магазин
-                </button>
-              </div>
+              <p>У вас пока нет покупок</p>
             </div>
-            {isLoadingCreatedPacks ? (
-              <div className="empty-state">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <path d="M12 6v6l4 2"></path>
-                </svg>
-                <p>Загрузка...</p>
-              </div>
-            ) : createdPacks.length > 0 ? (
-              <div className="purchased-packs-list">
-                {createdPacks.map((pack) => (
-                  <div key={pack.id} className="purchased-pack-item">
-                    <div className="pack-info">
-                      <h3>{pack.title}</h3>
-                      <p>{pack.description}</p>
-                      <p className="pack-price">{pack.price} coins</p>
-                      <p className="purchase-count">{pack.sales_count || 0} покупок</p>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-end' }}>
-                      <span className={`pack-status pack-status-${pack.status}`}>
+          )}
+        </div>
+
+        {/* Ваши паки */}
+        <div className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+              </svg>
+              Ваши паки
+            </h2>
+            <div className={styles.sectionActions}>
+              <button
+                onClick={() => navigate('/create-pack')}
+                className={styles.actionBtn}
+              >
+                Создать пак
+              </button>
+              <button
+                onClick={() => navigate('/shop')}
+                className={`${styles.actionBtn} ${styles.secondary}`}
+              >
+                Перейти в магазин
+              </button>
+            </div>
+          </div>
+          {isLoadingCreatedPacks ? (
+            <div className={styles.emptyState}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 6v6l4 2"></path>
+              </svg>
+              <p>Загрузка...</p>
+            </div>
+          ) : createdPacks.length > 0 ? (
+            <div className={styles.packsList}>
+              {createdPacks.map((pack) => (
+                <div key={pack.id} className={styles.packItem}>
+                  <div className={styles.packInfo}>
+                    <h3>{pack.title}</h3>
+                    <p>{pack.description}</p>
+                    <p className={styles.packPrice}>{pack.price} coins</p>
+                    <p>{pack.sales_count || 0} покупок</p>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-end' }}>
+                    <span className={`${styles.packStatus} ${styles[`packStatus${pack.status.charAt(0).toUpperCase() + pack.status.slice(1)}`]}`}>
                         {pack.status === 'approved' ? 'Одобрено' : pack.status === 'pending' ? 'На модерации' : 'Отклонено'}
                       </span>
                       {(pack.sales_count === 0 || !pack.sales_count) && (
                         <button
                           onClick={() => handleDeletePack(pack.id)}
-                          style={{
-                            padding: '6px 12px',
-                            backgroundColor: '#dc3545',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            fontSize: '12px'
-                          }}
+                          className={styles.deleteBtn}
                         >
                           Удалить
                         </button>
@@ -806,8 +796,8 @@ const Profile = () => {
                 ))}
               </div>
             ) : (
-              <div className="empty-state">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <div className={styles.emptyState}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                   <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
                   <line x1="12" y1="22.08" x2="12" y2="12"></line>
@@ -818,46 +808,79 @@ const Profile = () => {
           </div>
 
           {/* История транзакций */}
-          <div className="profile-section">
-            <h2 className="profile-section-title">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
               </svg>
               История продаж
             </h2>
             {isLoadingTransactions ? (
-              <div className="empty-state">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <div className={styles.emptyState}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="10"></circle>
                   <path d="M12 6v6l4 2"></path>
                 </svg>
                 <p>Загрузка...</p>
               </div>
             ) : transactions.length > 0 ? (
-              <div className="transactions-list">
+              <div className={styles.packsList}>
                 {transactions.map((tx) => (
-                  <div key={tx.invoice_id} className="transaction-item">
-                    <div className="transaction-info">
-                      <span className={`transaction-type transaction-type-${tx.type}`}>
-                        {tx.type === 'purchase' && '🛒 Покупка'}
-                        {tx.type === 'sale' && '💰 Продажа'}
-                        {tx.type === 'topup' && '⬆️ Пополнение'}
-                        {tx.type === 'withdrawal' && '⬇️ Вывод'}
+                  <div key={tx.invoice_id} className={styles.packItem}>
+                    <div className={styles.packInfo}>
+                      <span style={{ fontSize: '0.85rem', fontWeight: 500 }}>
+                        {tx.type === 'purchase' && (
+                          <>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle', marginRight: '4px' }}>
+                              <circle cx="9" cy="21" r="1"></circle>
+                              <circle cx="20" cy="21" r="1"></circle>
+                              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
+                            Покупка
+                          </>
+                        )}
+                        {tx.type === 'sale' && (
+                          <>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle', marginRight: '4px' }}>
+                              <line x1="12" y1="1" x2="12" y2="23"></line>
+                              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                            Продажа
+                          </>
+                        )}
+                        {tx.type === 'topup' && (
+                          <>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle', marginRight: '4px' }}>
+                              <line x1="12" y1="5" x2="12" y2="19"></line>
+                              <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Пополнение
+                          </>
+                        )}
+                        {tx.type === 'withdrawal' && (
+                          <>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle', marginRight: '4px' }}>
+                              <line x1="12" y1="5" x2="12" y2="19"></line>
+                              <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Вывод
+                          </>
+                        )}
                       </span>
-                      <span className="transaction-description">{tx.description}</span>
-                      <span className="transaction-date">
+                      <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{tx.description}</span>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                         {new Date(tx.created_at).toLocaleDateString('ru-RU')}
                       </span>
                     </div>
-                    <span className={`transaction-amount ${tx.type === 'purchase' || tx.type === 'withdrawal' ? 'negative' : 'positive'}`}>
+                    <span style={{ fontWeight: 600, color: tx.type === 'purchase' || tx.type === 'withdrawal' ? '#ef4444' : '#22c55e' }}>
                       {tx.type === 'purchase' || tx.type === 'withdrawal' ? '-' : '+'}{tx.amount} {tx.currency}
                     </span>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="empty-state">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <div className={styles.emptyState}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
                 </svg>
                 <p>У вас пока нет транзакций</p>
@@ -866,9 +889,9 @@ const Profile = () => {
           </div>
 
           {/* Понравившиеся лупы */}
-          <div className="profile-section">
-            <h2 className="profile-section-title">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
               </svg>
               Ваши избранные
@@ -877,32 +900,26 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* Правая колонка */}
-        <div>
-          {/* Кнопка выхода */}
-          <div className="profile-section">
-            <h2 className="profile-section-title">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                <polyline points="16 17 21 12 16 7"></polyline>
-                <line x1="21" y1="12" x2="9" y2="12"></line>
-              </svg>
-              Управление
-            </h2>
-            <div className="action-buttons">
-              <button className="btn btn-danger" onClick={handleLogout}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                  <polyline points="16 17 21 12 16 7"></polyline>
-                  <line x1="21" y1="12" x2="9" y2="12"></line>
-                </svg>
-                Выйти
-              </button>
-            </div>
-          </div>
+        {/* Кнопка выхода */}
+        <div className={styles.section}>
+          <h2 className={styles.sectionTitle}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            Управление
+          </h2>
+          <button className={styles.logoutBtn} onClick={handleLogout}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}>
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            Выйти
+          </button>
         </div>
       </div>
-    </div>
 
     <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Уведомление">
       <p>{modalMessage}</p>

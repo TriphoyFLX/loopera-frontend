@@ -235,28 +235,17 @@ const Pack: React.FC = () => {
 
             <div className="pack-stats">
               <div className="pack-stat">
-                <span className="pack-stat-label">Price</span>
-                <span className="pack-stat-value">{pack.price} coins</span>
-              </div>
-              <div className="pack-stat">
-                <span className="pack-stat-label">Rating</span>
-                <span className="pack-stat-value">
-                  {Number(pack.avg_rating || 0).toFixed(1)} ⭐
-                  <span className="pack-stat-sub">({pack.rating_count} reviews)</span>
-                </span>
-              </div>
-              <div className="pack-stat">
-                <span className="pack-stat-label">Sales</span>
-                <span className="pack-stat-value">{pack.sales_count}</span>
+                <span className="pack-stat-label">Цена</span>
+                <span className="pack-stat-value">{pack.price} коинов</span>
               </div>
               {pack.loops_count && (
                 <div className="pack-stat">
-                  <span className="pack-stat-label">Loops</span>
+                  <span className="pack-stat-label">Лупов</span>
                   <span className="pack-stat-value">{pack.loops_count}</span>
                 </div>
               )}
               <div className="pack-stat">
-                <span className="pack-stat-label">Created</span>
+                <span className="pack-stat-label">Создан</span>
                 <span className="pack-stat-value">
                   {new Date(pack.created_at).toLocaleDateString('ru-RU', { 
                     day: 'numeric', 
@@ -302,7 +291,7 @@ const Pack: React.FC = () => {
           {/* Right Column - Loops */}
           <div className="pack-loops">
             <h3 className="pack-loops-title">
-              {isPurchased ? 'Downloadable Loops' : 'Included Loops'}
+              {isPurchased ? 'Лупы для скачивания' : 'ОПИСАНИЕ ТОВАРА'}
             </h3>
             {loops.length === 0 ? (
               <p className="pack-no-loops">No loops in this pack</p>

@@ -16,6 +16,7 @@ interface Pack {
   hashtag?: string;
   username?: string;
   avatar_url?: string;
+  cover_url?: string;
   user_id?: number;
   avg_rating: number;
   rating_count: number;
@@ -263,6 +264,11 @@ const Pack: React.FC = () => {
         <div className="pack-content">
           {/* Left Column - Pack Details */}
           <div className="pack-details">
+            {pack.cover_url && (
+              <div className="pack-cover-display">
+                <img src={`https://loopera-lpr.vercel.app${pack.cover_url}`} alt={pack.title} />
+              </div>
+            )}
             {pack.description && (
               <div className="pack-description">
                 <h3>Description</h3>

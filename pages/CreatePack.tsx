@@ -14,6 +14,7 @@ const CreatePack: React.FC = () => {
   const [previewFile2, setPreviewFile2] = useState<File | null>(null);
   const [voiceTagFile, setVoiceTagFile] = useState<File | null>(null);
   const [textFile, setTextFile] = useState<File | null>(null);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -76,6 +77,9 @@ const CreatePack: React.FC = () => {
         formData.append('voiceTag', voiceTagFile);
       }
       formData.append('textFile', textFile);
+      if (coverFile) {
+        formData.append('cover', coverFile);
+      }
 
       const response = await fetch('/api/shop', {
         method: 'POST',
@@ -179,6 +183,45 @@ const CreatePack: React.FC = () => {
                 required
               />
               <p className={styles.hint}>Choose a catchy title for your pack</p>
+            </div>
+
+            <div className={styles.fieldGroup}>
+              <label className={styles.label}>
+                Cover Image
+              </label>
+              <div
+                className={styles.uploadArea}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={(e) => handleDrop(e, setCoverFile, ['.jpg', '.jpeg', '.png', '.webp'])}
+              >
+                <input
+                  type="file"
+                  id="coverFile"
+                  className={styles.fileInput}
+                  accept=".jpg,.jpeg,.png,.webp"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      setCoverFile(e.target.files[0]);
+                    }
+                  }}
+                  disabled={loading}
+                />
+                <label htmlFor="coverFile" className={styles.uploadLabel}>
+                  <div className={styles.uploadIcon}>🖼️</div>
+                  <div className={styles.uploadText}>
+                    <span className={styles.uploadTitle}>Upload cover image</span>
+                    <span className={styles.uploadSubtitle}>Optional - JPG, PNG, WEBP (Max 10MB)</span>
+                  </div>
+                </label>
+                {coverFile && (
+                  <div className={styles.fileInfo}>
+                    <span className={styles.fileIcon}>✓</span>
+                    <span className={styles.fileName}>{coverFile.name}</span>
+                    <span className={styles.fileSize}>({formatFileSize(coverFile.size)})</span>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className={styles.fieldGroup}>

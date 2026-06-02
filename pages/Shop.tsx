@@ -693,7 +693,11 @@ const PackCard: React.FC<PackCardProps> = ({ pack, playingPreview, onPlay, onBuy
   return (
     <div className="sh-card" style={{ animationDelay: `${idx * 0.04}s` }} onClick={handleCardClick}>
       <div className="sh-card-cover">
-        <WaveformBars />
+        {pack.cover_url ? (
+          <img src={`https://loopera-lpr.vercel.app${pack.cover_url}`} alt={pack.title} className="sh-cover-image" />
+        ) : (
+          <WaveformBars />
+        )}
         {pack.preview_url ? (
           <button
             className={`sh-play-btn ${isPlaying ? 'playing' : ''}`}
@@ -774,6 +778,7 @@ interface Pack {
   hashtag?: string;
   username?: string;
   avatar_url?: string;
+  cover_url?: string;
   avg_rating: number;
   rating_count: number;
   sales_count: number;

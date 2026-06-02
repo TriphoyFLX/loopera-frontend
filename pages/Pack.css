@@ -273,6 +273,20 @@
   padding: 2rem;
 }
 
+.pack-cover-display {
+  margin-bottom: 2rem;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.pack-cover-display img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
 .pack-description-text {
   color: var(--text-secondary);
   line-height: 1.6;

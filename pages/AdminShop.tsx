@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './AdminShop.module.css';
+import styles from './AdminShop.module.css';
 
 interface Pack {
   id: number;
@@ -320,95 +320,99 @@ const AdminShop: React.FC = () => {
   };
 
   return (
-    <div className="admin-shop-container">
-      <div className="admin-header">
+    <div className={styles.adminShopContainer}>
+      <div className={styles.adminHeader}>
         <h1>Shop Administration</h1>
         <p>Manage packs, withdrawals, and reports</p>
       </div>
 
       {error && (
-        <div className="alert alert-error">
+        <div className={`${styles.alert} ${styles.alertError}`}>
           {error}
           <button onClick={() => setError('')}>×</button>
         </div>
       )}
 
       {success && (
-        <div className="alert alert-success">
+        <div className={`${styles.alert} ${styles.alertSuccess}`}>
           {success}
           <button onClick={() => setSuccess('')}>×</button>
         </div>
       )}
 
-      <div className="admin-tabs">
+      <div className={styles.adminTabs}>
         <button
-          className={`tab ${activeTab === 'pending' ? 'active' : ''}`}
+          className={`${styles.tab} ${activeTab === 'pending' ? styles.active : ''}`}
           onClick={() => setActiveTab('pending')}
         >
           Pending Packs ({pendingPacks.length})
         </button>
         <button
-          className={`tab ${activeTab === 'withdrawals' ? 'active' : ''}`}
+          className={`${styles.tab} ${activeTab === 'withdrawals' ? styles.active : ''}`}
           onClick={() => setActiveTab('withdrawals')}
         >
           Withdrawals
         </button>
         <button
-          className={`tab ${activeTab === 'reports' ? 'active' : ''}`}
+          className={`${styles.tab} ${activeTab === 'reports' ? styles.active : ''}`}
           onClick={() => setActiveTab('reports')}
         >
           Reports ({reports.filter(r => r.status === 'pending').length})
         </button>
         <button
-          className={`tab ${activeTab === 'stats' ? 'active' : ''}`}
+          className={`${styles.tab} ${activeTab === 'stats' ? styles.active : ''}`}
           onClick={() => setActiveTab('stats')}
         >
           Statistics
         </button>
       </div>
 
-      <div className="admin-content">
+      <div className={styles.adminContent}>
         {activeTab === 'pending' && (
-          <div className="pending-packs">
+          <div className={styles.pendingPacks}>
             {pendingPacks.length === 0 ? (
-              <div className="empty-state">
-                <span style={{ fontSize: '48px' }}>📦</span>
+              <div className={styles.emptyState}>
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                  <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                </svg>
                 <h3>No pending packs</h3>
                 <p>All packs have been reviewed</p>
               </div>
             ) : (
-              <div className="packs-list">
+              <div className={styles.packsList}>
                 {pendingPacks.map((pack) => (
-                  <div key={pack.id} className="pack-item">
-                    <div className="pack-info">
+                  <div key={pack.id} className={styles.packItem}>
+                    <div className={styles.packInfo}>
                       <h3>{pack.title}</h3>
-                      <p className="pack-author">@{pack.hashtag} ({pack.username})</p>
-                      <p className="pack-price">{pack.price} coins</p>
-                      <p className="pack-date">Created: {new Date(pack.created_at).toLocaleDateString()}</p>
+                      <p className={styles.packAuthor}>@{pack.hashtag} ({pack.username})</p>
+                      <p className={styles.packPrice}>{pack.price} coins</p>
+                      <p className={styles.packDate}>Created: {new Date(pack.created_at).toLocaleDateString()}</p>
                     </div>
-                    <div className="pack-actions">
+                    <div className={styles.packActions}>
                       <button
-                        className="btn-view"
+                        className={styles.btnView}
                         onClick={() => fetchPackDetails(pack.id)}
                       >
                         View Details
                       </button>
                       <button
-                        className="btn-approve"
+                        className={styles.btnApprove}
                         onClick={() => handleApprovePack(pack.id)}
                         disabled={loading}
                       >
                         Approve
                       </button>
                       <button
-                        className="btn-reject"
+                        className={styles.btnReject}
                         onClick={() => openRejectModal(pack.id)}
                         disabled={loading}
                       >
                         Reject
                       </button>
                       <button
-                        className="btn-reject"
+                        className={styles.btnReject}
                         onClick={() => handleDeletePack(pack.id)}
                         disabled={loading}
                         style={{ backgroundColor: '#dc3545' }}
@@ -424,36 +428,39 @@ const AdminShop: React.FC = () => {
         )}
 
         {activeTab === 'withdrawals' && (
-          <div className="withdrawals-section">
+          <div className={styles.withdrawalsSection}>
             {withdrawals.length === 0 ? (
-              <div className="empty-state">
-                <span style={{ fontSize: '48px' }}>💰</span>
+              <div className={styles.emptyState}>
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="12" y1="1" x2="12" y2="23"></line>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
                 <h3>No withdrawal requests</h3>
               </div>
             ) : (
-              <div className="withdrawals-list">
+              <div className={styles.withdrawalsList}>
                 {withdrawals.map((withdrawal) => (
-                  <div key={withdrawal.id} className="withdrawal-item">
-                    <div className="withdrawal-info">
+                  <div key={withdrawal.id} className={styles.withdrawalItem}>
+                    <div className={styles.withdrawalInfo}>
                       <h3>{withdrawal.amount} coins</h3>
                       <p>@{withdrawal.hashtag} ({withdrawal.username})</p>
                       <p>{withdrawal.bank} - {withdrawal.phone}</p>
                       <p>Requested: {new Date(withdrawal.created_at).toLocaleDateString()}</p>
-                      <span className={`status ${withdrawal.status}`}>
+                      <span className={`${styles.status} ${styles[withdrawal.status]}`}>
                         {withdrawal.status}
                       </span>
                     </div>
                     {withdrawal.status === 'pending' && (
-                      <div className="withdrawal-actions">
+                      <div className={styles.withdrawalActions}>
                         <button
-                          className="btn-approve"
+                          className={styles.btnApprove}
                           onClick={() => handleProcessWithdrawal(withdrawal.id, 'approve')}
                           disabled={loading}
                         >
                           Approve
                         </button>
                         <button
-                          className="btn-reject"
+                          className={styles.btnReject}
                           onClick={() => handleProcessWithdrawal(withdrawal.id, 'reject')}
                           disabled={loading}
                         >
@@ -469,31 +476,35 @@ const AdminShop: React.FC = () => {
         )}
 
         {activeTab === 'reports' && (
-          <div className="reports-section">
+          <div className={styles.reportsSection}>
             {reports.length === 0 ? (
-              <div className="empty-state">
-                <span style={{ fontSize: '48px' }}>🚨</span>
+              <div className={styles.emptyState}>
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                  <line x1="12" y1="9" x2="12" y2="13"></line>
+                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
                 <h3>No reports</h3>
               </div>
             ) : (
-              <div className="reports-list">
+              <div className={styles.reportsList}>
                 {reports.map((report) => (
-                  <div key={report.id} className="report-item">
-                    <div className="report-info">
+                  <div key={report.id} className={styles.reportItem}>
+                    <div className={styles.reportInfo}>
                       <h3>{report.reason.replace('_', ' ')}</h3>
                       <p>By: {report.reporter_name}</p>
                       {report.pack_title && <p>Pack: {report.pack_title}</p>}
                       {report.reported_user_name && <p>Reported: {report.reported_user_name}</p>}
                       <p>{report.description}</p>
                       <p>Reported: {new Date(report.created_at).toLocaleDateString()}</p>
-                      <span className={`status ${report.status}`}>
+                      <span className={`${styles.status} ${styles[report.status]}`}>
                         {report.status}
                       </span>
                     </div>
                     {report.status === 'pending' && (
-                      <div className="report-actions">
+                      <div className={styles.reportActions}>
                         <button
-                          className="btn-approve"
+                          className={styles.btnApprove}
                           onClick={() => handleResolveReport(report.id)}
                           disabled={loading}
                         >
@@ -509,59 +520,59 @@ const AdminShop: React.FC = () => {
         )}
 
         {activeTab === 'stats' && (
-          <div className="stats-section">
+          <div className={styles.statsSection}>
             {stats ? (
-              <div className="stats-grid">
-                <div className="stat-card">
+              <div className={styles.statsGrid}>
+                <div className={styles.statCard}>
                   <h3>General Statistics</h3>
-                  <div className="stat-item">
+                  <div className={styles.statItem}>
                     <span>Total Packs:</span>
                     <span>{stats.general.total_packs}</span>
                   </div>
-                  <div className="stat-item">
+                  <div className={styles.statItem}>
                     <span>Approved Packs:</span>
                     <span>{stats.general.approved_packs}</span>
                   </div>
-                  <div className="stat-item">
+                  <div className={styles.statItem}>
                     <span>Pending Packs:</span>
                     <span>{stats.general.pending_packs}</span>
                   </div>
-                  <div className="stat-item">
+                  <div className={styles.statItem}>
                     <span>Total Revenue:</span>
                     <span>{stats.general.total_revenue} coins</span>
                   </div>
                 </div>
 
-                <div className="stat-card">
+                <div className={styles.statCard}>
                   <h3>Weekly Statistics</h3>
-                  <div className="stat-item">
+                  <div className={styles.statItem}>
                     <span>Weekly Orders:</span>
                     <span>{stats.weekly.weekly_orders}</span>
                   </div>
-                  <div className="stat-item">
+                  <div className={styles.statItem}>
                     <span>Weekly Revenue:</span>
                     <span>{stats.weekly.weekly_revenue} coins</span>
                   </div>
-                  <div className="stat-item">
+                  <div className={styles.statItem}>
                     <span>New Packs:</span>
                     <span>{stats.weekly.weekly_packs}</span>
                   </div>
                 </div>
 
-                <div className="stat-card">
+                <div className={styles.statCard}>
                   <h3>Top Sellers</h3>
                   {stats.top_sellers.map((seller: any, index: number) => (
-                    <div key={index} className="stat-item">
+                    <div key={index} className={styles.statItem}>
                       <span>@{seller.hashtag}</span>
                       <span>{seller.total_revenue} coins</span>
                     </div>
                   ))}
                 </div>
 
-                <div className="stat-card">
+                <div className={styles.statCard}>
                   <h3>Top Packs</h3>
                   {stats.top_packs.map((pack: any, index: number) => (
-                    <div key={index} className="stat-item">
+                    <div key={index} className={styles.statItem}>
                       <span>{pack.title}</span>
                       <span>{pack.sales_count} sales</span>
                     </div>
@@ -569,7 +580,7 @@ const AdminShop: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <div className="loading">Loading statistics...</div>
+              <div className={styles.loading}>Loading statistics...</div>
             )}
           </div>
         )}
@@ -577,14 +588,14 @@ const AdminShop: React.FC = () => {
 
       {/* Pack Details Modal */}
       {selectedPack && (
-        <div className="modal-overlay" onClick={() => setSelectedPack(null)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
+        <div className={styles.modalOverlay} onClick={() => setSelectedPack(null)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
               <h2>{selectedPack.title}</h2>
-              <button className="close-btn" onClick={() => setSelectedPack(null)}>×</button>
+              <button className={styles.closeBtn} onClick={() => setSelectedPack(null)}>×</button>
             </div>
-            <div className="modal-body">
-              <div className="pack-details">
+            <div className={styles.modalBody}>
+              <div className={styles.packDetails}>
                 <p><strong>Author:</strong> @{selectedPack.hashtag} ({selectedPack.username})</p>
                 <p><strong>Email:</strong> {selectedPack.email}</p>
                 <p><strong>Price:</strong> {selectedPack.price} coins</p>
@@ -595,11 +606,11 @@ const AdminShop: React.FC = () => {
               </div>
 
               {selectedPack.loops && (
-                <div className="loops-section">
+                <div className={styles.loopsSection}>
                   <h3>Loops ({selectedPack.loops.length})</h3>
-                  <div className="loops-list">
+                  <div className={styles.loopsList}>
                     {selectedPack.loops.map((loop: any) => (
-                      <div key={loop.id} className="loop-item">
+                      <div key={loop.id} className={styles.loopItem}>
                         <span>{loop.title}</span>
                         <span>{loop.duration}s</span>
                       </div>
@@ -609,22 +620,22 @@ const AdminShop: React.FC = () => {
               )}
 
               {selectedPack.user_stats && (
-                <div className="user-stats">
+                <div className={styles.userStats}>
                   <h3>User Statistics</h3>
-                  <div className="stats-grid-small">
-                    <div className="stat-item">
+                  <div className={styles.statsGridSmall}>
+                    <div className={styles.statItem}>
                       <span>Total Packs:</span>
                       <span>{selectedPack.user_stats.total_packs}</span>
                     </div>
-                    <div className="stat-item">
+                    <div className={styles.statItem}>
                       <span>Approved:</span>
                       <span>{selectedPack.user_stats.approved_packs}</span>
                     </div>
-                    <div className="stat-item">
+                    <div className={styles.statItem}>
                       <span>Rejected:</span>
                       <span>{selectedPack.user_stats.rejected_packs}</span>
                     </div>
-                    <div className="stat-item">
+                    <div className={styles.statItem}>
                       <span>Total Sales:</span>
                       <span>{selectedPack.user_stats.total_sales}</span>
                     </div>
@@ -633,10 +644,10 @@ const AdminShop: React.FC = () => {
               )}
 
               {selectedPack.reports && selectedPack.reports.length > 0 && (
-                <div className="reports-section">
+                <div className={styles.reportsSection}>
                   <h3>Reports Against User</h3>
                   {selectedPack.reports.map((report: any) => (
-                    <div key={report.id} className="report-item-small">
+                    <div key={report.id} className={styles.reportItemSmall}>
                       <p><strong>{report.reason}:</strong> {report.description}</p>
                       <p>By: {report.reporter_name}</p>
                     </div>
@@ -644,23 +655,23 @@ const AdminShop: React.FC = () => {
                 </div>
               )}
             </div>
-            <div className="modal-actions">
+            <div className={styles.modalActions}>
               <button
-                className="btn-approve"
+                className={styles.btnApprove}
                 onClick={() => handleApprovePack(selectedPack.id)}
                 disabled={loading}
               >
                 Approve Pack
               </button>
               <button
-                className="btn-reject"
+                className={styles.btnReject}
                 onClick={() => openRejectModal(selectedPack.id)}
                 disabled={loading}
               >
                 Reject Pack
               </button>
               <button
-                className="btn-reject"
+                className={styles.btnReject}
                 onClick={() => handleDeletePack(selectedPack.id)}
                 disabled={loading}
                 style={{ backgroundColor: '#dc3545' }}
@@ -674,14 +685,14 @@ const AdminShop: React.FC = () => {
 
       {/* Reject Modal */}
       {showRejectModal && (
-        <div className="modal-overlay" onClick={closeRejectModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
+        <div className={styles.modalOverlay} onClick={closeRejectModal}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
               <h2>Reject Pack</h2>
-              <button className="close-btn" onClick={closeRejectModal}>×</button>
+              <button className={styles.closeBtn} onClick={closeRejectModal}>×</button>
             </div>
-            <div className="modal-body">
-              <div className="form-group">
+            <div className={styles.modalBody}>
+              <div className={styles.formGroup}>
                 <label htmlFor="rejectionReason">Rejection Reason *</label>
                 <textarea
                   id="rejectionReason"
@@ -693,16 +704,16 @@ const AdminShop: React.FC = () => {
                 />
               </div>
             </div>
-            <div className="modal-actions">
+            <div className={styles.modalActions}>
               <button
-                className="btn-secondary"
+                className={styles.btnSecondary}
                 onClick={closeRejectModal}
                 disabled={loading}
               >
                 Cancel
               </button>
               <button
-                className="btn-reject"
+                className={styles.btnReject}
                 onClick={handleRejectPack}
                 disabled={loading}
               >

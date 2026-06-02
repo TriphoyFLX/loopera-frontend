@@ -101,17 +101,29 @@ const AdminShop: React.FC = () => {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const response = await fetch(`https://loopera-lpr.vercel.app/api/admin/shop/packs/all?page=${currentPage}&limit=50&status=${statusFilter}`, {
+      const url = `https://loopera-lpr.vercel.app/api/admin/shop/packs/all?page=${currentPage}&limit=50&status=${statusFilter}`;
+      console.log('Fetching all packs from:', url);
+
+      const response = await fetch(url, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
 
-      if (!response.ok) throw new Error('Failed to fetch all packs');
+      console.log('Response status:', response.status);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Error response:', errorData);
+        throw new Error(errorData.error || 'Failed to fetch all packs');
+      }
+
       const data = await response.json();
+      console.log('Received packs:', data.packs?.length);
       setAllPacks(data.packs);
       setTotalPacks(data.pagination.totalPacks);
     } catch (err) {
+      console.error('Error fetching all packs:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch data');
     }
   };

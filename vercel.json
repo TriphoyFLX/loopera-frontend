@@ -11,6 +11,10 @@
   ],
   "rewrites": [
     {
+      "source": "/api/admin/shop/:match*",
+      "destination": "http://77.73.238.154:3000/api/admin/shop/:match*"
+    },
+    {
       "source": "/api/shop/:match*",
       "destination": "http://77.73.238.154:5001/api/shop/:match*"
     },

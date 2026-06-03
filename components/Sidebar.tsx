@@ -49,6 +49,16 @@ const Sidebar = () => {
           <path d="M3 3v18h18M3 9l3 3 6-6 6 6 6-6"/>
         </svg>
       )
+    },
+    {
+      path: '/shop',
+      icon: (
+        <svg viewBox="0 0 24 24">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+          <path d="M3 6h18"/>
+          <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+      )
     }
   ]
 

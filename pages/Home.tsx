@@ -431,7 +431,7 @@ const Home = () => {
               </div>
               <p className={styles.featureDescriptionEnhanced}>
                 Делитесь своими творениями с сообществом и получайте обратную связь. 
-                Поддержка WAV, MP3, FLAC и мгновенная модерация.
+                Поддержка WAV, MP3, FLAC и мгновенная модерация
               </p>
               <div className={styles.featureUploadInfo}>
                 <span>⚡ Мгновенная загрузка</span>

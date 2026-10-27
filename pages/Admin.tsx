@@ -7,7 +7,7 @@ import { homePostsApi, type HomePost, type HomePostKind } from '../utils/homePos
 import { useAuth } from '../hooks/useAuth';
 import './Admin.css';
 import { tokenStorage } from '../utils/tokenStorage';
-import { getApiBaseUrl, getUploadsUrl } from '../utils/urls';
+import { getApiBaseUrl, getAssetUrl, getUploadsUrl } from '../utils/urls';
 
 interface User {
   id: number;
@@ -34,6 +34,7 @@ interface Loop {
   key?: string;
   genre?: string;
   duration?: number;
+  cover_url?: string | null;
 }
 
 interface Pack {
@@ -92,6 +93,8 @@ const Admin: React.FC = () => {
   const [filterStatus, setFilterStatus] = useState<'all' | 'banned' | 'active'>('all');
   const [packStatusFilter, setPackStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected' | 'deleted'>('all');
   const [playingLoopId, setPlayingLoopId] = useState<number | null>(null);
+  const [uploadingCoverId, setUploadingCoverId] = useState<number | null>(null);
+  const coverInputRefs = React.useRef<Record<number, HTMLInputElement | null>>({});
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
   const [balanceUsername, setBalanceUsername] = useState('');
   const [userSuggestions, setUserSuggestions] = useState<{ id: number; username: string }[]>([]);
@@ -299,6 +302,37 @@ const Admin: React.FC = () => {
       fetchStats();
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Unknown error');
+    }
+  };
+
+  const updateLoopCover = async (loopId: number, file: File) => {
+    try {
+      setUploadingCoverId(loopId);
+      const token = tokenStorage.getToken();
+      const form = new FormData();
+      form.append('cover', file);
+      const response = await fetch(`${getApiBaseUrl()}/admin/loops/${loopId}/cover`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: form,
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(data.error || 'Не удалось обновить обложку');
+      }
+      setLoops((prev) =>
+        prev.map((loop) =>
+          loop.id === loopId
+            ? { ...loop, cover_url: data.loop?.cover_url ?? loop.cover_url }
+            : loop,
+        ),
+      );
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      setUploadingCoverId(null);
     }
   };
 
@@ -1185,6 +1219,7 @@ const Admin: React.FC = () => {
               <table className="admin-table">
                 <thead>
                   <tr>
+                    <th>Обложка</th>
                     <th>Название</th>
                     <th>Артист</th>
                     <th>Размер</th>
@@ -1195,6 +1230,21 @@ const Admin: React.FC = () => {
                 <tbody>
                   {loops.map((loop) => (
                     <tr key={loop.id}>
+                      <td>
+                        <div className="loop-cover-cell">
+                          {loop.cover_url ? (
+                            <img
+                              src={getAssetUrl(loop.cover_url)}
+                              alt=""
+                              className="loop-cover-thumb"
+                            />
+                          ) : (
+                            <div className="loop-cover-placeholder" aria-hidden>
+                              —
+                            </div>
+                          )}
+                        </div>
+                      </td>
                       <td>
                         <div className="loop-item">
                           <button
@@ -1234,12 +1284,35 @@ const Admin: React.FC = () => {
                         <p>{formatDate(loop.created_at)}</p>
                       </td>
                       <td>
-                        <button
-                          onClick={() => deleteLoop(loop.id)}
-                          className="btn-delete"
-                        >
-                          Удалить
-                        </button>
+                        <div className="loop-actions">
+                          <input
+                            ref={(el) => {
+                              coverInputRefs.current[loop.id] = el;
+                            }}
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp,image/gif"
+                            className="cover-file-input"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              e.target.value = '';
+                              if (file) void updateLoopCover(loop.id, file);
+                            }}
+                          />
+                          <button
+                            type="button"
+                            className="btn-cover"
+                            disabled={uploadingCoverId === loop.id}
+                            onClick={() => coverInputRefs.current[loop.id]?.click()}
+                          >
+                            {uploadingCoverId === loop.id ? '…' : 'Обложка'}
+                          </button>
+                          <button
+                            onClick={() => deleteLoop(loop.id)}
+                            className="btn-delete"
+                          >
+                            Удалить
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}

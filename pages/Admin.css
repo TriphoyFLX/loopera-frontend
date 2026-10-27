@@ -564,6 +564,65 @@
   transform: none;
 }
 
+.loop-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.cover-file-input {
+  display: none;
+}
+
+.btn-cover {
+  height: 34px;
+  padding: 0 12px !important;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-cover:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  transform: none;
+}
+
+.btn-cover:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.loop-cover-cell {
+  width: 48px;
+}
+
+.loop-cover-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #1a1a1a;
+  display: block;
+}
+
+.loop-cover-placeholder {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: grid;
+  place-items: center;
+  color: rgba(255, 255, 255, 0.28);
+  font-size: 0.75rem;
+}
+
 .loop-item {
   display: flex;
   align-items: center;

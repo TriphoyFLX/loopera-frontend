@@ -1,6 +1,8 @@
 import { tokenStorage } from './tokenStorage';
+import { getApiBaseUrl } from './urls';
+import { apiFetch, parseApiJson } from './http';
 
-const API_BASE_URL = 'https://loopera-lpr.vercel.app/api';
+const API_BASE_URL = getApiBaseUrl();
 
 export interface TopUser {
   id: number;
@@ -36,13 +38,10 @@ class TopUsersApi {
       ...options,
     };
 
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-    
+    const response = await apiFetch(`${API_BASE_URL}${endpoint}`, config);
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      await parseApiJson(response);
     }
-    
     return response;
   }
 

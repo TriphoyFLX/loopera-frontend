@@ -1,16 +1,23 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useI18n } from '../i18n/useI18n';
 import { api } from '../utils/api';
+import { consumeAuthReturnTo } from '../hooks/useAuthGate';
 import type { LoginCredentials } from '../types/auth';
 import EyeIcon from './EyeIcon';
 import VerificationForm from './VerificationForm';
 
-const LoginForm = () => {
+interface LoginFormProps {
+  onSwitchToRegister?: () => void;
+}
+
+const LoginForm = ({ onSwitchToRegister }: LoginFormProps) => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [credentials, setCredentials] = useState<LoginCredentials>({
     username: '',
-    password: ''
+    password: '',
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -18,11 +25,25 @@ const LoginForm = () => {
   const [showVerification, setShowVerification] = useState(false);
   const [verificationEmail, setVerificationEmail] = useState('');
   const { login } = useAuth();
+  const { t } = useI18n();
+
+  useEffect(() => {
+    const storedMessage = sessionStorage.getItem('auth_message');
+    if (storedMessage) {
+      setError(storedMessage);
+      sessionStorage.removeItem('auth_message');
+      return;
+    }
+
+    if (searchParams.get('expired') === '1') {
+      setError(t('auth.sessionExpired'));
+    }
+  }, [searchParams]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCredentials({
       ...credentials,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -32,47 +53,33 @@ const LoginForm = () => {
     setIsLoading(true);
 
     try {
-      console.log('🔐 Submitting login form with:', { 
-        username: credentials.username, 
-        password: '***' 
-      });
-      
       const response = await api.login(credentials.username, credentials.password);
-      
-      console.log('📦 Full login response:', JSON.stringify(response, null, 2));
-      
-      // Проверяем, требует ли сервер верификацию
+
       if (response.requiresVerification === true) {
-        console.log('✅ Verification required, showing form');
         setVerificationEmail(response.email || credentials.username);
         setShowVerification(true);
         setIsLoading(false);
         return;
       }
-      
-      // Если нет токена, но и нет requiresVerification - что-то не так
+
       if (!response.token || !response.user) {
-        console.error('❌ Invalid response structure:', response);
-        throw new Error('Неверный ответ от сервера');
+        throw new Error(t('auth.serverError'));
       }
-      
-      console.log('✅ Login successful, saving token and user');
+
       login(response.token, response.user);
-      navigate('/');
+      const returnTo = searchParams.get('returnTo') || consumeAuthReturnTo('/');
+      navigate(returnTo, { replace: true });
     } catch (err) {
-      console.error('❌ Login form error:', err);
-      
-      // ВАЖНО: Проверяем текст ошибки на "Введите код верификации"
-      const errorMessage = err instanceof Error ? err.message : 'Ошибка входа';
-      
-      if (errorMessage.includes('код верификации') || 
-          errorMessage.includes('verification') || 
-          errorMessage.includes('verify')) {
-        // Сервер требует верификацию, показываем форму
-        console.log('✅ Server requires verification (detected from error message)');
-        setVerificationEmail(credentials.username); // Используем username как email
+      const errorMessage = err instanceof Error ? err.message : t('auth.loginError');
+
+      if (
+        errorMessage.includes('код верификации') ||
+        errorMessage.includes('verification') ||
+        errorMessage.includes('verify')
+      ) {
+        setVerificationEmail(credentials.username);
         setShowVerification(true);
-        setError(`Введите код верификации, отправленный на ${credentials.username}`);
+        setError(t('auth.verifyCodeRequired'));
       } else {
         setError(errorMessage);
       }
@@ -81,111 +88,92 @@ const LoginForm = () => {
     }
   };
 
-  // Функция для логина с кодом верификации
   const handleVerificationSuccess = async (token: string, user: any) => {
-    console.log('✅ Verification successful, logging in');
     login(token, user);
-    navigate('/');
+    const returnTo = searchParams.get('returnTo') || consumeAuthReturnTo('/');
+    navigate(returnTo, { replace: true });
   };
 
+  if (showVerification) {
+    return (
+      <VerificationForm
+        email={verificationEmail}
+        onSuccess={handleVerificationSuccess}
+        onBack={() => {
+          setShowVerification(false);
+          setVerificationEmail('');
+          setError('');
+        }}
+      />
+    );
+  }
+
   return (
-    <>
-      {/* Debug панель */}
-      <div style={{
-        position: 'fixed',
-        bottom: '10px',
-        right: '10px',
-        backgroundColor: '#333',
-        color: '#0f0',
-        padding: '10px',
-        fontSize: '12px',
-        fontFamily: 'monospace',
-        zIndex: 9999,
-        maxWidth: '300px',
-        borderRadius: '4px',
-        opacity: 0.9
-      }}>
-        <div>showVerification: {showVerification ? '✅ YES' : '❌ NO'}</div>
-        <div>email: {verificationEmail || 'не задан'}</div>
+    <form onSubmit={handleSubmit} className="auth-form">
+      <div className="form-group">
+        <label htmlFor="username">{t('auth.username')}</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          value={credentials.username}
+          onChange={handleChange}
+          required
+          placeholder={t('auth.usernameOrEmailPlaceholder')}
+          disabled={isLoading}
+        />
       </div>
 
-      {showVerification ? (
-        <VerificationForm
-          email={verificationEmail}
-          onSuccess={handleVerificationSuccess}
-          onBack={() => {
-            console.log('⬅️ Back from verification');
-            setShowVerification(false);
-            setVerificationEmail('');
-            setError('');
-          }}
-        />
-      ) : (
-        <form onSubmit={handleSubmit} className="auth-form">
-          <h2>Вход</h2>
-          
-          <div className="form-group">
-            <label htmlFor="username">Имя пользователя или Email</label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              value={credentials.username}
-              onChange={handleChange}
-              required
-              placeholder="Введите имя пользователя или email"
-              disabled={isLoading}
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="password">Пароль</label>
-            <div className="password-input-wrapper">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                id="password"
-                name="password"
-                value={credentials.password}
-                onChange={handleChange}
-                required
-                placeholder="Введите пароль"
-                disabled={isLoading}
-                minLength={6}
-              />
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={() => setShowPassword(!showPassword)}
-                disabled={isLoading}
-                title={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
-              >
-                <EyeIcon isOpen={showPassword} size={18} />
-              </button>
-            </div>
-          </div>
-
-          {error && (
-            <div className="error-message" style={{
-              color: error.includes('код верификации') ? '#ff9800' : '#dc3545'
-            }}>
-              {error}
-            </div>
-          )}
-
-          <button 
-            type="submit" 
-            disabled={isLoading} 
-            className="auth-button"
+      <div className="form-group">
+        <div className="form-label-row">
+          <label htmlFor="password">{t('auth.password')}</label>
+          <Link to="/forgot-password" className="forgot-link">
+            {t('auth.forgotPassword')}
+          </Link>
+        </div>
+        <div className="password-input-wrapper">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            id="password"
+            name="password"
+            value={credentials.password}
+            onChange={handleChange}
+            required
+            placeholder={t('auth.passwordPlaceholder')}
+            disabled={isLoading}
+            minLength={6}
+          />
+          <button
+            type="button"
+            className="password-toggle"
+            onClick={() => setShowPassword(!showPassword)}
+            disabled={isLoading}
+            aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
           >
-            {isLoading ? '⏳ Вход...' : '🔑 Войти'}
+            <EyeIcon isOpen={showPassword} size={18} />
           </button>
+        </div>
+      </div>
 
-          <p className="auth-note">
-            Нет аккаунта? <a href="/register">Зарегистрироваться</a>
-          </p>
-        </form>
+      {error && (
+        <div className={`error-message ${error === t('auth.verifyCodeRequired') ? 'warning' : ''}`}>
+          {error}
+        </div>
       )}
-    </>
+
+      <button type="submit" disabled={isLoading} className="auth-button">
+        {isLoading ? t('auth.signingIn') : t('auth.submitLogin')}
+      </button>
+
+      {onSwitchToRegister && (
+        <p className="auth-switch">
+          {t('auth.noAccount')}{' '}
+          <button type="button" onClick={onSwitchToRegister}>
+            {t('auth.register')}
+          </button>
+        </p>
+      )}
+    </form>
   );
 };
 

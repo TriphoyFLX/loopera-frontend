@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import looperaLogo from '../assets/loopera.svg'
+import looperaLogo from '../assets/loopera-logo.png'
 import styles from './LogoButton.module.css'
 
 const LogoButton = () => {

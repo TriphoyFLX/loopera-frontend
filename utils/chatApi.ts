@@ -1,8 +1,9 @@
 import { tokenStorage } from './tokenStorage';
+import { getApiBaseUrl } from './urls';
+import { apiFetch, parseApiJson } from './http';
 
 const getBaseURL = () => {
-  // Жестко задаем URL бэкенда для обхода проблем с env
-  return 'https://loopera-lpr.vercel.app/api';
+  return getApiBaseUrl();
 };
 
 interface Chat {
@@ -48,29 +49,23 @@ class ChatApi {
     // Токен теперь берется через tokenStorage в каждом запросе
   }
 
-  private async request(endpoint: string, options: RequestInit = {}) {
+  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${getBaseURL()}${endpoint}`;
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
 
-    // Всегда берем актуальный токен через tokenStorage
     const currentToken = tokenStorage.getToken();
     if (currentToken) {
       headers.Authorization = `Bearer ${currentToken}`;
     }
 
-    const response = await fetch(url, {
+    const response = await apiFetch(url, {
       ...options,
       headers,
     });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
+    return parseApiJson<T>(response);
   }
 
   // Получение всех чатов пользователя
@@ -88,6 +83,13 @@ class ChatApi {
     return this.request('/chats/create', {
       method: 'POST',
       body: JSON.stringify({ participantId }),
+    });
+  }
+
+  /** Открыть чат с техподдержкой (админ) */
+  async openSupportChat(): Promise<{ chat: Chat; support?: { id: number; username: string } }> {
+    return this.request('/chats/support', {
+      method: 'POST',
     });
   }
 

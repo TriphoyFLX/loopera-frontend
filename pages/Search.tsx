@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { api } from '../utils/api';
+import { searchApi } from '../utils/searchApi';
 import { getUploadsUrl } from '../utils/urls';
-import { useAuth } from '../hooks/useAuth';
+import { profilePath } from '../utils/routes';
+import { useI18n } from '../i18n/useI18n';
 import LoopCard from '../components/LoopCard';
-import './Search.css';
-
+import styles from './Search.module.css';
 
 interface Loop {
   id: number;
@@ -26,16 +26,15 @@ interface Loop {
 interface User {
   id: number;
   username: string;
-  first_name?: string;
-  last_name?: string;
-  created_at: string;
+  created_at?: string;
   loop_count?: number;
 }
 
 const Search: React.FC = () => {
-  const { token } = useAuth();
-  const [searchParams] = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
+  const { t, locale } = useI18n();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const urlQuery = searchParams.get('q') || '';
+  const [searchQuery, setSearchQuery] = useState(urlQuery);
   const [searchType, setSearchType] = useState<'loops' | 'users'>('loops');
   const [loops, setLoops] = useState<Loop[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -44,173 +43,109 @@ const Search: React.FC = () => {
   const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioLoading, setAudioLoading] = useState<number | null>(null);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  // Получаем все уникальные теги для предложений
-  useEffect(() => {
-    fetchTags();
-  }, []);
-
-  const fetchTags = async () => {
-    try {
-      const response = await api.getAllLoops(1, 1000, token || undefined);
-      const allTags = response.loops.flatMap((loop: any) => loop.tags || []);
-      const uniqueTags = Array.from(new Set(allTags)) as string[];
-      setSuggestions(uniqueTags);
-    } catch (err) {
-      console.error('Error fetching tags:', err);
-    }
-  };
+  const requestIdRef = useRef(0);
 
   useEffect(() => {
-    if (searchQuery.trim()) {
-      const timeoutId = setTimeout(() => {
-        performSearch();
-      }, 300);
-      return () => clearTimeout(timeoutId);
-    } else {
+    setSearchQuery(urlQuery);
+  }, [urlQuery]);
+
+  useEffect(() => {
+    const q = searchQuery.trim();
+
+    if (!q) {
       setLoops([]);
       setUsers([]);
+      setError(null);
+      setLoading(false);
+      return;
     }
+
+    const requestId = ++requestIdRef.current;
+    const timeoutId = window.setTimeout(async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        if (searchType === 'loops') {
+          const response = await searchApi.searchLoops(q);
+          if (requestId !== requestIdRef.current) return;
+          setLoops((response.loops || []) as Loop[]);
+          setUsers([]);
+        } else {
+          const response = await searchApi.searchArtists(q);
+          if (requestId !== requestIdRef.current) return;
+          setUsers(
+            (response.artists || []).map((artist) => ({
+              id: artist.id,
+              username: artist.username,
+              loop_count: artist.loops_count,
+            })),
+          );
+          setLoops([]);
+        }
+      } catch (err) {
+        if (requestId !== requestIdRef.current) return;
+        console.error('Search error:', err);
+        setError(err instanceof Error ? err.message : 'Ошибка поиска');
+        setLoops([]);
+        setUsers([]);
+      } finally {
+        if (requestId === requestIdRef.current) {
+          setLoading(false);
+        }
+      }
+    }, 280);
+
+    return () => window.clearTimeout(timeoutId);
   }, [searchQuery, searchType]);
 
-  const performSearch = async () => {
-    if (!searchQuery.trim()) return;
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      if (searchType === 'loops') {
-        const response = await api.getAllLoops(1, 100, token || undefined);
-        const filteredLoops = response.loops.filter((loop: any) => {
-          const titleMatch = loop.title?.toLowerCase().includes(searchQuery.toLowerCase());
-          const genreMatch = loop.genre?.toLowerCase().includes(searchQuery.toLowerCase());
-          const tagsMatch = loop.tags?.some((tag: any) => 
-            tag.toLowerCase().includes(searchQuery.toLowerCase())
-          );
-          return titleMatch || genreMatch || tagsMatch;
-        });
-        setLoops(filteredLoops);
-        setUsers([]);
-      } else {
-        // Поиск пользователей (временно по именам из лупов)
-        const response = await api.getAllLoops(1, 1000, token || undefined);
-        const userMap = new Map<number, User>();
-        
-        response.loops.forEach((loop: any) => {
-          if (loop.author && loop.author_id) {
-            if (!userMap.has(loop.author_id)) {
-              userMap.set(loop.author_id, {
-                id: loop.author_id,
-                username: loop.author,
-                created_at: loop.created_at,
-                loop_count: 0
-              });
-            }
-            const user = userMap.get(loop.author_id)!;
-            user.loop_count = (user.loop_count || 0) + 1;
-          }
-        });
-        
-        const filteredUsers = Array.from(userMap.values()).filter(user => 
-          user.username.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-        setUsers(filteredUsers);
-        setLoops([]);
-      }
-    } catch (err) {
-      console.error('Search error:', err);
-      setError(err instanceof Error ? err.message : 'Ошибка поиска');
-    } finally {
-      setLoading(false);
+  const updateQuery = (value: string) => {
+    setSearchQuery(value);
+    const trimmed = value.trim();
+    if (trimmed) {
+      setSearchParams({ q: trimmed }, { replace: true });
+    } else {
+      setSearchParams({}, { replace: true });
     }
   };
 
   const handlePlay = async (loop: Loop) => {
     try {
-      // Если уже воспроизводим этот же луп, ставим на паузу
       if (currentlyPlaying === loop.id && isPlaying) {
-        if (audioRef.current) {
-          audioRef.current.pause();
-          setIsPlaying(false);
-        }
+        audioRef.current?.pause();
+        setIsPlaying(false);
         return;
       }
 
-      // Очищаем предыдущий аудио элемент
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.src = '';
-        // Удаляем все обработчики событий
-        const prevAudio = audioRef.current as any;
-        if (prevAudio._handleLoadStart) {
-          prevAudio.removeEventListener('loadstart', prevAudio._handleLoadStart);
-        }
-        if (prevAudio._handleCanPlay) {
-          prevAudio.removeEventListener('canplay', prevAudio._handleCanPlay);
-        }
-        if (prevAudio._handleEnded) {
-          prevAudio.removeEventListener('ended', prevAudio._handleEnded);
-        }
-        if (prevAudio._handleError) {
-          prevAudio.removeEventListener('error', prevAudio._handleError);
-        }
       }
 
-      // Устанавливаем состояние загрузки
       setAudioLoading(loop.id);
-
-      // Создаем новый аудио элемент
       const audio = new Audio(getUploadsUrl(loop.filename));
       audioRef.current = audio;
 
-      // Создаем именованные обработчики событий
-      const handleLoadStart = () => {
-        console.log('Loading audio:', loop.filename);
-      };
-
-      const handleCanPlay = () => {
-        audio.play();
+      audio.addEventListener('canplay', () => {
+        void audio.play();
         setCurrentlyPlaying(loop.id);
         setIsPlaying(true);
         setAudioLoading(null);
-        console.log('Playing loop:', loop.title);
-      };
-
-      const handleEnded = () => {
+      });
+      audio.addEventListener('ended', () => {
         setCurrentlyPlaying(null);
         setIsPlaying(false);
         setAudioLoading(null);
-      };
-
-      const handleError = (e: Event) => {
-        console.error('Audio error:', e);
+      });
+      audio.addEventListener('error', () => {
         setCurrentlyPlaying(null);
         setIsPlaying(false);
         setAudioLoading(null);
-        alert('Ошибка воспроизведения аудио файла');
-      };
-
-      // Сохраняем обработчики в аудио элементе для последующего удаления
-      (audio as any)._handleLoadStart = handleLoadStart;
-      (audio as any)._handleCanPlay = handleCanPlay;
-      (audio as any)._handleEnded = handleEnded;
-      (audio as any)._handleError = handleError;
-
-      // Добавляем обработчики событий
-      audio.addEventListener('loadstart', handleLoadStart);
-      audio.addEventListener('canplay', handleCanPlay);
-      audio.addEventListener('ended', handleEnded);
-      audio.addEventListener('error', handleError);
-
+      });
       audio.load();
-    } catch (error) {
-      console.error('Error playing loop:', error);
+    } catch {
       setAudioLoading(null);
-      alert('Ошибка воспроизведения лупа');
     }
   };
 
@@ -223,156 +158,125 @@ const Search: React.FC = () => {
     };
   }, []);
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setSearchQuery(suggestion);
-    setShowSuggestions(false);
-  };
-
-  const filteredSuggestions = suggestions.filter(tag =>
-    tag.toLowerCase().includes(searchQuery.toLowerCase())
-  ).slice(0, 5);
+  const dateLocale = locale === 'ru' ? 'ru-RU' : 'en-US';
+  const hasQuery = Boolean(searchQuery.trim());
+  const empty =
+    !loading &&
+    !error &&
+    hasQuery &&
+    ((searchType === 'loops' && loops.length === 0) || (searchType === 'users' && users.length === 0));
 
   return (
-    <div className="search-page">
-      <div className="search-header">
-        <h1 className="page-title">🔍 Поиск</h1>
-        <p className="page-description">
-          Ищите лупы по названию, автору, жанру или тегам
-        </p>
-      </div>
+    <div className={styles.page}>
+      <header className={styles.hero}>
+        <p className={styles.brand}>Loopera</p>
+        <h1 className={styles.title}>{t('searchPage.title')}</h1>
+        <p className={styles.subtitle}>{t('searchPage.enterQueryHint')}</p>
+      </header>
 
-      <div className="search-container">
-        <div className="search-type-toggle">
+      <div className={styles.panel}>
+        <div className={styles.toggle}>
           <button
-            className={`type-button ${searchType === 'loops' ? 'active' : ''}`}
+            type="button"
+            className={`${styles.toggleBtn} ${searchType === 'loops' ? styles.toggleActive : ''}`}
             onClick={() => setSearchType('loops')}
           >
-            🎵 Лупы
+            {t('searchPage.tabLoops')}
           </button>
           <button
-            className={`type-button ${searchType === 'users' ? 'active' : ''}`}
+            type="button"
+            className={`${styles.toggleBtn} ${searchType === 'users' ? styles.toggleActive : ''}`}
             onClick={() => setSearchType('users')}
           >
-            👤 Пользователи
+            {t('searchPage.tabUsers')}
           </button>
         </div>
 
-        <div className="search-input-container">
+        <div className={styles.inputWrap}>
+          <svg className={styles.inputIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
           <input
             type="text"
-            className="search-input"
-            placeholder={searchType === 'loops' 
-              ? "Введите название лупа, имя автора, жанр или тег..." 
-              : "Введите имя пользователя..."
-            }
+            className={styles.input}
+            placeholder={t('searchPage.placeholder')}
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onFocus={() => setShowSuggestions(true)}
-            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+            onChange={(e) => updateQuery(e.target.value)}
+            autoFocus
           />
-          {searchType === 'loops' && showSuggestions && filteredSuggestions.length > 0 && (
-            <div className="suggestions">
-              {filteredSuggestions.map((suggestion) => (
-                <div
-                  key={suggestion}
-                  className="suggestion-item"
-                  onClick={() => handleSuggestionClick(suggestion)}
-                >
-                  #{suggestion}
-                </div>
-              ))}
-            </div>
+          {searchQuery && (
+            <button type="button" className={styles.clear} onClick={() => updateQuery('')} aria-label={t('common.close')}>
+              ×
+            </button>
           )}
         </div>
-
-        <button
-          className="search-button"
-          onClick={performSearch}
-          disabled={loading || !searchQuery.trim()}
-        >
-          {loading ? '🔍 Поиск...' : '🔍 Найти'}
-        </button>
       </div>
 
-      {error && (
-        <div className="error-message">
-          <p>❌ {error}</p>
-          <button onClick={() => setError(null)} className="close-error">
-            ✕
-          </button>
-        </div>
-      )}
+      {error && <p className={styles.error}>{error}</p>}
 
-      <div className="search-results">
-        {loading && (
-          <div className="loading-spinner">
-            <div className="spinner"></div>
-            <p>Поиск...</p>
+      <div className={styles.results}>
+        {loading && <p className={styles.state}>{t('loading.default')}</p>}
+
+        {!loading && !hasQuery && (
+          <div className={styles.empty}>
+            <p className={styles.emptyTitle}>{t('searchPage.enterQuery')}</p>
+            <p className={styles.emptyText}>{t('searchPage.enterQueryHint')}</p>
           </div>
         )}
 
-        {!loading && !error && (
+        {!loading && searchType === 'loops' && loops.length > 0 && (
           <>
-            {searchType === 'loops' && loops.length > 0 && (
-              <div className="results-header">
-                <h2>🎵 Найденные лупы ({loops.length})</h2>
-              </div>
-            )}
-
-            {searchType === 'users' && users.length > 0 && (
-              <div className="results-header">
-                <h2>👤 Найденные пользователи ({users.length})</h2>
-              </div>
-            )}
-
-            {searchType === 'loops' && loops.length > 0 && (
-              <div className="loops-grid">
-                {loops.map((loop) => (
-                  <LoopCard
-                    key={loop.id}
-                    loop={loop}
-                    onPlay={handlePlay}
-                    isPlaying={currentlyPlaying === loop.id && isPlaying}
-                    isLoading={audioLoading === loop.id}
-                  />
-                ))}
-              </div>
-            )}
-
-            {searchType === 'users' && users.length > 0 && (
-              <div className="users-grid">
-                {users.map((user) => (
-                  <div key={user.id} className="user-card">
-                    <div className="user-avatar">
-                      {user.first_name ? user.first_name[0].toUpperCase() : user.username[0].toUpperCase()}
-                    </div>
-                    <div className="user-info">
-                      <h3 className="user-username">{user.username}</h3>
-                      <p className="user-stats">
-                        🎵 {user.loop_count} лупов • 
-                        📅 На платформе с {new Date(user.created_at).toLocaleDateString('ru-RU')}
-                      </p>
-                    </div>
-                    <Link to={`/user/${user.id}`} className="view-profile-button">
-                      Посмотреть профиль →
-                    </Link>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {!loading && searchQuery.trim() && loops.length === 0 && users.length === 0 && (
-              <div className="no-results">
-                <p>
-                  {searchType === 'loops' 
-                    ? '🎵 Лупы не найдены' 
-                    : '👤 Пользователи не найдены'
-                  }
-                </p>
-                <p>Попробуйте изменить поисковый запрос</p>
-              </div>
-            )}
+            <div className={styles.resultsHead}>
+              {t('searchPage.foundLoops')} · {loops.length}
+            </div>
+            <div className={styles.loopsGrid}>
+              {loops.map((loop) => (
+                <LoopCard
+                  key={loop.id}
+                  loop={loop}
+                  onPlay={handlePlay}
+                  isPlaying={currentlyPlaying === loop.id && isPlaying}
+                  isLoading={audioLoading === loop.id}
+                />
+              ))}
+            </div>
           </>
+        )}
+
+        {!loading && searchType === 'users' && users.length > 0 && (
+          <>
+            <div className={styles.resultsHead}>
+              {t('searchPage.foundUsers')} · {users.length}
+            </div>
+            <div className={styles.usersGrid}>
+              {users.map((user) => (
+                <Link key={user.id} to={profilePath(user.username)} className={styles.userCard}>
+                  <span className={styles.avatar}>{(user.username[0] || '?').toUpperCase()}</span>
+                  <span className={styles.userBody}>
+                    <span className={styles.userName}>{user.username}</span>
+                    <span className={styles.userMeta}>
+                      {t('searchPage.loopsCount', { count: user.loop_count || 0 })}
+                      {user.created_at
+                        ? ` · ${new Date(user.created_at).toLocaleDateString(dateLocale)}`
+                        : ''}
+                    </span>
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </>
+        )}
+
+        {empty && (
+          <div className={styles.empty}>
+            <p className={styles.emptyTitle}>
+              {searchType === 'loops' ? t('searchPage.noLoops') : t('searchPage.noUsers')}
+            </p>
+            <p className={styles.emptyText}>
+              {searchType === 'loops' ? t('searchPage.noLoopsHint') : t('searchPage.noUsersHint')}
+            </p>
+          </div>
         )}
       </div>
     </div>

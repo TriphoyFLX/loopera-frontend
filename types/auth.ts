@@ -4,6 +4,9 @@ export interface User {
   email: string;
   role?: string;
   createdAt?: string;
+  created_at?: string;
+  onboarding_completed?: boolean;
+  avatar_url?: string | null;
 }
 
 export interface AuthResponse {

@@ -1,271 +1,180 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { getUploadsUrl } from '../utils/urls';
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { subscriptionApi } from '../utils/subscriptionApi';
-import DownloadRulesModal from './DownloadRulesModal';
-import './SubscribedLoops.css';
+import { followsApi, type FollowUser } from '../utils/followsApi';
+import { useAuth } from '../hooks/useAuth';
+import { useI18n } from '../i18n/useI18n';
+import { getAssetUrl } from '../utils/urls';
+import { LOOP_COVER_COLORS } from '../utils/loopCover';
+import { profilePath } from '../utils/routes';
+import LoopCard from './LoopCard';
+import styles from './SubscribedLoops.module.css';
 
-interface Loop {
+type Loop = {
   id: number;
   title: string;
   filename: string;
   author?: string;
   user_id: number;
   genre?: string;
-  tags?: string[];
+  tags?: string[] | string;
   bpm?: number;
   key?: string;
-}
+  cover_url?: string | null;
+};
 
-interface SubscribedLoopsProps {
+type Props = {
   limit?: number;
   showAllButton?: boolean;
-}
+};
 
-const SubscribedLoops: React.FC<SubscribedLoopsProps> = ({ 
-  limit = 4, 
-  showAllButton = true 
-}) => {
+const SubscribedLoops = ({ limit = 8, showAllButton = false }: Props) => {
+  const { t } = useI18n();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [loops, setLoops] = useState<Loop[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [makers, setMakers] = useState<FollowUser[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [showDownloadModal, setShowDownloadModal] = useState(false);
-  const [selectedLoop, setSelectedLoop] = useState<Loop | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    const fetchSubscribedLoops = async () => {
+    if (!user) {
+      setLoops([]);
+      setMakers([]);
+      setLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    const load = async () => {
       try {
-        setIsLoading(true);
-        const response = await subscriptionApi.getSubscribedLoops(1, limit);
-        setLoops(response.loops);
+        setLoading(true);
         setError(null);
+        const [loopsRes, followingRes] = await Promise.all([
+          subscriptionApi.getSubscribedLoops(1, limit),
+          followsApi.listMyFollowing().catch(() => ({ following: [] as FollowUser[] })),
+        ]);
+        if (cancelled) return;
+        setLoops(loopsRes.loops || []);
+        setMakers((followingRes.following || []).slice(0, 12));
       } catch (err) {
-        console.error('Error fetching subscribed loops:', err);
-        setError('Ошибка загрузки лупов');
+        if (!cancelled) {
+          console.error(err);
+          setError(t('recentLoops.loadError'));
+          setLoops([]);
+        }
       } finally {
-        setIsLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
-    fetchSubscribedLoops();
-  }, [limit]);
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [user, limit, t]);
 
-  const handlePlay = async (loop: Loop) => {
-    try {
-      if (currentlyPlaying === loop.id && isPlaying) {
-        // Пауза
-        if (audioRef.current) {
-          audioRef.current.pause();
-          setIsPlaying(false);
-        }
-      } else {
-        // Воспроизведение нового лупа
-        if (audioRef.current) {
-          audioRef.current.pause();
-        }
-
-        const audioUrl = getUploadsUrl(loop.filename);
-        console.log('Playing audio from:', audioUrl);
-        
-        const audio = new Audio(audioUrl);
-        audioRef.current = audio;
-        
-        audio.addEventListener('error', (e) => {
-          console.error('Audio error:', e);
-          console.error('Audio src:', audio.src);
-          setCurrentlyPlaying(null);
-          setIsPlaying(false);
-        });
-        
-        audio.addEventListener('ended', () => {
-          setCurrentlyPlaying(null);
-          setIsPlaying(false);
-        });
-
-        await audio.play();
-        setCurrentlyPlaying(loop.id);
-        setIsPlaying(true);
-      }
-    } catch (error) {
-      console.error('Error playing loop:', error);
-      setCurrentlyPlaying(null);
-      setIsPlaying(false);
+  const makersFromLoops = useMemo(() => {
+    if (makers.length) return makers;
+    const map = new Map<number, FollowUser>();
+    for (const loop of loops) {
+      if (!loop.user_id || map.has(loop.user_id)) continue;
+      map.set(loop.user_id, {
+        id: loop.user_id,
+        username: loop.author || `user${loop.user_id}`,
+      });
     }
-  };
+    return Array.from(map.values()).slice(0, 12);
+  }, [makers, loops]);
 
-  const handleLoopClick = (loopId: number) => {
-    // В будущем можно добавить переход к деталям лупа
-    console.log('Loop clicked:', loopId);
-  };
-
-  const handleDownloadClick = (loop: Loop) => {
-    setSelectedLoop(loop);
-    setShowDownloadModal(true);
-  };
-
-  const handleDownloadConfirm = () => {
-    if (selectedLoop) {
-      const url = getUploadsUrl(selectedLoop.filename);
-      const link = document.createElement('a');
-      link.href = url;
-      
-      // Создаем имя файла: loopera.ru_[название_лупа].расширение
-      const fileExtension = selectedLoop.filename.split('.').pop();
-      const sanitizedTitle = selectedLoop.title.replace(/[^a-zA-Z0-9а-яА-Я_\-\s]/g, '').trim();
-      const downloadName = `loopera.ru_${sanitizedTitle}.${fileExtension}`;
-      
-      link.download = downloadName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  };
-
-  if (isLoading) {
+  if (loading) {
     return (
-      <div className="subscribed-loops-loading">
-        {[...Array(limit)].map((_, index) => (
-          <div key={index} className="subscribed-loop-skeleton">
-            <div className="skeleton-thumbnail"></div>
-            <div className="skeleton-content">
-              <div className="skeleton-title"></div>
-              <div className="skeleton-meta"></div>
-            </div>
-          </div>
-        ))}
+      <div className={styles.root}>
+        <div className={styles.makersRail} aria-hidden>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className={`${styles.makerChip} ${styles.skeleton}`} />
+          ))}
+        </div>
+        <div className={styles.rail}>
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className={`${styles.cardSlot} ${styles.skeletonCard}`} />
+          ))}
+        </div>
       </div>
     );
   }
 
-  if (error || loops.length === 0) {
+  if (error || (loops.length === 0 && makersFromLoops.length === 0)) {
     return (
-      <div className="subscribed-loops-empty">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-          <circle cx="9" cy="7" r="4"></circle>
-          <path d="m22 21-3-3 3-3"></path>
-        </svg>
-        <h3>Нет лупов от подписанных артистов</h3>
-        <p>
-          {error 
-            ? 'Произошла ошибка при загрузке' 
-            : 'Подпишитесь на артистов, чтобы видеть их лупы здесь'
-          }
-        </p>
+      <div className={styles.empty}>
+        <div className={styles.emptyIcon} aria-hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M19 8v6M22 11h-6" strokeLinecap="round" />
+          </svg>
+        </div>
+        <h3>{t('subscribedLoops.empty')}</h3>
+        <p>{error ? t('recentLoops.loadError') : t('subscribedLoops.hint')}</p>
+        <button type="button" className={styles.emptyCta} onClick={() => navigate('/search')}>
+          Найти мейкеров
+        </button>
       </div>
     );
   }
 
   return (
-    <>
-      <div className="subscribed-loops">
-        <div className="loops-grid">
-          {loops.map((loop) => (
-            <div
-              key={loop.id}
-              className="loop-card"
-              onClick={() => handleLoopClick(loop.id)}
-            >
-              <div className="loop-card-header">
-                <div className="loop-user" onClick={() => window.location.href = `/user/${loop.user_id}`}>
-                  <div className="loop-avatar">
-                    {loop.author ? loop.author.charAt(0).toUpperCase() : '?'}
-                  </div>
-                  <span className="loop-username">{loop.author || 'Unknown'}</span>
-                </div>
-                
-                <div className="loop-actions">
-                  <button 
-                    className="loop-action-btn" 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDownloadClick(loop);
-                    }}
-                    title="Скачать"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              <div className="loop-player">
-                <div className="player-controls">
-                  <button 
-                    className={`play-button ${currentlyPlaying === loop.id && isPlaying ? 'playing' : ''}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handlePlay(loop);
-                    }}
-                  >
-                    {currentlyPlaying === loop.id && isPlaying ? (
-                      <svg className="play-icon" viewBox="0 0 24 24" fill="currentColor">
-                        <rect x="6" y="4" width="4" height="16"/>
-                        <rect x="14" y="4" width="4" height="16"/>
-                      </svg>
-                    ) : (
-                      <svg className="play-icon" viewBox="0 0 24 24" fill="currentColor">
-                        <polygon points="5 3 19 12 5 21 5 3"/>
-                      </svg>
-                    )}
-                  </button>
-
-                  <div className="waveform-container">
-                    <div className="waveform-bars">
-                      {[...Array(40)].map((_, i) => (
-                        <div 
-                          key={i} 
-                          className={`waveform-bar ${currentlyPlaying === loop.id && isPlaying && i < 20 ? 'active' : ''}`}
-                          style={{
-                            height: `${Math.random() * 60 + 20}%`,
-                            animation: currentlyPlaying === loop.id && isPlaying ? `waveform 1s ease infinite ${i * 0.05}s` : 'none'
-                          }}
-                        />
-                      ))}
-                    </div>
-                    {currentlyPlaying === loop.id && isPlaying && <div className="progress-bar" style={{ width: '45%' }} />}
-                  </div>
-                </div>
-              </div>
-
-              <div className="loop-info">
-                <h3 className="loop-title">{loop.title}</h3>
-                <div className="loop-details">
-                  {loop.bpm && <span className="loop-detail">{loop.bpm} BPM</span>}
-                  {loop.key && <span className="loop-detail">{loop.key}</span>}
-                  {loop.genre && <span className="loop-detail">{loop.genre}</span>}
-                </div>
-                {loop.tags && loop.tags.length > 0 && (
-                  <div className="loop-tags">
-                    {loop.tags.slice(0, 3).map((tag: string, index: number) => (
-                      <span key={index} className="loop-tag">#{tag}</span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
+    <div className={styles.root}>
+      {makersFromLoops.length > 0 && (
+        <div className={styles.makersRail}>
+          {makersFromLoops.map((maker) => {
+            const avatar = maker.avatar_url ? getAssetUrl(maker.avatar_url) : '';
+            const color = LOOP_COVER_COLORS[Math.abs(maker.id) % LOOP_COVER_COLORS.length];
+            return (
+              <Link
+                key={maker.id}
+                to={profilePath(maker.username)}
+                className={styles.makerChip}
+              >
+                <span
+                  className={styles.makerAvatar}
+                  style={
+                    avatar
+                      ? { backgroundImage: `url(${avatar})` }
+                      : { backgroundColor: color }
+                  }
+                >
+                  {!avatar && maker.username.charAt(0).toUpperCase()}
+                </span>
+                <span className={styles.makerName}>{maker.username}</span>
+              </Link>
+            );
+          })}
         </div>
-        
-        {showAllButton && loops.length > 0 && (
-          <div className="subscribed-loops-actions">
-            <button className="view-all-button">
-              Смотреть все лупы от подписанных артистов
-            </button>
+      )}
+
+      {loops.length > 0 ? (
+        <div className={styles.railBleed}>
+          <div className={styles.rail}>
+            {loops.map((loop) => (
+              <div key={loop.id} className={styles.cardSlot}>
+                <LoopCard loop={loop} currentUserId={user?.id} queue={loops} />
+              </div>
+            ))}
           </div>
-        )}
-      </div>
-      
-      <DownloadRulesModal
-        isOpen={showDownloadModal}
-        onClose={() => setShowDownloadModal(false)}
-        onDownload={handleDownloadConfirm}
-        loopTitle={selectedLoop?.title}
-      />
-    </>
+        </div>
+      ) : (
+        <p className={styles.quietHint}>Пока нет новых лупов от подписок</p>
+      )}
+
+      {showAllButton && (
+        <div className={styles.footer}>
+          <Link to="/following" className={styles.viewAll}>
+            {t('subscribedLoops.viewAll')}
+          </Link>
+        </div>
+      )}
+    </div>
   );
 };
 

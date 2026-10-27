@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../hooks/useAuth';
 import styles from './AdminShop.module.css';
 
 interface Pack {
@@ -51,9 +52,16 @@ interface Report {
   created_at: string;
 }
 
+const statusClass = (status: string) => {
+  if (status === 'pending') return styles.pending;
+  if (status === 'approved' || status === 'completed') return styles.approved;
+  if (status === 'rejected' || status === 'deleted') return styles.rejected;
+  return '';
+};
+
 const AdminShop: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'pending' | 'all' | 'withdrawals' | 'reports' | 'stats'>('pending');
-  const [pendingPacks, setPendingPacks] = useState<Pack[]>([]);
+  const { isAdmin } = useAuth();
+  const [activeTab, setActiveTab] = useState<'all' | 'withdrawals' | 'reports' | 'stats'>('all');
   const [allPacks, setAllPacks] = useState<Pack[]>([]);
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
@@ -61,40 +69,17 @@ const AdminShop: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [rejectionReason, setRejectionReason] = useState('');
-  const [showRejectModal, setShowRejectModal] = useState(false);
-  const [rejectingPackId, setRejectingPackId] = useState<number | null>(null);
   const [stats, setStats] = useState<any>(null);
-  const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected' | 'deleted'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'approved' | 'rejected' | 'deleted'>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPacks, setTotalPacks] = useState(0);
 
   useEffect(() => {
-    fetchPendingPacks();
     if (activeTab === 'all') fetchAllPacks();
     if (activeTab === 'withdrawals') fetchWithdrawals();
     if (activeTab === 'reports') fetchReports();
     if (activeTab === 'stats') fetchStats();
   }, [activeTab, currentPage, statusFilter]);
-
-  const fetchPendingPacks = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) return;
-
-      const response = await fetch('/api/admin/shop/packs/pending', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (!response.ok) throw new Error('Failed to fetch pending packs');
-      const packs = await response.json();
-      setPendingPacks(packs);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch data');
-    }
-  };
 
   const fetchAllPacks = async () => {
     try {
@@ -102,28 +87,19 @@ const AdminShop: React.FC = () => {
       if (!token) return;
 
       const url = `/api/admin/shop/packs/all?page=${currentPage}&limit=50&status=${statusFilter}`;
-      console.log('Fetching all packs from:', url);
-
       const response = await fetch(url, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` },
       });
-
-      console.log('Response status:', response.status);
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Error response:', errorData);
         throw new Error(errorData.error || 'Failed to fetch all packs');
       }
 
       const data = await response.json();
-      console.log('Received packs:', data.packs?.length);
       setAllPacks(data.packs);
       setTotalPacks(data.pagination.totalPacks);
     } catch (err) {
-      console.error('Error fetching all packs:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch data');
     }
   };
@@ -134,14 +110,11 @@ const AdminShop: React.FC = () => {
       if (!token) return;
 
       const response = await fetch('/api/admin/shop/withdrawals', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (!response.ok) throw new Error('Failed to fetch withdrawals');
-      const data = await response.json();
-      setWithdrawals(data);
+      setWithdrawals(await response.json());
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch data');
     }
@@ -153,14 +126,11 @@ const AdminShop: React.FC = () => {
       if (!token) return;
 
       const response = await fetch('/api/admin/shop/reports', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (!response.ok) throw new Error('Failed to fetch reports');
-      const data = await response.json();
-      setReports(data);
+      setReports(await response.json());
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch data');
     }
@@ -172,14 +142,11 @@ const AdminShop: React.FC = () => {
       if (!token) return;
 
       const response = await fetch('/api/admin/shop/stats', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (!response.ok) throw new Error('Failed to fetch stats');
-      const data = await response.json();
-      setStats(data);
+      setStats(await response.json());
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch data');
     }
@@ -191,76 +158,13 @@ const AdminShop: React.FC = () => {
       if (!token) return;
 
       const response = await fetch(`/api/admin/shop/packs/${packId}/moderation`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (!response.ok) throw new Error('Failed to fetch pack details');
-      const pack = await response.json();
-      setSelectedPack(pack);
+      setSelectedPack(await response.json());
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch pack details');
-    }
-  };
-
-  const handleApprovePack = async (packId: number) => {
-    setLoading(true);
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) return;
-
-      const response = await fetch(`/api/admin/shop/packs/${packId}/approve`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (!response.ok) throw new Error('Failed to approve pack');
-      
-      setSuccess('Pack approved successfully');
-      fetchPendingPacks();
-      setSelectedPack(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to approve pack');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleRejectPack = async () => {
-    if (!rejectionReason.trim()) {
-      setError('Rejection reason is required');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) return;
-
-      const response = await fetch(`/api/admin/shop/packs/${rejectingPackId}/reject`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ rejection_reason: rejectionReason })
-      });
-
-      if (!response.ok) throw new Error('Failed to reject pack');
-      
-      setSuccess('Pack rejected successfully');
-      fetchPendingPacks();
-      setShowRejectModal(false);
-      setRejectionReason('');
-      setRejectingPackId(null);
-      setSelectedPack(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to reject pack');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -272,13 +176,11 @@ const AdminShop: React.FC = () => {
 
       const response = await fetch(`/api/admin/shop/withdrawals/${withdrawalId}/${action}`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (!response.ok) throw new Error(`Failed to ${action} withdrawal`);
-      
+
       setSuccess(`Withdrawal ${action}d successfully`);
       fetchWithdrawals();
     } catch (err) {
@@ -297,10 +199,10 @@ const AdminShop: React.FC = () => {
       const response = await fetch(`/api/admin/shop/reports/${reportId}/resolve`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ resolution: 'Resolved by admin' })
+        body: JSON.stringify({ resolution: 'Resolved by admin' }),
       });
 
       if (!response.ok) throw new Error('Failed to resolve report');
@@ -324,11 +226,9 @@ const AdminShop: React.FC = () => {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const response = await fetch(`https://loopera-lpr.vercel.app/api/shop/${packId}`, {
+      const response = await fetch(`/api/shop/${packId}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (!response.ok) {
@@ -337,7 +237,7 @@ const AdminShop: React.FC = () => {
       }
 
       setSuccess('Pack deleted successfully');
-      fetchPendingPacks();
+      fetchAllPacks();
       setSelectedPack(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete pack');
@@ -346,243 +246,189 @@ const AdminShop: React.FC = () => {
     }
   };
 
-  const openRejectModal = (packId: number) => {
-    setRejectingPackId(packId);
-    setShowRejectModal(true);
-  };
-
-  const closeRejectModal = () => {
-    setShowRejectModal(false);
-    setRejectionReason('');
-    setRejectingPackId(null);
-  };
+  const pendingReports = reports.filter((r) => r.status === 'pending').length;
 
   return (
-    <div className={styles.adminShopContainer}>
-      <div className={styles.adminHeader}>
-        <h1>Администрирование Shop</h1>
-        <p>Управление паками, выводами и жалобами</p>
-      </div>
+    <div className={styles.page}>
+      <header className={styles.hero}>
+        <h1 className={styles.title}>Магазин</h1>
+      </header>
 
       {error && (
         <div className={`${styles.alert} ${styles.alertError}`}>
-          {error}
-          <button onClick={() => setError('')}>×</button>
+          <span>{error}</span>
+          <button type="button" onClick={() => setError('')} aria-label="Close">
+            ×
+          </button>
         </div>
       )}
 
       {success && (
         <div className={`${styles.alert} ${styles.alertSuccess}`}>
-          {success}
-          <button onClick={() => setSuccess('')}>×</button>
+          <span>{success}</span>
+          <button type="button" onClick={() => setSuccess('')} aria-label="Close">
+            ×
+          </button>
         </div>
       )}
 
-      <div className={styles.adminTabs}>
+      <div className={styles.tabs}>
         <button
-          className={`${styles.tab} ${activeTab === 'pending' ? styles.active : ''}`}
-          onClick={() => setActiveTab('pending')}
-        >
-          Паки на модерации ({pendingPacks.length})
-        </button>
-        <button
-          className={`${styles.tab} ${activeTab === 'all' ? styles.active : ''}`}
+          type="button"
+          className={`${styles.tab} ${activeTab === 'all' ? styles.tabActive : ''}`}
           onClick={() => setActiveTab('all')}
         >
-          Все паки ({totalPacks})
+          Паки ({totalPacks})
         </button>
+        {isAdmin && (
+          <button
+            type="button"
+            className={`${styles.tab} ${activeTab === 'withdrawals' ? styles.tabActive : ''}`}
+            onClick={() => setActiveTab('withdrawals')}
+          >
+            Выводы
+          </button>
+        )}
         <button
-          className={`${styles.tab} ${activeTab === 'withdrawals' ? styles.active : ''}`}
-          onClick={() => setActiveTab('withdrawals')}
-        >
-          Заявки на вывод
-        </button>
-        <button
-          className={`${styles.tab} ${activeTab === 'reports' ? styles.active : ''}`}
+          type="button"
+          className={`${styles.tab} ${activeTab === 'reports' ? styles.tabActive : ''}`}
           onClick={() => setActiveTab('reports')}
         >
-          Жалобы ({reports.filter(r => r.status === 'pending').length})
+          Жалобы ({pendingReports})
         </button>
         <button
-          className={`${styles.tab} ${activeTab === 'stats' ? styles.active : ''}`}
+          type="button"
+          className={`${styles.tab} ${activeTab === 'stats' ? styles.tabActive : ''}`}
           onClick={() => setActiveTab('stats')}
         >
           Статистика
         </button>
       </div>
 
-      <div className={styles.adminContent}>
-        {activeTab === 'pending' && (
-          <div className={styles.pendingPacks}>
-            {pendingPacks.length === 0 ? (
-              <div className={styles.emptyState}>
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                  <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                </svg>
-                <h3>Нет паков на модерации</h3>
-                <p>Все паки рассмотрены</p>
-              </div>
-            ) : (
-              <div className={styles.packsList}>
-                {pendingPacks.map((pack) => (
-                  <div key={pack.id} className={styles.packItem}>
-                    <div className={styles.packInfo}>
-                      <h3>{pack.title}</h3>
-                      <p className={styles.packAuthor}>@{pack.hashtag} ({pack.username})</p>
-                      <p className={styles.packPrice}>{pack.price} coins</p>
-                      <p className={styles.packDate}>Создан: {new Date(pack.created_at).toLocaleDateString()}</p>
-                    </div>
-                    <div className={styles.packActions}>
-                      <button
-                        className={styles.btnView}
-                        onClick={() => fetchPackDetails(pack.id)}
-                      >
-                        Просмотр
-                      </button>
-                      <button
-                        className={styles.btnApprove}
-                        onClick={() => handleApprovePack(pack.id)}
-                        disabled={loading}
-                      >
-                        Одобрить
-                      </button>
-                      <button
-                        className={styles.btnReject}
-                        onClick={() => openRejectModal(pack.id)}
-                        disabled={loading}
-                      >
-                        Отклонить
-                      </button>
-                      <button
-                        className={styles.btnReject}
-                        onClick={() => handleDeletePack(pack.id)}
-                        disabled={loading}
-                        style={{ backgroundColor: '#dc3545' }}
-                      >
-                        Удалить
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
+      <div className={styles.panel}>
         {activeTab === 'all' && (
-          <div className={styles.pendingPacks}>
+          <>
             <div className={styles.filterBar}>
               <select
                 value={statusFilter}
                 onChange={(e) => {
-                  setStatusFilter(e.target.value as any);
+                  setStatusFilter(e.target.value as typeof statusFilter);
                   setCurrentPage(1);
                 }}
               >
                 <option value="all">Все статусы</option>
-                <option value="pending">На модерации</option>
-                <option value="approved">Одобрено</option>
+                <option value="approved">Опубликовано</option>
                 <option value="rejected">Отклонено</option>
                 <option value="deleted">Удалено</option>
               </select>
             </div>
+
             {allPacks.length === 0 ? (
-              <div className={styles.emptyState}>
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                  <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                </svg>
+              <div className={styles.empty}>
                 <h3>Нет паков</h3>
+                <p>По выбранному фильтру ничего не найдено</p>
               </div>
             ) : (
-              <div className={styles.packsList}>
+              <div className={styles.list}>
                 {allPacks.map((pack) => (
-                  <div key={pack.id} className={styles.packItem}>
-                    <div className={styles.packInfo}>
-                      <h3>{pack.title}</h3>
-                      <p className={styles.packAuthor}>@{pack.hashtag} ({pack.username})</p>
-                      <p className={styles.packPrice}>{pack.price} coins</p>
-                      <p className={styles.packDate}>Создан: {new Date(pack.created_at).toLocaleDateString()}</p>
-                      <span className={`${styles.status} ${styles[pack.status]}`}>{pack.status}</span>
-                      <p className={styles.packSales}>Продаж: {pack.sales_count || 0}</p>
+                  <div key={pack.id} className={styles.item}>
+                    <div className={styles.itemBody}>
+                      <h3 className={styles.itemTitle}>{pack.title}</h3>
+                      <div className={styles.itemMeta}>
+                        <span>
+                          <strong>@{pack.hashtag || pack.username}</strong>
+                        </span>
+                        <span className={styles.price}>{pack.price} ₽</span>
+                        <span>{new Date(pack.created_at).toLocaleDateString('ru-RU')}</span>
+                        <span className={`${styles.status} ${statusClass(pack.status)}`}>{pack.status}</span>
+                        <span>Продаж: {pack.sales_count || 0}</span>
+                      </div>
                     </div>
-                    <div className={styles.packActions}>
-                      <button
-                        className={styles.btnView}
-                        onClick={() => fetchPackDetails(pack.id)}
-                      >
+                    <div className={styles.itemActions}>
+                      <button type="button" className={styles.btn} onClick={() => fetchPackDetails(pack.id)}>
                         Просмотр
                       </button>
-                      <button
-                        className={styles.btnReject}
-                        onClick={() => handleDeletePack(pack.id)}
-                        disabled={loading}
-                        style={{ backgroundColor: '#dc3545' }}
-                      >
-                        Удалить
-                      </button>
+                      {isAdmin && (
+                        <button
+                          type="button"
+                          className={styles.btnDanger}
+                          onClick={() => handleDeletePack(pack.id)}
+                          disabled={loading}
+                        >
+                          Удалить
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}
               </div>
             )}
+
             {totalPacks > 50 && (
               <div className={styles.pagination}>
                 <button
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  type="button"
+                  className={styles.btnGhost}
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
                 >
                   Назад
                 </button>
-                <span>Страница {currentPage}</span>
+                <span>
+                  {currentPage} / {Math.ceil(totalPacks / 50)}
+                </span>
                 <button
-                  onClick={() => setCurrentPage(p => p + 1)}
+                  type="button"
+                  className={styles.btnGhost}
+                  onClick={() => setCurrentPage((p) => p + 1)}
                   disabled={currentPage * 50 >= totalPacks}
                 >
-                  Вперед
+                  Вперёд
                 </button>
               </div>
             )}
-          </div>
+          </>
         )}
 
         {activeTab === 'withdrawals' && (
-          <div className={styles.withdrawalsSection}>
+          <>
             {withdrawals.length === 0 ? (
-              <div className={styles.emptyState}>
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="12" y1="1" x2="12" y2="23"></line>
-                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                </svg>
+              <div className={styles.empty}>
                 <h3>Нет заявок на вывод</h3>
+                <p>Новые заявки появятся здесь</p>
               </div>
             ) : (
-              <div className={styles.withdrawalsList}>
+              <div className={styles.list}>
                 {withdrawals.map((withdrawal) => (
-                  <div key={withdrawal.id} className={styles.withdrawalItem}>
-                    <div className={styles.withdrawalInfo}>
-                      <h3>{withdrawal.amount} coins</h3>
-                      <p>@{withdrawal.hashtag} ({withdrawal.username})</p>
-                      <p>{withdrawal.bank} - {withdrawal.phone}</p>
-                      <p>Запрошено: {new Date(withdrawal.created_at).toLocaleDateString()}</p>
-                      <span className={`${styles.status} ${styles[withdrawal.status]}`}>
-                        {withdrawal.status}
-                      </span>
+                  <div key={withdrawal.id} className={styles.item}>
+                    <div className={styles.itemBody}>
+                      <h3 className={styles.itemTitle}>{withdrawal.amount} ₽</h3>
+                      <div className={styles.itemMeta}>
+                        <span>
+                          <strong>@{withdrawal.hashtag || withdrawal.username}</strong>
+                        </span>
+                        <span>
+                          {withdrawal.bank} · {withdrawal.phone}
+                        </span>
+                        <span>{new Date(withdrawal.created_at).toLocaleDateString('ru-RU')}</span>
+                        <span className={`${styles.status} ${statusClass(withdrawal.status)}`}>
+                          {withdrawal.status}
+                        </span>
+                      </div>
                     </div>
                     {withdrawal.status === 'pending' && (
-                      <div className={styles.withdrawalActions}>
+                      <div className={styles.itemActions}>
                         <button
-                          className={styles.btnApprove}
+                          type="button"
+                          className={styles.btnPrimary}
                           onClick={() => handleProcessWithdrawal(withdrawal.id, 'approve')}
                           disabled={loading}
                         >
                           Одобрить
                         </button>
                         <button
-                          className={styles.btnReject}
+                          type="button"
+                          className={styles.btnDanger}
                           onClick={() => handleProcessWithdrawal(withdrawal.id, 'reject')}
                           disabled={loading}
                         >
@@ -594,39 +440,36 @@ const AdminShop: React.FC = () => {
                 ))}
               </div>
             )}
-          </div>
+          </>
         )}
 
         {activeTab === 'reports' && (
-          <div className={styles.reportsSection}>
+          <>
             {reports.length === 0 ? (
-              <div className={styles.emptyState}>
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                  <line x1="12" y1="9" x2="12" y2="13"></line>
-                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                </svg>
+              <div className={styles.empty}>
                 <h3>Нет жалоб</h3>
+                <p>Жалобы пользователей появятся здесь</p>
               </div>
             ) : (
-              <div className={styles.reportsList}>
+              <div className={styles.list}>
                 {reports.map((report) => (
-                  <div key={report.id} className={styles.reportItem}>
-                    <div className={styles.reportInfo}>
-                      <h3>{report.reason.replace('_', ' ')}</h3>
-                      <p>От: {report.reporter_name}</p>
-                      {report.pack_title && <p>Пак: {report.pack_title}</p>}
-                      {report.reported_user_name && <p>Жалоба на: {report.reported_user_name}</p>}
-                      <p>{report.description}</p>
-                      <p>Отправлено: {new Date(report.created_at).toLocaleDateString()}</p>
-                      <span className={`${styles.status} ${styles[report.status]}`}>
-                        {report.status}
-                      </span>
+                  <div key={report.id} className={styles.item}>
+                    <div className={styles.itemBody}>
+                      <h3 className={styles.itemTitle}>{report.reason.replace(/_/g, ' ')}</h3>
+                      <div className={styles.itemMeta}>
+                        <span>От: {report.reporter_name}</span>
+                        {report.pack_title && <span>Пак: {report.pack_title}</span>}
+                        {report.reported_user_name && <span>На: {report.reported_user_name}</span>}
+                        <span>{new Date(report.created_at).toLocaleDateString('ru-RU')}</span>
+                        <span className={`${styles.status} ${statusClass(report.status)}`}>{report.status}</span>
+                      </div>
+                      {report.description && <p className={styles.itemMeta}>{report.description}</p>}
                     </div>
                     {report.status === 'pending' && (
-                      <div className={styles.reportActions}>
+                      <div className={styles.itemActions}>
                         <button
-                          className={styles.btnApprove}
+                          type="button"
+                          className={styles.btnPrimary}
                           onClick={() => handleResolveReport(report.id)}
                           disabled={loading}
                         >
@@ -638,62 +481,58 @@ const AdminShop: React.FC = () => {
                 ))}
               </div>
             )}
-          </div>
+          </>
         )}
 
         {activeTab === 'stats' && (
-          <div className={styles.statsSection}>
+          <>
             {stats ? (
               <div className={styles.statsGrid}>
                 <div className={styles.statCard}>
                   <h3>Общая статистика</h3>
                   <div className={styles.statItem}>
-                    <span>Всего паков:</span>
+                    <span>Всего паков</span>
                     <span>{stats.general.total_packs}</span>
                   </div>
                   <div className={styles.statItem}>
-                    <span>Одобрено паков:</span>
+                    <span>Опубликовано</span>
                     <span>{stats.general.approved_packs}</span>
                   </div>
                   <div className={styles.statItem}>
-                    <span>На модерации:</span>
-                    <span>{stats.general.pending_packs}</span>
-                  </div>
-                  <div className={styles.statItem}>
-                    <span>Общий доход:</span>
-                    <span>{stats.general.total_revenue} coins</span>
+                    <span>Общий доход</span>
+                    <span>{stats.general.total_revenue} ₽</span>
                   </div>
                 </div>
 
                 <div className={styles.statCard}>
-                  <h3>Недельная статистика</h3>
+                  <h3>Неделя</h3>
                   <div className={styles.statItem}>
-                    <span>Заказов за неделю:</span>
+                    <span>Заказы</span>
                     <span>{stats.weekly.weekly_orders}</span>
                   </div>
                   <div className={styles.statItem}>
-                    <span>Доход за неделю:</span>
-                    <span>{stats.weekly.weekly_revenue} coins</span>
+                    <span>Доход</span>
+                    <span>{stats.weekly.weekly_revenue} ₽</span>
                   </div>
                   <div className={styles.statItem}>
-                    <span>Новых паков:</span>
+                    <span>Новые паки</span>
                     <span>{stats.weekly.weekly_packs}</span>
                   </div>
                 </div>
 
                 <div className={styles.statCard}>
                   <h3>Топ продавцов</h3>
-                  {stats.top_sellers.map((seller: any, index: number) => (
+                  {(stats.top_sellers || []).map((seller: any, index: number) => (
                     <div key={index} className={styles.statItem}>
                       <span>@{seller.hashtag}</span>
-                      <span>{seller.total_revenue} coins</span>
+                      <span>{seller.total_revenue} ₽</span>
                     </div>
                   ))}
                 </div>
 
                 <div className={styles.statCard}>
                   <h3>Топ паков</h3>
-                  {stats.top_packs.map((pack: any, index: number) => (
+                  {(stats.top_packs || []).map((pack: any, index: number) => (
                     <div key={index} className={styles.statItem}>
                       <span>{pack.title}</span>
                       <span>{pack.sales_count} продаж</span>
@@ -704,37 +543,70 @@ const AdminShop: React.FC = () => {
             ) : (
               <div className={styles.loading}>Загрузка статистики...</div>
             )}
-          </div>
+          </>
         )}
       </div>
 
-      {/* Pack Details Modal */}
       {selectedPack && (
         <div className={styles.modalOverlay} onClick={() => setSelectedPack(null)}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <h2>{selectedPack.title}</h2>
-              <button className={styles.closeBtn} onClick={() => setSelectedPack(null)}>×</button>
+              <button type="button" className={styles.closeBtn} onClick={() => setSelectedPack(null)}>
+                ×
+              </button>
             </div>
+
             <div className={styles.modalBody}>
-              <div className={styles.packDetails}>
-                <p><strong>Автор:</strong> @{selectedPack.hashtag} ({selectedPack.username})</p>
-                <p><strong>Email:</strong> {selectedPack.email}</p>
-                <p><strong>Цена:</strong> {selectedPack.price} coins</p>
-                <p><strong>Voice Tag:</strong> {selectedPack.voice_tag || 'Нет'}</p>
-                <p><strong>Описание:</strong> {selectedPack.description || 'Нет'}</p>
-                <p><strong>Создан:</strong> {new Date(selectedPack.created_at).toLocaleDateString()}</p>
-                <p><strong>Участник с:</strong> {new Date(selectedPack.user_created_at || '').toLocaleDateString()}</p>
+              <div className={styles.detailGrid}>
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Автор</span>
+                  <span className={styles.detailValue}>
+                    @{selectedPack.hashtag} ({selectedPack.username})
+                  </span>
+                </div>
+                {isAdmin && selectedPack.email && (
+                  <div className={styles.detailRow}>
+                    <span className={styles.detailLabel}>Email</span>
+                    <span className={styles.detailValue}>{selectedPack.email}</span>
+                  </div>
+                )}
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Цена</span>
+                  <span className={styles.detailValue}>{selectedPack.price} ₽</span>
+                </div>
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Voice Tag</span>
+                  <span className={styles.detailValue}>{selectedPack.voice_tag || 'Нет'}</span>
+                </div>
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Описание</span>
+                  <span className={styles.detailValue}>{selectedPack.description || 'Нет'}</span>
+                </div>
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>Создан</span>
+                  <span className={styles.detailValue}>
+                    {new Date(selectedPack.created_at).toLocaleDateString('ru-RU')}
+                  </span>
+                </div>
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>На платформе</span>
+                  <span className={styles.detailValue}>
+                    {selectedPack.user_created_at
+                      ? new Date(selectedPack.user_created_at).toLocaleDateString('ru-RU')
+                      : '—'}
+                  </span>
+                </div>
               </div>
 
-              {selectedPack.loops && (
-                <div className={styles.loopsSection}>
-                  <h3>Лупы ({selectedPack.loops.length})</h3>
+              {selectedPack.loops && selectedPack.loops.length > 0 && (
+                <div>
+                  <h3 className={styles.sectionTitle}>Лупы · {selectedPack.loops.length}</h3>
                   <div className={styles.loopsList}>
                     {selectedPack.loops.map((loop: any) => (
                       <div key={loop.id} className={styles.loopItem}>
                         <span>{loop.title}</span>
-                        <span>{loop.duration}s</span>
+                        <span>{loop.duration ? `${loop.duration}s` : '—'}</span>
                       </div>
                     ))}
                   </div>
@@ -742,23 +614,19 @@ const AdminShop: React.FC = () => {
               )}
 
               {selectedPack.user_stats && (
-                <div className={styles.userStats}>
-                  <h3>Статистика пользователя</h3>
+                <div>
+                  <h3 className={styles.sectionTitle}>Статистика автора</h3>
                   <div className={styles.statsGridSmall}>
                     <div className={styles.statItem}>
-                      <span>Всего паков:</span>
+                      <span>Всего паков</span>
                       <span>{selectedPack.user_stats.total_packs}</span>
                     </div>
                     <div className={styles.statItem}>
-                      <span>Одобрено:</span>
+                      <span>Опубликовано</span>
                       <span>{selectedPack.user_stats.approved_packs}</span>
                     </div>
                     <div className={styles.statItem}>
-                      <span>Отклонено:</span>
-                      <span>{selectedPack.user_stats.rejected_packs}</span>
-                    </div>
-                    <div className={styles.statItem}>
-                      <span>Всего продаж:</span>
+                      <span>Продажи</span>
                       <span>{selectedPack.user_stats.total_sales}</span>
                     </div>
                   </div>
@@ -766,80 +634,33 @@ const AdminShop: React.FC = () => {
               )}
 
               {selectedPack.reports && selectedPack.reports.length > 0 && (
-                <div className={styles.reportsSection}>
-                  <h3>Жалобы на пользователя</h3>
+                <div>
+                  <h3 className={styles.sectionTitle}>Жалобы</h3>
                   {selectedPack.reports.map((report: any) => (
-                    <div key={report.id} className={styles.reportItemSmall}>
-                      <p><strong>{report.reason}:</strong> {report.description}</p>
+                    <div key={report.id} className={styles.reportMini}>
+                      <p>
+                        <strong>{report.reason}:</strong> {report.description}
+                      </p>
                       <p>От: {report.reporter_name}</p>
                     </div>
                   ))}
                 </div>
               )}
             </div>
-            <div className={styles.modalActions}>
-              <button
-                className={styles.btnApprove}
-                onClick={() => handleApprovePack(selectedPack.id)}
-                disabled={loading}
-              >
-                Одобрить пак
-              </button>
-              <button
-                className={styles.btnReject}
-                onClick={() => openRejectModal(selectedPack.id)}
-                disabled={loading}
-              >
-                Отклонить пак
-              </button>
-              <button
-                className={styles.btnReject}
-                onClick={() => handleDeletePack(selectedPack.id)}
-                disabled={loading}
-                style={{ backgroundColor: '#dc3545' }}
-              >
-                Удалить пак
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
-      {/* Reject Modal */}
-      {showRejectModal && (
-        <div className={styles.modalOverlay} onClick={closeRejectModal}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
-              <h2>Отклонить пак</h2>
-              <button className={styles.closeBtn} onClick={closeRejectModal}>×</button>
-            </div>
-            <div className={styles.modalBody}>
-              <div className={styles.formGroup}>
-                <label htmlFor="rejectionReason">Причина отклонения *</label>
-                <textarea
-                  id="rejectionReason"
-                  value={rejectionReason}
-                  onChange={(e) => setRejectionReason(e.target.value)}
-                  placeholder="Пожалуйста, объясните, почему этот пак отклоняется..."
-                  rows={4}
-                  required
-                />
-              </div>
-            </div>
             <div className={styles.modalActions}>
-              <button
-                className={styles.btnSecondary}
-                onClick={closeRejectModal}
-                disabled={loading}
-              >
-                Отмена
-              </button>
-              <button
-                className={styles.btnReject}
-                onClick={handleRejectPack}
-                disabled={loading}
-              >
-                Отклонить пак
+              {isAdmin && (
+                <button
+                  type="button"
+                  className={styles.btnDanger}
+                  onClick={() => handleDeletePack(selectedPack.id)}
+                  disabled={loading}
+                >
+                  Удалить пак
+                </button>
+              )}
+              <button type="button" className={styles.btnGhost} onClick={() => setSelectedPack(null)}>
+                Закрыть
               </button>
             </div>
           </div>

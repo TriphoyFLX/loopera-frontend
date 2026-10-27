@@ -41,6 +41,13 @@
   z-index: 1;
 }
 
+.containerGuest .form {
+  filter: blur(7px);
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.42;
+}
+
 .header {
   text-align: center;
   margin-bottom: 48px;

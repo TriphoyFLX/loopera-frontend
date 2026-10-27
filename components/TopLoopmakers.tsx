@@ -1,60 +1,65 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { profilePath } from '../utils/routes';
+import { getAssetUrl } from '../utils/urls';
+import { LOOP_COVER_COLORS } from '../utils/loopCover';
 import { topUsersApi, type TopUser } from '../utils/topUsersApi';
-import './TopLoopmakers.css';
+import styles from './TopLoopmakers.module.css';
 
-interface TopLoopmakersProps {
+type Props = {
   limit?: number;
-}
+};
 
-const TopLoopmakers: React.FC<TopLoopmakersProps> = ({ limit = 6 }) => {
+const avatarColor = (id: number) =>
+  LOOP_COVER_COLORS[Math.abs(Math.trunc(id)) % LOOP_COVER_COLORS.length];
+
+const formatLoops = (n: number) => {
+  const count = Math.max(0, n || 0);
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+  if (mod10 === 1 && mod100 !== 11) return `${count} луп`;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return `${count} лупа`;
+  return `${count} лупов`;
+};
+
+const TopLoopmakers = ({ limit = 8 }: Props) => {
   const [users, setUsers] = useState<TopUser[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchTopUsers = async () => {
+    let cancelled = false;
+    const load = async () => {
       try {
-        setIsLoading(true);
+        setLoading(true);
         const response = await topUsersApi.getTopUsers(limit);
-        setUsers(response.users);
-        setError(null);
-      } catch (err) {
-        console.error('Error fetching top users:', err);
-        setError('Ошибка загрузки топ лупмейкеров');
+        if (!cancelled) {
+          setUsers(response.users || []);
+          setError(null);
+        }
+      } catch {
+        if (!cancelled) {
+          setError('Не удалось загрузить топ мейкеров');
+          setUsers([]);
+        }
       } finally {
-        setIsLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
-
-    fetchTopUsers();
+    void load();
+    return () => {
+      cancelled = true;
+    };
   }, [limit]);
 
-  const getInitials = (name: string) => {
-    return name?.charAt(0).toUpperCase() || '?';
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffTime = Math.abs(now.getTime() - date.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    if (diffDays === 1) return 'сегодня';
-    if (diffDays === 2) return 'вчера';
-    if (diffDays <= 7) return `${diffDays} дней назад`;
-    if (diffDays <= 30) return `${Math.floor(diffDays / 7)} недель назад`;
-    if (diffDays <= 365) return `${Math.floor(diffDays / 30)} месяцев назад`;
-    return `${Math.floor(diffDays / 365)} лет назад`;
-  };
-
-  if (isLoading) {
+  if (loading) {
     return (
-      <div className="top-loopmakers-loading">
-        {[...Array(limit)].map((_, index) => (
-          <div key={index} className="top-user-card skeleton">
-            <div className="skeleton-avatar"></div>
-            <div className="skeleton-info"></div>
+      <div className={styles.row} aria-hidden>
+        {Array.from({ length: limit }).map((_, i) => (
+          <div key={i} className={styles.item}>
+            <div className={`${styles.avatar} ${styles.skeleton}`} />
+            <div className={`${styles.skelLine} ${styles.skeleton}`} />
+            <div className={`${styles.skelLineSm} ${styles.skeleton}`} />
           </div>
         ))}
       </div>
@@ -62,77 +67,62 @@ const TopLoopmakers: React.FC<TopLoopmakersProps> = ({ limit = 6 }) => {
   }
 
   if (error) {
-    return (
-      <div className="top-loopmakers-error">
-        <p>{error}</p>
-      </div>
-    );
+    return <p className={styles.state}>{error}</p>;
   }
 
-  if (users.length === 0) {
-    return (
-      <div className="top-loopmakers-empty">
-        <p>Пока нет лупмейкеров</p>
-      </div>
-    );
+  if (!users.length) {
+    return <p className={styles.state}>Пока нет мейкеров</p>;
   }
 
   return (
-    <div className="top-loopmakers">
-      <div className="top-users-grid">
-        {users.map((user, index) => (
+    <div className={styles.row}>
+      {users.map((user, index) => {
+        const avatar = user.avatar_url ? getAssetUrl(user.avatar_url) : '';
+        const verified = index === 0 && (user.total_likes || 0) > 0;
+        const subtitle = user.hashtag
+          ? `@${user.hashtag}`
+          : formatLoops(user.loops_count);
+
+        return (
           <Link
             key={user.id}
-            to={`/profile/${user.id}`}
-            className="top-user-card"
+            to={profilePath(user.username)}
+            className={styles.item}
           >
-            <div className="top-user-rank">
-              <span className="rank-number">#{index + 1}</span>
+            <div
+              className={styles.avatar}
+              style={
+                avatar
+                  ? { backgroundImage: `url(${avatar})` }
+                  : { backgroundColor: avatarColor(user.id) }
+              }
+            >
+              {!avatar && (user.username || '?').charAt(0).toUpperCase()}
             </div>
-            
-            <div className="top-user-avatar">
-              {user.avatar_url ? (
-                <img src={user.avatar_url} alt={user.username} />
-              ) : (
-                <div className="avatar-placeholder">
-                  {getInitials(user.username)}
-                </div>
+            <div className={styles.nameRow}>
+              <span className={styles.name}>{user.username}</span>
+              {verified && (
+                <svg
+                  className={styles.verified}
+                  viewBox="0 0 24 24"
+                  aria-label="Топ"
+                >
+                  <circle cx="12" cy="12" r="10" fill="currentColor" />
+                  <path
+                    d="M7.5 12.5l3 3 6-6"
+                    fill="none"
+                    stroke="#0a0a0a"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
               )}
             </div>
-            
-            <div className="top-user-info">
-              <h3 className="top-user-name">{user.username}</h3>
-              <p className="top-user-hashtag">@{user.hashtag || user.username}</p>
-              <p className="top-user-joined">Присоединился {formatDate(user.created_at)}</p>
-            </div>
-            
-            <div className="top-user-stats">
-              <div className="stat-item">
-                <span className="stat-value">{user.loops_count}</span>
-                <span className="stat-label">лупов</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-value">{user.total_likes}</span>
-                <span className="stat-label">лайков</span>
-              </div>
-            </div>
-            
-            <div className="top-user-rating">
-              <div className="rating-stars">
-                {[...Array(5)].map((_, i) => (
-                  <span
-                    key={i}
-                    className={`star ${i < Math.floor(user.avg_rating || 0) ? 'filled' : ''}`}
-                  >
-                    ⭐
-                  </span>
-                ))}
-              </div>
-              <span className="rating-value">{(user.avg_rating || 0).toFixed(1)}</span>
-            </div>
+            <p className={styles.sub}>{subtitle}</p>
           </Link>
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
 };

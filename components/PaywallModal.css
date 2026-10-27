@@ -1,0 +1,109 @@
+.paywall-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+}
+
+.paywall-modal {
+  position: relative;
+  width: min(400px, 100%);
+  border-radius: 20px;
+  padding: 1.9rem 1.6rem 1.6rem;
+  background: #1c1c1f;
+  border: 1px solid var(--lp-hairline, rgba(255, 255, 255, 0.09));
+  box-shadow: var(--lp-shadow-3, 0 24px 70px rgba(0, 0, 0, 0.55));
+  color: var(--lp-label, #f5f5f7);
+  letter-spacing: -0.01em;
+}
+
+.paywall-close {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.8rem;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--lp-label-3, rgba(235, 235, 245, 0.32));
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s var(--lp-ease, ease), color 0.2s var(--lp-ease, ease);
+}
+
+.paywall-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--lp-label, #f5f5f7);
+  transform: none;
+}
+
+.paywall-eyebrow {
+  margin: 0 0 0.4rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lp-label-3, rgba(235, 235, 245, 0.32));
+  font-weight: 600;
+}
+
+.paywall-modal h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.paywall-body {
+  margin: 0 0 1.5rem;
+  color: var(--lp-label-2, rgba(235, 235, 245, 0.6));
+  font-size: 0.93rem;
+  line-height: 1.5;
+}
+
+.paywall-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.paywall-cta {
+  border: none;
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  background: #ffffff;
+  color: #000000;
+  font-weight: 600;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: background 0.2s var(--lp-ease, ease);
+}
+
+.paywall-cta:hover {
+  background: rgba(255, 255, 255, 0.88);
+  transform: none;
+}
+
+.paywall-secondary {
+  border: 1px solid var(--lp-hairline, rgba(255, 255, 255, 0.09));
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  background: transparent;
+  color: var(--lp-label-2, rgba(235, 235, 245, 0.6));
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s var(--lp-ease, ease), color 0.2s var(--lp-ease, ease);
+}
+
+.paywall-secondary:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--lp-label, #f5f5f7);
+  transform: none;
+}

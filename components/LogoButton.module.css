@@ -28,9 +28,10 @@
 }
 
 .logoImage {
-  width: 32px; /* Увеличим логотип */
-  height: 16px;
-  object-fit: contain;
+  width: 42px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: 12px;
 }
 
 /* Скрытие на мобильных устройствах */
@@ -50,7 +51,7 @@
   }
   
   .logoImage {
-    width: 24px;
-    height: 12px;
+    width: 32px;
+    height: 32px;
   }
 }

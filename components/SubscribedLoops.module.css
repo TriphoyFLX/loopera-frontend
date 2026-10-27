@@ -1,0 +1,231 @@
+.root {
+  width: 100%;
+  min-width: 0;
+}
+
+.makersRail {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 2px 2px 16px;
+  margin-bottom: 4px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+  max-width: 100%;
+}
+
+.makersRail::-webkit-scrollbar {
+  display: none;
+}
+
+.makerChip {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 72px;
+  text-decoration: none;
+  color: inherit;
+  scroll-snap-align: start;
+}
+
+.makerAvatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  display: grid;
+  place-items: center;
+  font-family: var(--lp-font-display, Manrope, sans-serif);
+  font-size: 0.95rem;
+  font-weight: 750;
+  color: #fff;
+  border: 2px solid rgba(255, 33, 92, 0.55);
+  box-sizing: border-box;
+  box-shadow: 0 0 0 3px rgba(255, 33, 92, 0.12);
+}
+
+.makerName {
+  max-width: 72px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+.makerChip:hover .makerName {
+  color: #fff;
+}
+
+.railBleed {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.rail {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 4px 0 12px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+  max-width: 100%;
+}
+
+.rail::-webkit-scrollbar {
+  display: none;
+}
+
+.cardSlot {
+  flex: 0 0 220px;
+  width: 220px;
+  scroll-snap-align: start;
+  min-width: 0;
+}
+
+.skeleton {
+  height: 56px;
+  width: 56px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  animation: pulse 1.4s ease infinite;
+}
+
+.skeletonCard {
+  height: 280px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.05);
+  animation: pulse 1.4s ease infinite;
+  border: 0;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+.empty {
+  text-align: center;
+  padding: 36px 20px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.emptyIcon {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 33, 92, 0.1);
+  color: #ff215c;
+}
+
+.emptyIcon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.empty h3 {
+  margin: 0 0 8px;
+  font-family: var(--lp-font-display, Manrope, sans-serif);
+  font-size: 1.15rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+}
+
+.empty p {
+  margin: 0 0 18px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.emptyCta {
+  height: 40px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  background: #ff215c;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.quietHint {
+  margin: 8px 0 0;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 0.9rem;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.viewAll {
+  color: #3b82f6;
+  font-weight: 600;
+  font-size: 0.92rem;
+  text-decoration: none;
+}
+
+@media (max-width: 767px) {
+  .makersRail {
+    gap: 10px;
+    padding-bottom: 14px;
+  }
+
+  .makerChip {
+    width: 64px;
+  }
+
+  .makerAvatar {
+    width: 52px;
+    height: 52px;
+  }
+
+  .cardSlot {
+    flex: 0 0 46%;
+    width: 46%;
+    max-width: 170px;
+  }
+
+  .rail {
+    gap: 12px;
+  }
+
+  .empty {
+    padding: 28px 16px;
+    border-radius: 16px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .cardSlot {
+    flex-basis: 240px;
+    width: 240px;
+  }
+}

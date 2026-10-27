@@ -1,0 +1,130 @@
+:root {
+  --ios-bg: #000000;
+  --ios-bg-elevated: rgba(28, 28, 30, 0.92);
+  --ios-card: rgba(255, 255, 255, 0.08);
+  --ios-card-strong: rgba(255, 255, 255, 0.12);
+  --ios-border: rgba(255, 255, 255, 0.1);
+  --ios-text: #ffffff;
+  --ios-text-secondary: rgba(255, 255, 255, 0.68);
+  --ios-text-tertiary: rgba(255, 255, 255, 0.45);
+  --ios-accent: #ff2a55;
+  --ios-accent-soft: rgba(255, 42, 85, 0.16);
+  --ios-radius-lg: 22px;
+  --ios-radius-md: 16px;
+  --ios-radius-pill: 999px;
+  --ios-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+  --ios-blur: saturate(180%) blur(20px);
+}
+
+html,
+body,
+#root,
+.app-layout,
+.main-content,
+.page {
+  background:
+    radial-gradient(circle at top, rgba(255, 42, 85, 0.12), transparent 32%),
+    linear-gradient(180deg, #050505 0%, #111111 100%);
+}
+
+@media (max-width: 767px) {
+  html,
+  body,
+  #root,
+  .app-layout,
+  .main-content,
+  .page {
+    background: #000;
+  }
+
+  .main-content,
+  .page {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}
+
+.ios-page {
+  padding: 24px 20px 120px;
+}
+
+.ios-card {
+  background: var(--ios-card);
+  border: 1px solid var(--ios-border);
+  border-radius: var(--ios-radius-lg);
+  box-shadow: var(--ios-shadow);
+  backdrop-filter: var(--ios-blur);
+  -webkit-backdrop-filter: var(--ios-blur);
+}
+
+.ios-empty-state {
+  max-width: 420px;
+  margin: 80px auto;
+  padding: 32px 24px;
+  text-align: center;
+}
+
+.ios-empty-state h1 {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
+.ios-empty-state p {
+  color: var(--ios-text-secondary);
+}
+
+.ios-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: var(--ios-radius-pill);
+  background: var(--ios-accent-soft);
+  color: var(--ios-accent);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.ios-button-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 22px;
+  border: none;
+  border-radius: var(--ios-radius-pill);
+  background: linear-gradient(180deg, #ff4d73 0%, #ff215c 100%);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(255, 42, 85, 0.28);
+}
+
+.ios-segmented {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: var(--ios-radius-pill);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--ios-border);
+}
+
+.ios-segmented button {
+  border: none;
+  background: transparent;
+  color: var(--ios-text-secondary);
+  padding: 10px 18px;
+  border-radius: var(--ios-radius-pill);
+  font-weight: 600;
+}
+
+.ios-segmented button.active {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

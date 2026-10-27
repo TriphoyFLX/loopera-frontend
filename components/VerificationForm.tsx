@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { api } from '../utils/api';
+import { useI18n } from '../i18n/useI18n';
 
 interface VerificationFormProps {
   email: string;
@@ -12,13 +13,14 @@ const VerificationForm: React.FC<VerificationFormProps> = ({
   onSuccess, 
   onBack 
 }) => {
+  const { t } = useI18n();
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(600); // 10 минут в секундах
+  const [timeLeft, setTimeLeft] = useState(600);
   const [canResend, setCanResend] = useState(false);
 
-  // Таймер обратного отсчета
   React.useEffect(() => {
     if (timeLeft > 0) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
@@ -37,22 +39,20 @@ const VerificationForm: React.FC<VerificationFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
     setIsLoading(true);
 
     try {
-      console.log('🔐 Verifying email:', email, 'with code:', code);
       const response = await api.verifyEmail(email, code);
-      
-      console.log('✅ Verification response:', response);
       
       if (response.token && response.user) {
         onSuccess(response.token, response.user);
       } else {
-        throw new Error('Неверный ответ от сервера');
+        throw new Error(t('verification.serverError'));
       }
     } catch (err) {
       console.error('❌ Verification error:', err);
-      setError(err instanceof Error ? err.message : 'Ошибка верификации');
+      setError(err instanceof Error ? err.message : t('verification.verifyError'));
     } finally {
       setIsLoading(false);
     }
@@ -61,20 +61,17 @@ const VerificationForm: React.FC<VerificationFormProps> = ({
   const handleResendCode = async () => {
     try {
       setError('');
+      setSuccess('');
       setIsLoading(true);
       
-      console.log('📧 Resending verification code to:', email);
-      
-      // Исправлено: используем правильный метод API
       await api.resendVerificationCode(email);
       
-      // Сбрасываем таймер
       setTimeLeft(600);
       setCanResend(false);
-      setError('✅ Код отправлен повторно на ' + email);
+      setSuccess(t('verification.resendOk', { email }));
     } catch (err) {
       console.error('❌ Resend code error:', err);
-      setError(err instanceof Error ? err.message : 'Ошибка отправки кода');
+      setError(err instanceof Error ? err.message : t('verification.resendError'));
     } finally {
       setIsLoading(false);
     }
@@ -87,14 +84,14 @@ const VerificationForm: React.FC<VerificationFormProps> = ({
 
   return (
     <div className="verification-form">
-      <h2>Подтвердите email</h2>
+      <h2>{t('verification.title')}</h2>
       <p className="verification-subtitle">
-        Мы отправили 6-значный код на <strong>{email}</strong>
+        {t('verification.subtitle')} <strong>{email}</strong>
       </p>
 
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="code">Код верификации</label>
+          <label htmlFor="code">{t('verification.codeLabel')}</label>
           <input
             type="text"
             id="code"
@@ -116,52 +113,64 @@ const VerificationForm: React.FC<VerificationFormProps> = ({
         </div>
 
         {error && (
-          <div className="error-message" style={{ 
-            color: error.startsWith('✅') ? '#28a745' : '#dc3545' 
-          }}>
+          <div className="error-message">
             {error}
+          </div>
+        )}
+
+        {success && (
+          <div className="error-message success">
+            {success}
           </div>
         )}
 
         <div className="verification-timer">
           {timeLeft > 0 ? (
-            <p>Код истечет через: {formatTime(timeLeft)}</p>
+            <p>{t('verification.expiresIn', { time: formatTime(timeLeft) })}</p>
           ) : (
-            <p style={{ color: '#dc3545' }}>Код истек. Отправьте новый.</p>
+            <p className="expired">{t('verification.expired')}</p>
           )}
         </div>
 
         <div className="verification-actions">
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={onBack}
-            className="btn btn-outline"
+            className="auth-button-secondary"
             disabled={isLoading}
           >
-            ← Назад
+            {t('verification.back')}
           </button>
-          
-          <button 
-            type="submit" 
+
+          <button
+            type="submit"
             disabled={isLoading || code.length !== 6}
-            className="btn btn-primary"
+            className="auth-button"
+            style={{ flex: 1 }}
           >
-            {isLoading ? '⏳ Проверка...' : '✓ Подтвердить'}
+            {isLoading ? t('verification.checking') : t('verification.confirm')}
           </button>
         </div>
 
-        <div className="resend-section" style={{ marginTop: '20px', textAlign: 'center' }}>
+        <div className="resend-section">
           <button
             type="button"
             onClick={handleResendCode}
             disabled={isLoading || !canResend}
-            className="btn btn-link"
+            className="forgot-link"
             style={{
+              border: 'none',
+              background: 'none',
+              cursor: canResend ? 'pointer' : 'not-allowed',
               opacity: canResend ? 1 : 0.5,
-              cursor: canResend ? 'pointer' : 'not-allowed'
+              width: '100%',
+              textAlign: 'center',
+              marginTop: '8px',
             }}
           >
-            {canResend ? '📧 Отправить код повторно' : `Повторная отправка через ${formatTime(timeLeft)}`}
+            {canResend
+              ? t('verification.resend')
+              : t('verification.resendWait', { time: formatTime(timeLeft) })}
           </button>
         </div>
       </form>

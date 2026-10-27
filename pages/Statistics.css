@@ -16,7 +16,8 @@
 /* ─── Page ──────────────────────────────────────────────── */
 .statistics-page {
   min-height: 100vh;
-  padding: 52px 28px 100px;
+  /* Extra top padding so title/period clear the fixed Header */
+  padding: 96px 28px 100px;
   background-color: var(--bg);
   font-family: 'Manrope', sans-serif;
   color: var(--text);
@@ -32,12 +33,12 @@
 /* ─── Header ─────────────────────────────────────────────── */
 .statistics-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   margin-bottom: 52px;
-  flex-wrap: wrap;
-  gap: 20px;
-  padding-bottom: 28px;
+  gap: 16px;
+  /* Clear fixed site Header (top-right) */
+  padding: 12px 0 28px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -53,12 +54,16 @@
 
 /* ─── Period Selector ─────────────────────────────────────── */
 .period-selector {
-  display: flex;
+  display: inline-flex;
   gap: 2px;
   background: var(--surface-1);
   padding: 3px;
   border-radius: 8px;
   border: 1px solid var(--border);
+  /* Keep clear of fixed Header on desktop */
+  max-width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 .period-selector button {
@@ -231,9 +236,9 @@
 }
 
 @media (max-width: 768px) {
-  .statistics-page { padding: 36px 16px 64px; }
+  .statistics-page { padding: 24px 16px 64px; }
 
-  .statistics-header { margin-bottom: 36px; padding-bottom: 20px; }
+  .statistics-header { margin-bottom: 36px; padding: 0 0 20px; }
 
   .period-selector { width: 100%; }
   .period-selector button { flex: 1; text-align: center; }

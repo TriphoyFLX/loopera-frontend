@@ -17,33 +17,20 @@
   border-radius: 16px;
   padding: 24px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.15s ease, border-color 0.15s ease;
   position: relative;
   overflow: hidden;
 }
 
 .top-user-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(circle at top right, rgba(255, 42, 85, 0.1), transparent 70%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
+  display: none;
 }
 
 .top-user-card:hover {
-  transform: translateY(-4px);
+  transform: none;
   background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 42, 85, 0.3);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
-}
-
-.top-user-card:hover::before {
-  opacity: 1;
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: none;
 }
 
 .top-user-rank {

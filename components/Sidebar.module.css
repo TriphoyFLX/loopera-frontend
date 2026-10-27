@@ -1,101 +1,169 @@
 .sidebar {
   position: fixed;
-  left: 28px;
-  top: 120px; /* 28px + 78px (logo button) + 14px gap */
-
-  width: 78px;
-  padding: 18px 0;
-
-  background: #2c2c2c;
-  border-radius: 40px;
+  left: var(--lp-sidebar-gap, 16px);
+  top: var(--lp-sidebar-gap, 16px);
+  bottom: var(--lp-sidebar-gap, 16px);
+  width: var(--lp-sidebar-width, 248px);
+  z-index: 900;
 
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 30px;
+  gap: 8px;
+  padding: 20px 14px;
 
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,0.04);
-
-  z-index: 999;
+  background: var(--lp-sidebar, #1c1c1c);
+  border: 1px solid var(--lp-hairline);
+  border-radius: var(--lp-r-xl, 24px);
+  box-shadow: var(--lp-shadow-2);
 }
 
-/* Скрытие на мобильных устройствах */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 8px 16px;
+  text-decoration: none;
+  color: var(--lp-label);
+  transition: opacity 0.2s ease;
+}
+
+.brand:hover {
+  opacity: 0.92;
+}
+
+.brandMark {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #ff215c;
+  box-shadow:
+    0 0 0 1px rgba(255, 33, 92, 0.35),
+    0 10px 24px rgba(255, 33, 92, 0.32);
+}
+
+.brandMark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.brandText {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;
+  min-width: 0;
+  line-height: 1;
+}
+
+.brandName {
+  font-family: var(--lp-font-display);
+  font-weight: 800;
+  font-size: 1.22rem;
+  letter-spacing: -0.045em;
+  color: #fff;
+}
+
+.brandDomain {
+  font-family: var(--lp-font-display);
+  font-weight: 650;
+  font-size: 1.05rem;
+  letter-spacing: -0.03em;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 14px;
+}
+
+.sectionLabel {
+  padding: 0 12px 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--lp-label-3);
+}
+
+.item,
+.support {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: 14px;
+  text-decoration: none;
+  color: var(--lp-label-2);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.item:hover,
+.support:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--lp-label);
+  transform: none;
+}
+
+.item.active {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.itemIcon {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.itemIcon svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.itemLabel {
+  font-size: 0.95rem;
+  font-weight: 550;
+  letter-spacing: -0.01em;
+}
+
+.support {
+  margin-top: auto;
+  border-top: 1px solid var(--lp-hairline);
+  border-radius: 0 0 14px 14px;
+  padding-top: 16px;
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: 220px;
+  }
+}
+
 @media (max-width: 768px) {
   .sidebar {
     display: none;
   }
-}
-
-/* Исправление для планшетов и маленьких экранов */
-@media (max-width: 900px) {
-  .sidebar {
-    left: 16px;
-    width: 60px;
-  }
-  
-  .item {
-    width: 44px;
-    height: 44px;
-  }
-  
-  .item svg {
-    width: 18px;
-    height: 18px;
-  }
-}
-
-/* ===== MENU ===== */
-
-.menu {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-/* ===== BUTTON ===== */
-
-.item {
-  width: 54px;
-  height: 54px;
-
-  border-radius: 50%;
-  background: #242424;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  transition: 0.25s;
-}
-
-.item svg {
-  width: 22px;
-  height: 22px;
-
-  stroke: #a5a5a5;
-  fill: none;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-
-  transition: 0.25s;
-}
-
-.item:hover {
-  background: #2f2f2f;
-}
-
-.item:hover svg {
-  stroke: #ffffff;
-}
-
-/* ACTIVE */
-
-.active {
-  background: #1f1f1f;
-}
-
-.active svg {
-  stroke: white;
 }

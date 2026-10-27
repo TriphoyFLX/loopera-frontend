@@ -1,0 +1,16 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="lpMarkBg" x1="6" y1="4" x2="36" y2="38" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF3D6E"/>
+      <stop offset="0.55" stop-color="#FF215C"/>
+      <stop offset="1" stop-color="#C30202"/>
+    </linearGradient>
+    <linearGradient id="lpMarkShine" x1="10" y1="6" x2="28" y2="22" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="40" height="40" rx="12" fill="url(#lpMarkBg)"/>
+  <rect width="40" height="40" rx="12" fill="url(#lpMarkShine)"/>
+  <path d="M20.95 9.4L17.7 15.1L17.2 14.3L23.75 14.1L40.4 21.3L17.45 17.5L17.75 16.95L20.9 22.15L18.15 23.8L15.1 18.55L15.7 18.5L12.65 24L9.7 22.4L13.05 16.75L13.55 17.55L7 17.8L6.95 14.4L13.35 14.4L13.05 14.95L9.85 9.7L12.6 8.05L15.7 13.3L15.05 13.25L18.15 7.7L20.95 9.4Z" fill="white" transform="translate(-4.2 -1.2) scale(0.92)"/>
+</svg>

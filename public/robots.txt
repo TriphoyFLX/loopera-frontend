@@ -1,0 +1,32 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /chats
+Disallow: /chats/
+Disallow: /statistics
+Disallow: /auth
+Disallow: /auth/
+Disallow: /profile
+Disallow: /api/
+
+Sitemap: https://loopera.ru/sitemap.xml
+
+User-agent: Yandex
+Allow: /
+Disallow: /admin
+Disallow: /chats
+Disallow: /statistics
+Disallow: /auth
+Disallow: /profile
+Disallow: /api/
+Crawl-delay: 1
+
+User-agent: Googlebot
+Allow: /
+Disallow: /admin
+Disallow: /chats
+Disallow: /statistics
+Disallow: /auth
+Disallow: /profile
+Disallow: /api/

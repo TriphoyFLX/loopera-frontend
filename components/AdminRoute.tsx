@@ -1,13 +1,15 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useI18n } from '../i18n/useI18n';
 
 interface AdminRouteProps {
   children: React.ReactNode;
 }
 
 const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
-  const { isAuthenticated, isAdmin, isLoading } = useAuth();
+  const { isAuthenticated, isStaff, isLoading } = useAuth();
+  const { t } = useI18n();
 
   if (isLoading) {
     return (
@@ -19,7 +21,7 @@ const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
         color: 'white',
         fontSize: '18px'
       }}>
-        Загрузка...
+        {t('loading.default')}
       </div>
     );
   }
@@ -28,7 +30,7 @@ const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
     return <Navigate to="/auth" replace />;
   }
 
-  if (!isAdmin) {
+  if (!isStaff) {
     return <Navigate to="/" replace />;
   }
 

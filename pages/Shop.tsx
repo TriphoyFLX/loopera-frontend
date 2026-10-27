@@ -1,400 +1,548 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import Modal from '../components/Modal';
+import PackPurchaseModal, { type PurchasePack } from '../components/PackPurchaseModal';
+import PackPrice from '../components/PackPrice';
+import MobilePageHeader from '../components/MobilePageHeader';
+import MobileSearchBar from '../components/MobileSearchBar';
+import { getAssetUrl } from '../utils/urls';
+import { downloadPurchasedPack } from '../utils/shopDownload';
+import { useAuthGate } from '../hooks/useAuthGate';
+import { useI18n } from '../i18n/useI18n';
+import { LOOP_COVER_COLORS } from '../utils/loopCover';
 import styles from './Shop.module.css';
 
-interface PackCardProps {
-  pack: Pack;
-  playingPreview: string | null;
-  onPlay: (id: string, url: string) => void;
-  onBuy: (id: string) => void;
-}
+const QUICK_TAGS = ['trap', 'drill', 'melody', 'drums', 'midi', 'osamason'];
 
-const PackCard: React.FC<PackCardProps> = ({ pack, playingPreview, onPlay, onBuy }) => {
-  const isPlaying = playingPreview === pack.id;
-  const navigate = useNavigate();
-
-  const handleCardClick = () => {
-    navigate(`/shop/pack/${pack.id}`);
-  };
-
-  return (
-    <div className={styles.card} onClick={handleCardClick}>
-      <div className={styles.cardImage}>
-        {pack.cover_url ? (
-          <img src={`https://loopera-lpr.vercel.app${pack.cover_url}`} alt={pack.title} />
-        ) : (
-          <div style={{ fontSize: '3rem', opacity: 0.3 }}>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 18V5l12-2v13"></path>
-              <circle cx="6" cy="18" r="3"></circle>
-              <circle cx="18" cy="16" r="3"></circle>
-            </svg>
-          </div>
-        )}
-        {pack.preview_url && (
-          <div className={styles.playOverlay}>
-            <button
-              className={styles.playBtn}
-              onClick={(e) => {
-                e.stopPropagation();
-                onPlay(pack.id, pack.preview_url!);
-              }}
-              aria-label={isPlaying ? 'Pause preview' : 'Play preview'}
-            >
-              {isPlaying ? (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <rect x="6" y="4" width="4" height="16"></rect>
-                  <rect x="14" y="4" width="4" height="16"></rect>
-                </svg>
-              ) : (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                </svg>
-              )}
-            </button>
-          </div>
-        )}
-      </div>
-
-      <div className={styles.cardContent}>
-        <div className={styles.packName}>{pack.title}</div>
-        <div className={styles.packArtist}>@{pack.username || pack.hashtag || 'Unknown'}</div>
-
-        <div className={styles.cardFooter}>
-          <div className={styles.price}>{pack.price.toFixed(2)}</div>
-          <button
-            className={styles.buyBtn}
-            onClick={(e) => {
-              e.stopPropagation();
-              onBuy(pack.id);
-            }}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="9" cy="21" r="1"></circle>
-              <circle cx="20" cy="21" r="1"></circle>
-              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-            </svg>
-            Buy
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
+type ViewMode = 'grid' | 'list';
 
 interface Pack {
-  id: string;
+  id: string | number;
   title: string;
   description?: string;
   price: number;
+  original_price?: number;
+  final_price?: number;
+  discount_percent?: number;
+  has_discount?: boolean;
   preview_url?: string;
-  preview_url_2?: string;
   voice_tag?: string;
   hashtag?: string;
   username?: string;
-  avatar_url?: string;
   cover_url?: string;
+  loops_count?: number;
   avg_rating: number;
   rating_count: number;
   sales_count: number;
   created_at: string;
-  loops_count?: number;
 }
 
+const coverColor = (id: string | number) => {
+  const n = typeof id === 'number' ? id : Number(id) || 0;
+  return LOOP_COVER_COLORS[Math.abs(Math.trunc(n)) % LOOP_COVER_COLORS.length];
+};
+
 const Shop = () => {
+  const { t } = useI18n();
+  const { requireAuth } = useAuthGate();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const searchFromUrl = searchParams.get('search') || '';
+
   const [packs, setPacks] = useState<Pack[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [search, setSearch] = useState('');
+  const [query, setQuery] = useState(searchFromUrl);
+  const [search, setSearch] = useState(searchFromUrl);
+  const [activeTag, setActiveTag] = useState(searchFromUrl);
   const [sort, setSort] = useState('created_at');
   const [order, setOrder] = useState('DESC');
+  const [view, setView] = useState<ViewMode>('grid');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
   const [playingPreview, setPlayingPreview] = useState<string | null>(null);
-  const [userBalance, setUserBalance] = useState(0);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
-  const [confirmMessage, setConfirmMessage] = useState('');
-  const [pendingPackId, setPendingPackId] = useState<string | null>(null);
+  const [pendingPack, setPendingPack] = useState<PurchasePack | null>(null);
+  const [buyBusy, setBuyBusy] = useState(false);
+  const [buyError, setBuyError] = useState<string | null>(null);
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const searchTimeout = useRef<NodeJS.Timeout | null>(null);
+  const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const searchValue = useMemo(() => {
+    if (activeTag) return activeTag;
+    return search.trim();
+  }, [activeTag, search]);
 
   useEffect(() => {
     return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-      if (searchTimeout.current) {
-        clearTimeout(searchTimeout.current);
-      }
+      audioRef.current?.pause();
+      if (searchTimeout.current) clearTimeout(searchTimeout.current);
     };
   }, []);
 
   useEffect(() => {
-    fetchPacks();
-    fetchUserBalance();
-  }, [sort, order, page]);
-
-  useEffect(() => {
-    clearTimeout(searchTimeout.current!);
-    searchTimeout.current = setTimeout(() => {
-      setPage(1);
-      fetchPacks();
-    }, 380);
-    return () => clearTimeout(searchTimeout.current!);
-  }, [search]);
+    if (!searchFromUrl) return;
+    setQuery(searchFromUrl);
+    setSearch(searchFromUrl);
+    setActiveTag(searchFromUrl);
+    setPage(1);
+  }, [searchFromUrl]);
 
   const fetchPacks = async () => {
     try {
       setLoading(true);
-      const params = new URLSearchParams({ page: page.toString(), limit: '20', sort, order, ...(search && { search }) });
-      const res = await fetch(`https://loopera-lpr.vercel.app/api/shop?${params}`);
-      if (!res.ok) throw new Error('Failed to fetch packs');
+      setError('');
+      const params = new URLSearchParams({
+        page: String(page),
+        limit: '24',
+        sort,
+        order,
+        ...(searchValue && { search: searchValue }),
+      });
+      const res = await fetch(`/api/shop?${params}`);
+      if (!res.ok) throw new Error('Не удалось загрузить товары');
       const data = await res.json();
-      setPacks(data.packs);
-      setTotalPages(data.pagination.totalPages);
-      setTotal(data.pagination.total);
+      setPacks(data.packs || []);
+      setTotalPages(data.pagination?.totalPages || 1);
+      setTotal(data.pagination?.total || 0);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : 'Ошибка загрузки');
+      setPacks([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchUserBalance = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) return;
-      const res = await fetch('https://loopera-lpr.vercel.app/api/shop/balance/my', { headers: { Authorization: `Bearer ${token}` } });
-      if (res.ok) {
-        const b = await res.json();
-        setUserBalance(b.available_balance || 0);
-      }
-    } catch {}
+  useEffect(() => {
+    void fetchPacks();
+  }, [sort, order, page, searchValue]);
+
+  const applySearch = (value?: string) => {
+    const next = (value ?? query).trim();
+    setActiveTag(value !== undefined ? next : '');
+    setQuery(next);
+    setSearch(next);
+    setPage(1);
   };
 
-  const handleBuyPack = async (packId: string) => {
-    const token = localStorage.getItem('token');
-    if (!token) { setModalMessage('Please login to buy packs'); setModalOpen(true); return; }
-
-    // Find the pack to get price
-    const pack = packs.find(p => p.id === packId);
-    if (!pack) return;
-
-    // Show confirm modal
-    setConfirmMessage(`Купить "${pack.title}" за ${pack.price} коинов?`);
-    setPendingPackId(packId);
-    setConfirmModalOpen(true);
+  const onQueryChange = (value: string) => {
+    setQuery(value);
+    setActiveTag('');
+    if (searchTimeout.current) clearTimeout(searchTimeout.current);
+    searchTimeout.current = setTimeout(() => {
+      setSearch(value.trim());
+      setPage(1);
+    }, 350);
   };
 
-  const handleConfirmPurchase = async () => {
-    setConfirmModalOpen(false);
-    const packId = pendingPackId;
-    if (!packId) return;
-
-    const token = localStorage.getItem('token');
-    const pack = packs.find(p => p.id === packId);
+  const handleBuyPack = (packId: string) => {
+    const pack = packs.find((p) => String(p.id) === String(packId));
     if (!pack) return;
+    requireAuth(() => {
+      setBuyError(null);
+      setPendingPack(pack);
+      setConfirmModalOpen(true);
+    }, 'buy');
+  };
+
+  const handleConfirmPurchase = async (method: 'card' | 'balance') => {
+    const pack = pendingPack;
+    if (!pack) return;
+    const packId = String(pack.id);
+    const token = localStorage.getItem('token');
+    setBuyBusy(true);
+    setBuyError(null);
 
     try {
-      const res = await fetch(`https://loopera-lpr.vercel.app/api/shop/${packId}/buy`, {
+      const res = await fetch(`/api/shop/${packId}/buy`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ payment_method: method }),
       });
-
-      if (!res.ok) {
-        const e = await res.json();
-        throw new Error(e.error || 'Failed to buy pack');
-      }
-
       const data = await res.json();
-
-      if (data.message) {
-        setModalMessage('Pack purchased successfully!');
-        setModalOpen(true);
-
-        // Auto-download the pack
-        try {
-          const downloadRes = await fetch(`https://loopera-lpr.vercel.app/api/shop/${packId}/download`, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
-
-          if (downloadRes.ok) {
-            const blob = await downloadRes.blob();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${pack.title}.zip`;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
-          }
-        } catch (downloadErr) {
-          console.error('Auto-download failed:', downloadErr);
-        }
-
-        fetchUserBalance();
-        fetchPacks();
-
-        // Redirect to profile purchases section
-        window.location.href = '/profile#purchases';
+      if (!res.ok) throw new Error(data.error || t('shopPage.paymentError'));
+      if (data.confirmation_url) {
+        localStorage.setItem('pending_payment_id', data.payment_id || '');
+        window.location.href = data.confirmation_url;
+        return;
       }
-    } catch (err) {
-      setModalMessage(err instanceof Error ? err.message : 'Failed to buy pack');
+      setConfirmModalOpen(false);
+      setPendingPack(null);
+      setModalMessage('Пак куплен');
       setModalOpen(true);
+      try {
+        await downloadPurchasedPack(packId, { token, fallbackTitle: pack.title });
+      } catch {
+        /* ignore */
+      }
+      void fetchPacks();
+      window.location.href = '/profile#purchases';
+    } catch (err) {
+      setBuyError(err instanceof Error ? err.message : t('shopPage.paymentError'));
+    } finally {
+      setBuyBusy(false);
     }
   };
 
   const playPreview = (packId: string, previewUrl: string) => {
     if (!previewUrl) return;
-    if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
-    if (playingPreview === packId) { setPlayingPreview(null); return; }
+    audioRef.current?.pause();
+    audioRef.current = null;
+    if (playingPreview === packId) {
+      setPlayingPreview(null);
+      return;
+    }
     const audio = new Audio(previewUrl);
     audioRef.current = audio;
-    audio.play();
+    void audio.play();
     audio.onended = () => setPlayingPreview(null);
     setPlayingPreview(packId);
   };
 
-  if (loading && packs.length === 0) {
-    return (
-      <div className={styles.shopContainer}>
-        <div className={styles.loading}>
-          <div className={styles.spinner} />
-          <p className={styles.loadingText}>Loading packs…</p>
-        </div>
-      </div>
-    );
-  }
+  const openPack = (id: string | number) => navigate(`/shop/pack/${id}`);
 
-  if (error) {
-    return (
-      <div className={styles.shopContainer}>
-        <div className={styles.error}>
-          <p className={styles.errorMsg}>⚠ {error}</p>
-          <button className={styles.retryBtn} onClick={fetchPacks}>Try again</button>
-        </div>
-      </div>
+  const renderCover = (pack: Pack) =>
+    pack.cover_url ? (
+      <img src={getAssetUrl(pack.cover_url)} alt="" />
+    ) : (
+      <div className={styles.coverSolid} style={{ backgroundColor: coverColor(pack.id) }} />
     );
-  }
+
+  const isDrumPack = (pack: Pack) => {
+    const hay = `${pack.title} ${pack.hashtag || ''} ${pack.voice_tag || ''} ${pack.description || ''}`.toLowerCase();
+    return /drum|kit|oneshot|percussion|808|hats/.test(hay);
+  };
+
+  const drumPacks = useMemo(() => {
+    const drums = packs.filter(isDrumPack);
+    return drums.length >= 2 ? drums : packs.slice(0, Math.ceil(packs.length / 2) || packs.length);
+  }, [packs]);
+
+  const presetPacks = useMemo(() => {
+    const presets = packs.filter((p) => !isDrumPack(p));
+    return presets.length >= 2 ? presets : packs.slice(Math.floor(packs.length / 2));
+  }, [packs]);
+
+  const formatPrice = (pack: Pack) => {
+    const price = pack.final_price ?? pack.price;
+    return `₽${Number(price || 0).toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
+  const renderMobileCarousel = (title: string, items: Pack[]) => (
+    <section className={styles.mobileSection}>
+      <div className={styles.mobileSectionHead}>
+        <h2>{title}</h2>
+        <Link to="/shop">Смотреть все</Link>
+      </div>
+      <div className={styles.mobileRail}>
+        {items.map((pack) => (
+          <article
+            key={`${title}-${pack.id}`}
+            className={styles.mobileCard}
+            onClick={() => openPack(pack.id)}
+          >
+            <div className={styles.mobileCover}>{renderCover(pack)}</div>
+            <h3 className={styles.mobileCardTitle}>{pack.title}</h3>
+            <p className={styles.mobileCardAuthor}>{pack.username || pack.hashtag || 'loopera'}</p>
+            <button
+              type="button"
+              className={styles.mobileBuy}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleBuyPack(String(pack.id));
+              }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true">
+                <path d="M6 7h12l-1 13H7L6 7z" />
+                <path d="M9 7a3 3 0 0 1 6 0" />
+              </svg>
+              <span>{formatPrice(pack)}</span>
+            </button>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
 
   return (
     <>
-      <div className={styles.shopContainer}>
-      <header className={styles.header}>
-        <div className={styles.headerTop}>
-          <h1 className={styles.title}>Sound Packs</h1>
-          <div className={styles.headerActions}>
-            <a href="/create-pack" className={styles.createBtn}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
+      <div className={styles.page}>
+        <div className={styles.mobileChrome}>
+          <MobilePageHeader title="Маркетплейс" align="start" />
+          <MobileSearchBar
+            initialQuery={query}
+            filterTo="/shop"
+            onSubmitQuery={(q) => applySearch(q)}
+          />
+          {!loading && packs.length > 0 && (
+            <>
+              {renderMobileCarousel('Drum Kits', drumPacks)}
+              {renderMobileCarousel('Presets', presetPacks)}
+            </>
+          )}
+          {loading && packs.length === 0 && <div className={styles.state}>Загрузка…</div>}
+        </div>
+
+        <header className={styles.head}>
+          <div>
+            <h1 className={styles.title}>Маркетплейс</h1>
+          </div>
+          <Link to="/create-pack" className={styles.createBtn}>
+            Создать пак
+          </Link>
+        </header>
+
+        <div className={`${styles.searchRow} ${styles.desktopShop}`}>
+          <form
+            className={styles.search}
+            onSubmit={(e) => {
+              e.preventDefault();
+              applySearch(query);
+            }}
+          >
+            <span className={styles.searchIcon} aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
               </svg>
-              <span>Create Pack</span>
-            </a>
-            {userBalance > 0 && (
-              <div className={styles.balance}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                </svg>
-                <span className={styles.balanceAmount}>{userBalance.toLocaleString()}</span>
-              </div>
-            )}
+            </span>
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => onQueryChange(e.target.value)}
+              placeholder="Искать паки"
+              aria-label="Искать паки"
+            />
+          </form>
+
+          <div className={styles.tags}>
+            {QUICK_TAGS.map((tag) => (
+              <button
+                key={tag}
+                type="button"
+                className={`${styles.tag} ${activeTag.toLowerCase() === tag ? styles.tagActive : ''}`}
+                onClick={() => applySearch(tag)}
+              >
+                {tag}
+              </button>
+            ))}
           </div>
         </div>
-      </header>
 
-      <div className={styles.filters}>
-        <div className={styles.search}>
-          <input
-            type="text"
-            placeholder="Search packs..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-          />
+        <div className={`${styles.filters} ${styles.desktopShop}`}>
+          <select
+            value={sort}
+            onChange={(e) => {
+              setSort(e.target.value);
+              setPage(1);
+            }}
+            aria-label="Сортировка"
+          >
+            <option value="created_at">Новые</option>
+            <option value="sales_count">Популярные</option>
+            <option value="avg_rating">По рейтингу</option>
+            <option value="price">По цене</option>
+            <option value="title">По названию</option>
+          </select>
+
+          <select
+            value={order}
+            onChange={(e) => {
+              setOrder(e.target.value);
+              setPage(1);
+            }}
+            aria-label="Порядок"
+          >
+            <option value="DESC">По убыванию</option>
+            <option value="ASC">По возрастанию</option>
+          </select>
+
+          <div className={styles.viewToggle} role="group" aria-label="Вид">
+            <button
+              type="button"
+              className={view === 'list' ? styles.active : ''}
+              onClick={() => setView('list')}
+              aria-label="Список"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              className={view === 'grid' ? styles.active : ''}
+              onClick={() => setView('grid')}
+              aria-label="Сетка"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="3" width="7" height="7" rx="1" />
+                <rect x="3" y="14" width="7" height="7" rx="1" />
+                <rect x="14" y="14" width="7" height="7" rx="1" />
+              </svg>
+            </button>
+          </div>
         </div>
 
-        <select className={styles.select} value={sort} onChange={e => { setSort(e.target.value); setPage(1); }}>
-          <option value="created_at">Newest</option>
-          <option value="sales_count">Popular</option>
-          <option value="avg_rating">Top Rated</option>
-          <option value="price">Price</option>
-          <option value="title">Name</option>
-        </select>
+        {error && (
+          <div className={`${styles.state} ${styles.desktopShop}`}>
+            <p>{error}</p>
+            <button type="button" onClick={() => void fetchPacks()}>
+              Попробовать снова
+            </button>
+          </div>
+        )}
 
-        <select className={styles.select} value={order} onChange={e => { setOrder(e.target.value); setPage(1); }}>
-          <option value="DESC">↓ Desc</option>
-          <option value="ASC">↑ Asc</option>
-        </select>
+        {loading && packs.length === 0 ? (
+          <div className={`${styles.state} ${styles.desktopShop}`}>Загрузка…</div>
+        ) : packs.length === 0 ? (
+          <div className={`${styles.state} ${styles.desktopShop}`}>Ничего не найдено</div>
+        ) : view === 'list' ? (
+          <div className={`${styles.list} ${styles.desktopShop}`}>
+            {packs.map((pack, i) => (
+              <div
+                key={pack.id}
+                className={styles.row}
+                onClick={() => openPack(pack.id)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') openPack(pack.id);
+                }}
+              >
+                <span className={styles.rowIndex}>{i + 1 + (page - 1) * 24}</span>
+                <div className={styles.rowCover}>{renderCover(pack)}</div>
+                <div className={styles.rowInfo}>
+                  <p className={styles.rowTitle}>{pack.title}</p>
+                  <p className={styles.rowAuthor}>@{pack.username || pack.hashtag || 'loopera'}</p>
+                </div>
+                <div className={styles.rowPrice}>
+                  <PackPrice pack={pack} size="sm" />
+                </div>
+                <button
+                  type="button"
+                  className={styles.rowBuy}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleBuyPack(String(pack.id));
+                  }}
+                >
+                  Купить
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className={`${styles.grid} ${styles.desktopShop}`}>
+            {packs.map((pack) => {
+              const isPlaying = playingPreview === String(pack.id);
+              return (
+                <article
+                  key={pack.id}
+                  className={styles.card}
+                  onClick={() => openPack(pack.id)}
+                >
+                  <div className={styles.cardCover}>
+                    {(pack.has_discount || (pack.discount_percent ?? 0) > 0) && (
+                      <span className={styles.discount}>-{pack.discount_percent}%</span>
+                    )}
+                    {renderCover(pack)}
+                    {pack.preview_url && (
+                      <button
+                        type="button"
+                        className={styles.playBtn}
+                        aria-label={isPlaying ? 'Пауза' : 'Превью'}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          playPreview(String(pack.id), pack.preview_url!);
+                        }}
+                      >
+                        {isPlaying ? (
+                          <svg viewBox="0 0 24 24" fill="currentColor">
+                            <rect x="6" y="5" width="4" height="14" rx="1" />
+                            <rect x="14" y="5" width="4" height="14" rx="1" />
+                          </svg>
+                        ) : (
+                          <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        )}
+                      </button>
+                    )}
+                  </div>
+                  <h3 className={styles.cardTitle}>{pack.title}</h3>
+                  <p className={styles.cardAuthor}>@{pack.username || pack.hashtag || 'loopera'}</p>
+                  <div className={styles.cardFooter}>
+                    <button
+                      type="button"
+                      className={styles.buyBtn}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleBuyPack(String(pack.id));
+                      }}
+                    >
+                      Купить
+                    </button>
+                    <span className={styles.priceMuted}>
+                      <PackPrice pack={pack} size="sm" />
+                    </span>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
 
-        {total > 0 && (
-          <span className={styles.total}>{total} packs</span>
+        {totalPages > 1 && (
+          <div className={styles.more}>
+            <button
+              type="button"
+              className={styles.pageBtn}
+              disabled={page === 1}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+            >
+              Назад
+            </button>
+            <span className={styles.pageInfo}>
+              {page} / {totalPages} · {total}
+            </span>
+            <button
+              type="button"
+              className={styles.pageBtn}
+              disabled={page === totalPages}
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            >
+              Далее
+            </button>
+          </div>
         )}
       </div>
 
-      {packs.length === 0 && !loading ? (
-        <div className={styles.empty}>
-          <div className={styles.emptyIcon}>
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="8" x2="12" y2="12"></line>
-              <line x1="12" y1="16" x2="12.01" y2="16"></line>
-            </svg>
-          </div>
-          <h3>No packs found</h3>
-          <p>Try adjusting your search or filters</p>
-        </div>
-      ) : (
-        <div className={styles.grid}>
-          {packs.map((pack) => (
-            <PackCard
-              key={pack.id}
-              pack={pack}
-              playingPreview={playingPreview}
-              onPlay={playPreview}
-              onBuy={handleBuyPack}
-            />
-          ))}
-        </div>
-      )}
+      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+        <p>{modalMessage}</p>
+      </Modal>
 
-      {totalPages > 1 && (
-        <div className={styles.pagination}>
-          <button className={styles.pageBtn} onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>
-            ← Prev
-          </button>
-          <span className={styles.pageInfo}>Page {page} / {totalPages} · {total} packs</span>
-          <button className={styles.pageBtn} onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}>
-            Next →
-          </button>
-        </div>
-      )}
-    </div>
-
-    <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Уведомление">
-      <p>{modalMessage}</p>
-    </Modal>
-
-    <Modal 
-      isOpen={confirmModalOpen} 
-      onClose={() => setConfirmModalOpen(false)} 
-      title="Подтверждение покупки"
-      onConfirm={handleConfirmPurchase}
-      confirmText="Купить"
-      cancelText="Отмена"
-    >
-      <p>{confirmMessage}</p>
-    </Modal>
+      <PackPurchaseModal
+        open={confirmModalOpen}
+        pack={pendingPack}
+        onClose={() => {
+          if (buyBusy) return;
+          setConfirmModalOpen(false);
+          setPendingPack(null);
+          setBuyError(null);
+        }}
+        onPay={handleConfirmPurchase}
+        busy={buyBusy}
+        error={buyError}
+      />
     </>
   );
 };

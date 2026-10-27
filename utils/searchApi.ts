@@ -1,8 +1,9 @@
 import { tokenStorage } from './tokenStorage';
+import { getApiBaseUrl } from './urls';
+import { apiFetch, parseApiJson } from './http';
 
 const getBaseURL = () => {
-  // Жестко задаем URL бэкенда для обхода проблем с env
-  return 'https://loopera-lpr.vercel.app/api';
+  return getApiBaseUrl();
 };
 
 export interface LoopArtist {
@@ -18,47 +19,43 @@ class SearchApi {
   }
   private baseURL: string;
 
-  private async request(endpoint: string, options: RequestInit = {}) {
+  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
 
-    // Всегда берем актуальный токен через tokenStorage
     const currentToken = tokenStorage.getToken();
     if (currentToken) {
       headers.Authorization = `Bearer ${currentToken}`;
     }
 
-    const response = await fetch(url, {
+    const response = await apiFetch(url, {
       ...options,
       headers,
     });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
+    return parseApiJson<T>(response);
   }
 
   // Поиск артистов по имени или хештегу
   async searchArtists(query: string): Promise<{ artists: LoopArtist[] }> {
-    if (!query || query.length < 2) {
+    const q = query.trim();
+    if (!q) {
       return { artists: [] };
     }
 
-    return this.request(`/search/artists?q=${encodeURIComponent(query)}`);
+    return this.request(`/search/artists?q=${encodeURIComponent(q)}`);
   }
 
   // Поиск лупов
   async searchLoops(query: string): Promise<{ loops: any[] }> {
-    if (!query || query.length < 2) {
+    const q = query.trim();
+    if (!q) {
       return { loops: [] };
     }
 
-    return this.request(`/search/loops?q=${encodeURIComponent(query)}`);
+    return this.request(`/search/loops?q=${encodeURIComponent(q)}`);
   }
 }
 

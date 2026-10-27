@@ -1,8 +1,9 @@
 import { tokenStorage } from './tokenStorage';
+import { getApiBaseUrl } from './urls';
+import { apiFetch, parseApiJson } from './http';
 
 const getBaseURL = () => {
-  // Жестко задаем URL бэкенда для обхода проблем с env
-  return 'https://loopera-lpr.vercel.app/api';
+  return getApiBaseUrl();
 };
 
 interface Subscription {
@@ -38,30 +39,23 @@ class SubscriptionApi {
     // Токен теперь берется через tokenStorage в каждом запросе
   }
 
-  private async request(endpoint: string, options: RequestInit = {}) {
+  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const currentToken = tokenStorage.getToken();
     const url = `${getBaseURL()}${endpoint}`;
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
 
-    // Всегда берем актуальный токен через tokenStorage
     if (currentToken) {
       headers.Authorization = `Bearer ${currentToken}`;
     }
 
-    const response = await fetch(url, {
+    const response = await apiFetch(url, {
       ...options,
       headers,
     });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      console.error('SubscriptionApi.request() error:', errorData);
-      throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
+    return parseApiJson<T>(response);
   }
 
   // Получение подписок пользователя

@@ -1,0 +1,139 @@
+/* Loopera redesign tokens — mockup shell */
+
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
+
+:root {
+  --lp-bg: #121212;
+  --lp-bg-raised: #161616;
+  --lp-surface: #1a1a1a;
+  --lp-surface-2: #222222;
+  --lp-surface-3: #2a2a2a;
+  --lp-sidebar: #1c1c1c;
+  --lp-sidebar-width: 248px;
+  --lp-sidebar-gap: 16px;
+
+  --lp-hairline: rgba(255, 255, 255, 0.08);
+  --lp-hairline-strong: rgba(255, 255, 255, 0.16);
+
+  --lp-label: #f5f5f7;
+  --lp-label-2: rgba(235, 235, 245, 0.62);
+  --lp-label-3: rgba(235, 235, 245, 0.36);
+
+  --lp-accent: #ff215c;
+  --lp-accent-soft: rgba(255, 33, 92, 0.16);
+  --lp-gold: #d9b26a;
+  --lp-gold-soft: rgba(217, 178, 106, 0.14);
+  --lp-green: #25cf83;
+  --lp-status: #25cf83;
+
+  --lp-cover-1: #2558cf;
+  --lp-cover-2: #c30202;
+  --lp-cover-3: #ff215c;
+  --lp-cover-4: #25cf83;
+
+  --lp-r-xs: 10px;
+  --lp-r-sm: 12px;
+  --lp-r-md: 16px;
+  --lp-r-lg: 20px;
+  --lp-r-xl: 24px;
+  --lp-r-pill: 999px;
+
+  --lp-ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --lp-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --lp-shadow-2: 0 12px 40px rgba(0, 0, 0, 0.45);
+  --lp-shadow-3: 0 28px 80px rgba(0, 0, 0, 0.55);
+
+  --lp-font-display: 'Manrope', system-ui, sans-serif;
+  --lp-font: 'DM Sans', system-ui, sans-serif;
+  --lp-font-body: var(--lp-font);
+}
+
+html,
+body,
+#root,
+.app-layout,
+.main-content,
+.page {
+  background: var(--lp-bg);
+}
+
+/* Mobile: furthest canvas is pure black (kills grey #121212 edges) */
+@media (max-width: 767px) {
+  :root {
+    --lp-bg: #000000;
+  }
+
+  html,
+  body {
+    overflow-x: hidden !important;
+    overscroll-behavior-x: none;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  html,
+  body,
+  #root,
+  .app-layout,
+  .main-content,
+  .page,
+  .content-wrapper {
+    background: #000000 !important;
+    background-color: #000000 !important;
+  }
+
+  #root,
+  .app-layout,
+  .main-content,
+  .content-wrapper {
+    overflow-x: hidden !important;
+    max-width: 100%;
+  }
+}
+
+body {
+  font-family: var(--lp-font);
+  color: var(--lp-label);
+  letter-spacing: -0.01em;
+}
+
+h1,
+h2,
+h3,
+.lp-display {
+  font-family: var(--lp-font-display);
+  letter-spacing: -0.03em;
+}
+
+.lp-surface {
+  background: var(--lp-surface);
+  border: 1px solid var(--lp-hairline);
+  border-radius: var(--lp-r-lg);
+}
+
+.lp-segmented {
+  display: inline-flex;
+  padding: 3px;
+  gap: 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--lp-hairline);
+}
+
+.lp-segmented button {
+  border: 0;
+  background: transparent;
+  color: var(--lp-label-2);
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 1.05rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.25s var(--lp-ease), color 0.25s var(--lp-ease);
+}
+
+.lp-segmented button[aria-pressed='true'],
+.lp-segmented button.active {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--lp-label);
+}

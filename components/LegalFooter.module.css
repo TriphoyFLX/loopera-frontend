@@ -1,0 +1,31 @@
+.footer {
+  margin-top: 48px;
+  padding: 24px 20px 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.inner {
+  max-width: 980px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  justify-content: center;
+}
+
+.inner a {
+  color: rgba(235, 235, 245, 0.45);
+  text-decoration: none;
+  font-size: 0.82rem;
+  transition: color 0.2s ease;
+}
+
+.inner a:hover {
+  color: #ff2a55;
+}
+
+@media (max-width: 767px) {
+  .footer {
+    display: none;
+  }
+}

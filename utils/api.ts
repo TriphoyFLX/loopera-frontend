@@ -1,45 +1,15 @@
+import { getApiBaseUrl } from './urls';
+import { apiFetch, parseApiJson } from './http';
+
 class API {
   private baseURL: string;
 
   constructor() {
-    // Use HTTPS backend URL
-    this.baseURL = 'https://loopera-lpr.vercel.app/api';
+    this.baseURL = getApiBaseUrl();
   }
 
-  private async handleResponse(response: Response) {
-    const contentType = response.headers.get('content-type');
-    const isJson = contentType && contentType.includes('application/json');
-    
-    const data = isJson ? await response.json() : await response.text();
-
-    if (!response.ok) {
-      console.error('API Error Response:', {
-        status: response.status,
-        statusText: response.statusText,
-        data
-      });
-      
-      // Handle authentication errors
-      if (response.status === 401) {
-        const errorMessage = typeof data === 'string' 
-          ? data 
-          : data.message || 'Сессия истекла. Пожалуйста, войдите снова.';
-        
-        // Clear token from localStorage
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        
-        throw new Error(errorMessage);
-      }
-      
-      const errorMessage = typeof data === 'string' 
-        ? data 
-        : data.message || `HTTP error! status: ${response.status}`;
-      
-      throw new Error(errorMessage);
-    }
-    
-    return data;
+  private async handleResponse(response: Response): Promise<any> {
+    return parseApiJson(response);
   }
 
   private getHeaders(token?: string) {
@@ -87,7 +57,7 @@ class API {
     try {
       console.log('API register called with:', { ...credentials, password: '***' });
       
-      const response = await fetch(`${this.baseURL}/auth/register`, {
+      const response = await apiFetch(`${this.baseURL}/auth/register`, {
         method: 'POST',
         headers: this.getHeaders(),
         body: JSON.stringify(credentials)
@@ -102,7 +72,7 @@ class API {
 
   async verifyEmail(email: string, code: string) {
     try {
-      const response = await fetch(`${this.baseURL}/auth/verify-email`, {
+      const response = await apiFetch(`${this.baseURL}/auth/verify-email`, {
         method: 'POST',
         headers: this.getHeaders(),
         body: JSON.stringify({ email, code })
@@ -117,7 +87,7 @@ class API {
 
   async resendVerificationCode(email: string) {
     try {
-      const response = await fetch(`${this.baseURL}/auth/resend-verification`, {
+      const response = await apiFetch(`${this.baseURL}/auth/resend-verification`, {
         method: 'POST',
         headers: this.getHeaders(),
         body: JSON.stringify({ email })
@@ -132,7 +102,7 @@ class API {
 
   async forgotPassword(email: string) {
     try {
-      const response = await fetch(`${this.baseURL}/auth/forgot-password`, {
+      const response = await apiFetch(`${this.baseURL}/auth/forgot-password`, {
         method: 'POST',
         headers: this.getHeaders(),
         body: JSON.stringify({ email })
@@ -147,7 +117,7 @@ class API {
 
   async resetPassword(email: string, code: string, newPassword: string) {
     try {
-      const response = await fetch(`${this.baseURL}/auth/reset-password`, {
+      const response = await apiFetch(`${this.baseURL}/auth/reset-password`, {
         method: 'POST',
         headers: this.getHeaders(),
         body: JSON.stringify({ email, code, newPassword })
@@ -162,7 +132,7 @@ class API {
 
   async uploadLoop(formData: FormData, token: string) {
     try {
-      const response = await fetch(`${this.baseURL}/loops/upload`, {
+      const response = await apiFetch(`${this.baseURL}/loops/upload`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -179,22 +149,29 @@ class API {
   }
 
   async getUserLoops(token: string, page: number = 1, limit: number = 6) {
-    try {
-      const response = await fetch(`${this.baseURL}/loops/my?page=${page}&limit=${limit}`, {
+      const response = await apiFetch(`${this.baseURL}/loops/my?page=${page}&limit=${limit}`, {
         method: 'GET',
         headers: this.getHeaders(token)
       });
 
       return await this.handleResponse(response);
-    } catch (error) {
-      console.error('Get user loops error:', error);
-      throw error;
-    }
+  }
+
+  async getLoopsByUser(userIdOrUsername: string | number, page: number = 1, limit: number = 50, token?: string) {
+      const response = await apiFetch(
+        `${this.baseURL}/loops/user/${encodeURIComponent(String(userIdOrUsername))}?page=${page}&limit=${limit}`,
+        {
+          method: 'GET',
+          headers: this.getHeaders(token),
+        },
+      );
+
+      return await this.handleResponse(response);
   }
 
   async getUserCreatedPacks(token: string) {
     try {
-      const response = await fetch(`${this.baseURL}/shop/my/created-packs`, {
+      const response = await apiFetch(`${this.baseURL}/shop/my/created-packs`, {
         method: 'GET',
         headers: this.getHeaders(token)
       });
@@ -208,7 +185,7 @@ class API {
 
   async getUserPurchasedPacks(token: string) {
     try {
-      const response = await fetch(`${this.baseURL}/shop/my/packs`, {
+      const response = await apiFetch(`${this.baseURL}/shop/my/packs`, {
         method: 'GET',
         headers: this.getHeaders(token)
       });
@@ -222,7 +199,7 @@ class API {
 
   async getUserBalance(token: string) {
     try {
-      const response = await fetch(`${this.baseURL}/shop/balance/my`, {
+      const response = await apiFetch(`${this.baseURL}/shop/balance/my`, {
         method: 'GET',
         headers: this.getHeaders(token)
       });
@@ -236,7 +213,7 @@ class API {
 
   async getTransactionHistory(token: string) {
     try {
-      const response = await fetch(`${this.baseURL}/shop/history`, {
+      const response = await apiFetch(`${this.baseURL}/shop/history`, {
         method: 'GET',
         headers: this.getHeaders(token)
       });
@@ -250,7 +227,7 @@ class API {
 
   async deleteLoop(id: number, token: string) {
     try {
-      const response = await fetch(`${this.baseURL}/loops/${id}`, {
+      const response = await apiFetch(`${this.baseURL}/loops/${id}`, {
         method: 'DELETE',
         headers: this.getHeaders(token)
       });
@@ -262,7 +239,19 @@ class API {
     }
   }
 
-  async getAllLoops(page: number = 1, limit: number = 6, token?: string, sortBy: string = 'created_at', tag?: string, genre?: string, minBpm?: number, maxBpm?: number, key?: string, search?: string) {
+  async getAllLoops(
+    page: number = 1,
+    limit: number = 6,
+    token?: string,
+    sortBy: string = 'created_at',
+    tag?: string,
+    genre?: string,
+    minBpm?: number,
+    maxBpm?: number,
+    key?: string,
+    search?: string,
+    mood?: string,
+  ) {
     try {
       let url = `${this.baseURL}/loops?page=${page}&limit=${limit}&sortBy=${sortBy}`;
       if (tag) url += `&tag=${encodeURIComponent(tag)}`;
@@ -271,8 +260,9 @@ class API {
       if (maxBpm) url += `&maxBpm=${maxBpm}`;
       if (key) url += `&key=${encodeURIComponent(key)}`;
       if (search) url += `&search=${encodeURIComponent(search)}`;
+      if (mood) url += `&mood=${encodeURIComponent(mood)}`;
       
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         method: 'GET',
         headers: this.getHeaders(token)
       });
@@ -284,9 +274,23 @@ class API {
     }
   }
 
+  async getForYouLoops(page: number = 1, limit: number = 12, token?: string) {
+    try {
+      const response = await apiFetch(`${this.baseURL}/loops/for-you?page=${page}&limit=${limit}`, {
+        method: 'GET',
+        headers: this.getHeaders(token),
+      });
+
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Get for-you loops error:', error);
+      throw error;
+    }
+  }
+
   async getRandomLoops(limit: number = 10) {
     try {
-      const response = await fetch(`${this.baseURL}/loops/random?limit=${limit}`, {
+      const response = await apiFetch(`${this.baseURL}/loops/random?limit=${limit}`, {
         method: 'GET',
         headers: this.getHeaders()
       });
@@ -300,7 +304,7 @@ class API {
 
   async getPopularHashtags(limit: number = 20) {
     try {
-      const response = await fetch(`${this.baseURL}/loops/hashtags/popular?limit=${limit}`, {
+      const response = await apiFetch(`${this.baseURL}/loops/hashtags/popular?limit=${limit}`, {
         method: 'GET',
         headers: this.getHeaders()
       });
@@ -312,9 +316,22 @@ class API {
     }
   }
 
+  async uploadAvatar(file: File, token: string) {
+    const formData = new FormData();
+    formData.append('avatar', file);
+    const response = await apiFetch(`${this.baseURL}/users/avatar`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+    return await this.handleResponse(response);
+  }
+
   async getUserStats(token: string) {
     try {
-      const response = await fetch(`${this.baseURL}/loops/stats`, {
+      const response = await apiFetch(`${this.baseURL}/loops/stats`, {
         method: 'GET',
         headers: this.getHeaders(token)
       });
@@ -328,7 +345,7 @@ class API {
 
   async getUserStatsHistory(token: string, period: string = 'week') {
     try {
-      const response = await fetch(`${this.baseURL}/loops/stats/history?period=${period}`, {
+      const response = await apiFetch(`${this.baseURL}/loops/stats/history?period=${period}`, {
         method: 'GET',
         headers: this.getHeaders(token)
       });
@@ -340,9 +357,27 @@ class API {
     }
   }
 
+  async trackLoopPlay(
+    loopId: number,
+    payload: { listened_seconds: number; duration_seconds?: number; completed?: boolean },
+    token?: string,
+  ) {
+    try {
+      const response = await apiFetch(`${this.baseURL}/loops/${loopId}/play`, {
+        method: 'POST',
+        headers: this.getHeaders(token),
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) return null;
+      return await response.json().catch(() => null);
+    } catch {
+      return null;
+    }
+  }
+
   async trackTelegramClick(loopId: number, token: string) {
     try {
-      const response = await fetch(`${this.baseURL}/loops/telegram-click/${loopId}`, {
+      const response = await apiFetch(`${this.baseURL}/loops/telegram-click/${loopId}`, {
         method: 'POST',
         headers: this.getHeaders(token)
       });
@@ -356,7 +391,7 @@ class API {
 
   async uploadBeat(formData: FormData, token: string) {
     try {
-      const response = await fetch(`${this.baseURL}/beats/upload`, {
+      const response = await apiFetch(`${this.baseURL}/beats/upload`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -371,12 +406,46 @@ class API {
     }
   }
 
+  async generateMelody(formData: FormData, token: string) {
+    try {
+      const response = await apiFetch(`${this.baseURL}/melody/generate`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Generate melody error:', error);
+      throw error;
+    }
+  }
+
+  async rewriteMelody(formData: FormData, token: string) {
+    try {
+      const response = await apiFetch(`${this.baseURL}/melody/rewrite`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      return await this.handleResponse(response);
+    } catch (error) {
+      console.error('Rewrite melody error:', error);
+      throw error;
+    }
+  }
+
   async getAllBeats(page: number = 1, limit: number = 20, user_id?: number) {
     try {
       let url = `${this.baseURL}/beats?page=${page}&limit=${limit}`;
       if (user_id) url += `&user_id=${user_id}`;
       
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         method: 'GET',
         headers: this.getHeaders()
       });
@@ -390,7 +459,7 @@ class API {
 
   async getBeatById(id: number) {
     try {
-      const response = await fetch(`${this.baseURL}/beats/${id}`, {
+      const response = await apiFetch(`${this.baseURL}/beats/${id}`, {
         method: 'GET',
         headers: this.getHeaders()
       });
@@ -404,7 +473,7 @@ class API {
 
   async getLoopCollaborations(loopId: number) {
     try {
-      const response = await fetch(`${this.baseURL}/beats/loop/${loopId}/collaborations`, {
+      const response = await apiFetch(`${this.baseURL}/beats/loop/${loopId}/collaborations`, {
         method: 'GET',
         headers: this.getHeaders()
       });
@@ -418,7 +487,7 @@ class API {
 
   async deleteBeat(id: number, token: string) {
     try {
-      const response = await fetch(`${this.baseURL}/beats/${id}`, {
+      const response = await apiFetch(`${this.baseURL}/beats/${id}`, {
         method: 'DELETE',
         headers: this.getHeaders(token)
       });
@@ -428,6 +497,208 @@ class API {
       console.error('Delete beat error:', error);
       throw error;
     }
+  }
+
+  async getLoopTokFeed(
+    page: number = 1,
+    limit: number = 10,
+    token?: string,
+    mode: 'fyp' | 'latest' = 'fyp',
+  ) {
+    const response = await apiFetch(
+      `${this.baseURL}/looptok/feed?page=${page}&limit=${limit}&mode=${mode}`,
+      {
+        method: 'GET',
+        headers: this.getHeaders(token),
+      },
+    );
+    return await this.handleResponse(response);
+  }
+
+  async uploadLoopTok(formData: FormData, token: string) {
+    const response = await apiFetch(`${this.baseURL}/looptok/upload`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+    return await this.handleResponse(response);
+  }
+
+  async toggleLoopTokLike(postId: number, token: string) {
+    const response = await apiFetch(`${this.baseURL}/looptok/${postId}/like`, {
+      method: 'POST',
+      headers: this.getHeaders(token),
+    });
+    return await this.handleResponse(response);
+  }
+
+  async trackLoopTokView(postId: number) {
+    const response = await apiFetch(`${this.baseURL}/looptok/${postId}/view`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+    });
+    return await this.handleResponse(response);
+  }
+
+  async trackLoopTokShare(postId: number) {
+    const response = await apiFetch(`${this.baseURL}/looptok/${postId}/share`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+    });
+    return await this.handleResponse(response);
+  }
+
+  async getLoopById(loopId: number) {
+    const response = await apiFetch(`${this.baseURL}/loops/${loopId}`, {
+      method: 'GET',
+      headers: this.getHeaders(),
+    });
+    return await this.handleResponse(response);
+  }
+
+  async getLoopComments(loopId: number, page: number = 1, limit: number = 40) {
+    const response = await apiFetch(
+      `${this.baseURL}/loops/${loopId}/comments?page=${page}&limit=${limit}`,
+      {
+        method: 'GET',
+        headers: this.getHeaders(),
+      },
+    );
+    return await this.handleResponse(response);
+  }
+
+  async addLoopComment(loopId: number, body: string, token: string) {
+    const response = await apiFetch(`${this.baseURL}/loops/${loopId}/comments`, {
+      method: 'POST',
+      headers: this.getHeaders(token),
+      body: JSON.stringify({ body }),
+    });
+    return await this.handleResponse(response);
+  }
+
+  async toggleLoopCommentLike(commentId: number, token: string) {
+    const response = await apiFetch(`${this.baseURL}/loops/comments/${commentId}/like`, {
+      method: 'POST',
+      headers: this.getHeaders(token),
+    });
+    return await this.handleResponse<{ liked: boolean; likes_count: number }>(response);
+  }
+
+  async getLoopTokComments(postId: number, page: number = 1, limit: number = 40) {
+    const response = await apiFetch(
+      `${this.baseURL}/looptok/${postId}/comments?page=${page}&limit=${limit}`,
+      {
+        method: 'GET',
+        headers: this.getHeaders(),
+      },
+    );
+    return await this.handleResponse(response);
+  }
+
+  async addLoopTokComment(postId: number, body: string, token: string) {
+    const response = await apiFetch(`${this.baseURL}/looptok/${postId}/comments`, {
+      method: 'POST',
+      headers: this.getHeaders(token),
+      body: JSON.stringify({ body }),
+    });
+    return await this.handleResponse(response);
+  }
+
+  async deleteLoopTokPost(postId: number, token: string) {
+    const response = await apiFetch(`${this.baseURL}/looptok/${postId}`, {
+      method: 'DELETE',
+      headers: this.getHeaders(token),
+    });
+    return await this.handleResponse(response);
+  }
+
+  async getBillingPlans() {
+    const response = await apiFetch(`${this.baseURL}/billing/plans`, {
+      method: 'GET',
+      headers: this.getHeaders(),
+    });
+    return await this.handleResponse(response);
+  }
+
+  async getMyBilling(token: string) {
+    const response = await apiFetch(`${this.baseURL}/billing/me`, {
+      method: 'GET',
+      headers: this.getHeaders(token),
+    });
+    return await this.handleResponse(response);
+  }
+
+  async checkoutPlan(
+    plan: 'basic' | 'pro' | 'business' | 'elite',
+    period: 'monthly' | 'yearly',
+    token: string,
+  ) {
+    const response = await apiFetch(`${this.baseURL}/billing/checkout`, {
+      method: 'POST',
+      headers: this.getHeaders(token),
+      body: JSON.stringify({ plan, period }),
+    });
+    return await this.handleResponse(response);
+  }
+
+  async confirmSubscription(paymentId: string, token: string) {
+    const response = await apiFetch(`${this.baseURL}/billing/confirm`, {
+      method: 'POST',
+      headers: this.getHeaders(token),
+      body: JSON.stringify({ payment_id: paymentId }),
+    });
+    return await this.handleResponse(response);
+  }
+
+  async updateProfileTheme(theme: Record<string, unknown>, token: string) {
+    const response = await apiFetch(`${this.baseURL}/billing/theme`, {
+      method: 'PATCH',
+      headers: this.getHeaders(token),
+      body: JSON.stringify(theme),
+    });
+    return await this.handleResponse(response);
+  }
+
+  async getAuthorPlan(userId: number) {
+    const response = await apiFetch(`${this.baseURL}/billing/author/${userId}`, {
+      method: 'GET',
+      headers: this.getHeaders(),
+    });
+    return await this.handleResponse(response);
+  }
+
+  async downloadLoop(loopId: number, token: string, filenameHint?: string) {
+    const response = await apiFetch(`${this.baseURL}/loops/${loopId}/download`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      const err = new Error(data.message || 'Download failed') as Error & {
+        code?: string;
+        action?: string;
+        plan?: string;
+      };
+      err.code = data.code;
+      err.action = data.action;
+      err.plan = data.plan;
+      throw err;
+    }
+
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filenameHint || `loopera_${loopId}.mp3`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 }
 

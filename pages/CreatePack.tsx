@@ -1,10 +1,19 @@
 // CreatePack.tsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import { useAuthGate } from '../hooks/useAuthGate';
+import { useI18n } from '../i18n/useI18n';
+import AuthPrompt from '../components/AuthPrompt';
+import '../components/AuthPrompt.css';
 import styles from './CreatePack.module.css';
 
 const CreatePack: React.FC = () => {
+  const { t } = useI18n();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { isAuthenticated } = useAuth();
+  const { requireAuth } = useAuthGate();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
@@ -21,34 +30,38 @@ const CreatePack: React.FC = () => {
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!requireAuth(() => {}, 'upload')) {
+      return;
+    }
     
     if (!title.trim()) {
-      setError('Название обязательно');
+      setError(t('createPackPage.titleRequired'));
       return;
     }
 
     if (!price || parseInt(price) < 0) {
-      setError('Укажите корректную цену');
+      setError(t('createPackPage.priceInvalid'));
       return;
     }
 
     if (!description.trim() || description.trim().length < 100) {
-      setError('Описание должно содержать минимум 100 символов');
+      setError(t('createPackPage.descriptionMin'));
       return;
     }
 
     if (!archiveFile) {
-      setError('Архив обязателен');
+      setError(t('createPackPage.archiveRequired'));
       return;
     }
 
     if (!previewFile1) {
-      setError('Минимум один превью файл обязателен');
+      setError(t('createPackPage.previewRequired'));
       return;
     }
 
     if (!textFile) {
-      setError('Текстовый файл обязателен');
+      setError(t('createPackPage.textFileRequired'));
       return;
     }
 
@@ -58,10 +71,7 @@ const CreatePack: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      if (!token) {
-        navigate('/auth');
-        return;
-      }
+      if (!token) return;
 
       const formData = new FormData();
       formData.append('title', title.trim());
@@ -91,17 +101,17 @@ const CreatePack: React.FC = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Не удалось создать пак');
+        throw new Error(errorData.error || t('createPackPage.error'));
       }
 
-      setSuccess('Пак успешно отправлен! Он будет проверен модераторами.');
+      setSuccess(t('createPackPage.success'));
       
       setTimeout(() => {
         navigate('/shop');
       }, 2000);
       
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Не удалось создать пак');
+      setError(err instanceof Error ? err.message : t('createPackPage.error'));
     } finally {
       setLoading(false);
     }
@@ -135,12 +145,14 @@ const CreatePack: React.FC = () => {
     }
   };
 
+  const guestReturnTo = `${location.pathname}${location.search}`;
+
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${!isAuthenticated ? styles.containerGuest : ''}`}>
       <div className={styles.content}>
         <div className={styles.header}>
-          <h1 className={styles.title}>Создать пак звуков</h1>
-          <p className={styles.subtitle}>Поделитесь своими звуками со всем миром</p>
+          <h1 className={styles.title}>{t('createPackPage.title')}</h1>
+          <p className={styles.subtitle}>{t('createPackPage.subtitle')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
@@ -166,11 +178,11 @@ const CreatePack: React.FC = () => {
           )}
 
           <div className={styles.section}>
-            <h2 className={styles.sectionTitle}>Основная информация</h2>
+            <h2 className={styles.sectionTitle}>{t('createPackPage.basicInfo')}</h2>
             
             <div className={styles.fieldGroup}>
               <label className={styles.label} htmlFor="title">
-                Название пака <span className={styles.required}>*</span>
+                {t('createPackPage.packTitle')} <span className={styles.required}>*</span>
               </label>
               <input
                 type="text"
@@ -178,16 +190,16 @@ const CreatePack: React.FC = () => {
                 className={styles.input}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="например, 'Полуночные мелодии'"
+                placeholder={t('createPackPage.packTitlePlaceholder')}
                 maxLength={255}
                 required
               />
-              <p className={styles.hint}>Выберите запоминающееся название для вашего пака</p>
+              <p className={styles.hint}>{t('createPackPage.packTitleHint')}</p>
             </div>
 
             <div className={styles.fieldGroup}>
               <label className={styles.label}>
-                Обложка
+                {t('createPackPage.cover')}
               </label>
               <div
                 className={styles.uploadArea}
@@ -210,8 +222,8 @@ const CreatePack: React.FC = () => {
                 <label htmlFor="coverFile" className={styles.uploadLabel}>
                   <div className={styles.uploadIcon}>🖼️</div>
                   <div className={styles.uploadText}>
-                    <span className={styles.uploadTitle}>Загрузить обложку</span>
-                    <span className={styles.uploadSubtitle}>Необязательно - JPG, PNG, WEBP (Макс 10МБ)</span>
+                    <span className={styles.uploadTitle}>{t('createPackPage.uploadCover')}</span>
+                    <span className={styles.uploadSubtitle}>{t('createPackPage.coverHint')}</span>
                   </div>
                 </label>
                 {coverFile && (
@@ -226,24 +238,24 @@ const CreatePack: React.FC = () => {
 
             <div className={styles.fieldGroup}>
               <label className={styles.label} htmlFor="description">
-                Описание
+                {t('createPackPage.description')}
               </label>
               <textarea
                 id="description"
                 className={styles.textarea}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Опишите ваш пак, вдохновение и чего ожидать пользователям..."
+                placeholder={t('createPackPage.descriptionPlaceholder')}
                 rows={4}
                 maxLength={1000}
               />
-              <p className={styles.hint}>{description.length}/1000 символов</p>
+              <p className={styles.hint}>{t('createPackPage.charCount', { count: description.length })}</p>
             </div>
 
             <div className={styles.row}>
               <div className={styles.fieldGroup}>
                 <label className={styles.label} htmlFor="price">
-                  Цена <span className={styles.required}>*</span>
+                  {t('createPackPage.price')} <span className={styles.required}>*</span>
                 </label>
                 <div className={styles.priceInput}>
                   <span className={styles.priceSymbol}>💰</span>
@@ -258,13 +270,13 @@ const CreatePack: React.FC = () => {
                     max="10000"
                     required
                   />
-                  <span className={styles.priceUnit}>coins</span>
+                  <span className={styles.priceUnit}>₽</span>
                 </div>
               </div>
 
               <div className={styles.fieldGroup}>
                 <label className={styles.label} htmlFor="voiceTag">
-                  Текст голосового тега
+                  {t('createPackPage.voiceTagText')}
                 </label>
                 <input
                   type="text"
@@ -272,7 +284,7 @@ const CreatePack: React.FC = () => {
                   className={styles.input}
                   value={voiceTag}
                   onChange={(e) => setVoiceTag(e.target.value)}
-                  placeholder="Ваш продюсерский тег..."
+                  placeholder={t('createPackPage.voiceTagPlaceholder')}
                   maxLength={100}
                 />
               </div>
@@ -280,11 +292,11 @@ const CreatePack: React.FC = () => {
           </div>
 
           <div className={styles.section}>
-            <h2 className={styles.sectionTitle}>Файлы</h2>
+            <h2 className={styles.sectionTitle}>{t('createPackPage.files')}</h2>
             
             <div className={styles.fieldGroup}>
               <label className={styles.label}>
-                Архив <span className={styles.required}>*</span>
+                {t('createPackPage.archive')} <span className={styles.required}>*</span>
               </label>
               <div 
                 className={styles.uploadArea}
@@ -307,8 +319,8 @@ const CreatePack: React.FC = () => {
                 <label htmlFor="archiveFile" className={styles.uploadLabel}>
                   <div className={styles.uploadIcon}>📦</div>
                   <div className={styles.uploadText}>
-                    <span className={styles.uploadTitle}>Загрузить архив</span>
-                    <span className={styles.uploadSubtitle}>Формат ZIP до 500МБ</span>
+                    <span className={styles.uploadTitle}>{t('createPackPage.uploadArchive')}</span>
+                    <span className={styles.uploadSubtitle}>{t('createPackPage.archiveHint')}</span>
                   </div>
                 </label>
               </div>
@@ -324,7 +336,7 @@ const CreatePack: React.FC = () => {
             <div className={styles.row}>
               <div className={styles.fieldGroup}>
                 <label className={styles.label}>
-                  Превью 1 <span className={styles.required}>*</span>
+                  {t('createPackPage.preview1')} <span className={styles.required}>*</span>
                 </label>
                 <div 
                   className={styles.uploadArea}
@@ -347,8 +359,8 @@ const CreatePack: React.FC = () => {
                   <label htmlFor="preview1" className={styles.uploadLabel}>
                     <div className={styles.uploadIcon}>🎵</div>
                     <div className={styles.uploadText}>
-                      <span className={styles.uploadTitle}>Загрузить превью 1</span>
-                      <span className={styles.uploadSubtitle}>MP3, WAV, OGG, M4A, FLAC (Макс 50МБ)</span>
+                      <span className={styles.uploadTitle}>{t('createPackPage.uploadPreview1')}</span>
+                      <span className={styles.uploadSubtitle}>{t('createPackPage.preview1Hint')}</span>
                     </div>
                   </label>
                 </div>
@@ -362,7 +374,7 @@ const CreatePack: React.FC = () => {
               </div>
 
               <div className={styles.fieldGroup}>
-                <label className={styles.label}>Превью 2</label>
+                <label className={styles.label}>{t('createPackPage.preview2')}</label>
                 <div 
                   className={styles.uploadArea}
                   onDragOver={handleDragOver}
@@ -384,8 +396,8 @@ const CreatePack: React.FC = () => {
                   <label htmlFor="preview2" className={styles.uploadLabel}>
                     <div className={styles.uploadIcon}>🎵</div>
                     <div className={styles.uploadText}>
-                      <span className={styles.uploadTitle}>Загрузить превью 2</span>
-                      <span className={styles.uploadSubtitle}>Необязательно - MP3, WAV, OGG, M4A, FLAC (Макс 50МБ)</span>
+                      <span className={styles.uploadTitle}>{t('createPackPage.uploadPreview2')}</span>
+                      <span className={styles.uploadSubtitle}>{t('createPackPage.preview2Hint')}</span>
                     </div>
                   </label>
                 </div>
@@ -400,7 +412,7 @@ const CreatePack: React.FC = () => {
             </div>
 
             <div className={styles.fieldGroup}>
-              <label className={styles.label}>Файл голосового тега</label>
+              <label className={styles.label}>{t('createPackPage.voiceTagFile')}</label>
               <div 
                 className={styles.uploadArea}
                 onDragOver={handleDragOver}
@@ -422,8 +434,8 @@ const CreatePack: React.FC = () => {
                 <label htmlFor="voiceTagFile" className={styles.uploadLabel}>
                   <div className={styles.uploadIcon}>🎤</div>
                   <div className={styles.uploadText}>
-                    <span className={styles.uploadTitle}>Загрузить голосовой тег</span>
-                    <span className={styles.uploadSubtitle}>Необязательно - MP3, WAV, OGG, M4A, FLAC (Макс 50МБ)</span>
+                    <span className={styles.uploadTitle}>{t('createPackPage.uploadVoiceTag')}</span>
+                    <span className={styles.uploadSubtitle}>{t('createPackPage.voiceTagFileHint')}</span>
                   </div>
                 </label>
               </div>
@@ -438,7 +450,7 @@ const CreatePack: React.FC = () => {
 
             <div className={styles.fieldGroup}>
               <label className={styles.label}>
-                Текстовый файл <span className={styles.required}>*</span>
+                {t('createPackPage.textFile')} <span className={styles.required}>*</span>
               </label>
               <div 
                 className={styles.uploadArea}
@@ -462,8 +474,8 @@ const CreatePack: React.FC = () => {
                 <label htmlFor="textFile" className={styles.uploadLabel}>
                   <div className={styles.uploadIcon}>📄</div>
                   <div className={styles.uploadText}>
-                    <span className={styles.uploadTitle}>Загрузить текстовый файл</span>
-                    <span className={styles.uploadSubtitle}>Формат TXT, RTF, PDF (Макс 10МБ)</span>
+                    <span className={styles.uploadTitle}>{t('createPackPage.uploadTextFile')}</span>
+                    <span className={styles.uploadSubtitle}>{t('createPackPage.textFileHint')}</span>
                   </div>
                 </label>
               </div>
@@ -478,31 +490,31 @@ const CreatePack: React.FC = () => {
           </div>
 
           <div className={styles.section}>
-            <h2 className={styles.sectionTitle}>Правила</h2>
+            <h2 className={styles.sectionTitle}>{t('createPackPage.rules')}</h2>
             <div className={styles.rulesGrid}>
               <div className={styles.ruleCard}>
                 <span className={styles.ruleIcon}>📦</span>
-                <span className={styles.ruleText}>ZIP архив с лупами</span>
+                <span className={styles.ruleText}>{t('createPackPage.rule1')}</span>
               </div>
               <div className={styles.ruleCard}>
                 <span className={styles.ruleIcon}>🎵</span>
-                <span className={styles.ruleText}>1-2 превью файла</span>
+                <span className={styles.ruleText}>{t('createPackPage.rule2')}</span>
               </div>
               <div className={styles.ruleCard}>
                 <span className={styles.ruleIcon}>⏰</span>
-                <span className={styles.ruleText}>Аккаунт должен быть старше 3 дней</span>
+                <span className={styles.ruleText}>{t('createPackPage.rule3')}</span>
               </div>
               <div className={styles.ruleCard}>
                 <span className={styles.ruleIcon}>📦</span>
-                <span className={styles.ruleText}>Отправляйте сколько угодно паков</span>
+                <span className={styles.ruleText}>{t('createPackPage.rule4')}</span>
               </div>
               <div className={styles.ruleCard}>
                 <span className={styles.ruleIcon}>👁️</span>
-                <span className={styles.ruleText}>Проверяется модераторами</span>
+                <span className={styles.ruleText}>{t('createPackPage.rule5')}</span>
               </div>
               <div className={styles.ruleCard}>
                 <span className={styles.ruleIcon}>💰</span>
-                <span className={styles.ruleText}>15% комиссия с продаж</span>
+                <span className={styles.ruleText}>{t('createPackPage.rule6')}</span>
               </div>
             </div>
           </div>
@@ -514,7 +526,7 @@ const CreatePack: React.FC = () => {
               onClick={() => navigate('/shop')}
               disabled={loading}
             >
-              Отмена
+              {t('createPackPage.cancel')}
             </button>
             
             <button
@@ -522,10 +534,13 @@ const CreatePack: React.FC = () => {
               className={`${styles.buttonPrimary} ${loading ? styles.loading : ''}`}
               disabled={loading || !archiveFile || !previewFile1 || !textFile}
             >
-              {loading ? 'Создание...' : 'Отправить на проверку'}
+              {loading ? t('createPackPage.creating') : t('createPackPage.submit')}
             </button>
           </div>
         </form>
+        {!isAuthenticated && (
+          <AuthPrompt feature="upload" variant="inline" returnTo={guestReturnTo} />
+        )}
       </div>
     </div>
   );

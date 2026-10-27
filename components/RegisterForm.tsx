@@ -1,183 +1,203 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useI18n } from '../i18n/useI18n';
 import { api } from '../utils/api';
+import { consumeAuthReturnTo } from '../hooks/useAuthGate';
 import type { RegisterCredentials } from '../types/auth';
 import EyeIcon from './EyeIcon';
 import VerificationForm from './VerificationForm';
 
-const RegisterForm = () => {
+interface RegisterFormProps {
+  onSwitchToLogin?: () => void;
+}
+
+const RegisterForm = ({ onSwitchToLogin }: RegisterFormProps) => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [credentials, setCredentials] = useState<RegisterCredentials>({
     username: '',
     email: '',
-    password: ''
+    password: '',
   });
+  const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showVerification, setShowVerification] = useState(false);
   const [verificationEmail, setVerificationEmail] = useState('');
-    const { login } = useAuth();
+  const { login } = useAuth();
+  const { t } = useI18n();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCredentials({
       ...credentials,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    if (!agreed) {
+      setError(t('auth.agreeRequired'));
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      console.log('Submitting register form with:', { 
-        username: credentials.username,
-        email: credentials.email,
-        password: '***' 
-      });
-      
-      // Валидация
       if (credentials.password.length < 6) {
-        throw new Error('Пароль должен содержать минимум 6 символов');
+        throw new Error(t('auth.passwordMin'));
       }
 
       if (credentials.password.length > 128) {
-        throw new Error('Пароль не должен превышать 128 символов');
+        throw new Error(t('auth.passwordMax'));
       }
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(credentials.email)) {
-        throw new Error('Введите корректный email адрес');
+        throw new Error(t('auth.emailInvalid'));
       }
 
       if (credentials.username.length < 3) {
-        throw new Error('Имя пользователя должно содержать минимум 3 символа');
+        throw new Error(t('auth.usernameMin'));
       }
 
       if (credentials.username.length > 50) {
-        throw new Error('Имя пользователя не должно превышать 50 символов');
+        throw new Error(t('auth.usernameMax'));
       }
-      
+
       const response = await api.register(credentials);
-      
-      console.log('Register response:', response);
-      
+
       if (response.requiresVerification) {
-        // Показываем форму верификации для новых пользователей
         setVerificationEmail(credentials.email);
         setShowVerification(true);
         return;
       }
-      
-      // Если верификация не требуется (старый режим)
+
       if (response.token && response.user) {
         login(response.token, response.user);
-        navigate('/');
+        const returnTo = searchParams.get('returnTo') || consumeAuthReturnTo('/');
+        navigate(returnTo, { replace: true });
       }
     } catch (err) {
-      console.error('Register form error:', err);
-      setError(err instanceof Error ? err.message : 'Ошибка регистрации');
+      setError(err instanceof Error ? err.message : t('auth.registerError'));
     } finally {
       setIsLoading(false);
     }
   };
 
+  if (showVerification) {
+    return (
+      <VerificationForm
+        email={verificationEmail}
+        onSuccess={(token, user) => {
+          login(token, user);
+          const returnTo = searchParams.get('returnTo') || consumeAuthReturnTo('/');
+          navigate(returnTo, { replace: true });
+        }}
+        onBack={() => {
+          setShowVerification(false);
+          setVerificationEmail('');
+        }}
+      />
+    );
+  }
+
   return (
-    <>
-      {showVerification ? (
-        <VerificationForm
-          email={verificationEmail}
-          onSuccess={(token, user) => {
-            login(token, user);
-            navigate('/');
-          }}
-          onBack={() => {
-            setShowVerification(false);
-            setVerificationEmail('');
-          }}
+    <form onSubmit={handleSubmit} className="auth-form">
+      <div className="form-group">
+        <label htmlFor="username">{t('auth.usernameLabel')}</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          value={credentials.username}
+          onChange={handleChange}
+          required
+          minLength={3}
+          placeholder={t('auth.usernamePlaceholder')}
+          disabled={isLoading}
         />
-      ) : (
-        <form onSubmit={handleSubmit} className="auth-form">
-          <h2>Регистрация</h2>
-          
-          <div className="form-group">
-            <label htmlFor="username">Имя пользователя *</label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              value={credentials.username}
-              onChange={handleChange}
-              required
-              minLength={3}
-              placeholder="Минимум 3 символа"
-              disabled={isLoading}
-            />
-          </div>
+      </div>
 
-          <div className="form-group">
-            <label htmlFor="email">Email *</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={credentials.email}
-              onChange={handleChange}
-              required
-              placeholder="your@email.com"
-              disabled={isLoading}
-            />
-          </div>
+      <div className="form-group">
+        <label htmlFor="email">{t('auth.email')}</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          value={credentials.email}
+          onChange={handleChange}
+          required
+          placeholder="your@email.com"
+          disabled={isLoading}
+        />
+      </div>
 
-          <div className="form-group">
-            <label htmlFor="password">Пароль *</label>
-            <div className="password-input-wrapper">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                id="password"
-                name="password"
-                value={credentials.password}
-                onChange={handleChange}
-                required
-                minLength={6}
-                placeholder="Минимум 6 символов"
-                disabled={isLoading}
-              />
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={() => setShowPassword(!showPassword)}
-                disabled={isLoading}
-                title={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
-              >
-                <EyeIcon isOpen={showPassword} size={18} />
-              </button>
-            </div>
-          </div>
-
-          {error && (
-            <div className="error-message">
-              ❌ {error}
-            </div>
-          )}
-
-          <button 
-            type="submit" 
-            disabled={isLoading} 
-            className="auth-button"
+      <div className="form-group">
+        <label htmlFor="password">{t('auth.password')}</label>
+        <div className="password-input-wrapper">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            id="password"
+            name="password"
+            value={credentials.password}
+            onChange={handleChange}
+            required
+            minLength={6}
+            placeholder={t('auth.passwordMinPlaceholder')}
+            disabled={isLoading}
+          />
+          <button
+            type="button"
+            className="password-toggle"
+            onClick={() => setShowPassword(!showPassword)}
+            disabled={isLoading}
+            aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
           >
-            {isLoading ? '⏳ Регистрация...' : '📝 Зарегистрироваться'}
+            <EyeIcon isOpen={showPassword} size={18} />
           </button>
+        </div>
+      </div>
 
-          <p className="auth-note">
-            Уже есть аккаунт? <a href="/login">Войти</a>
-          </p>
-        </form>
+      <div className="checkbox-group">
+        <input
+          type="checkbox"
+          id="terms"
+          checked={agreed}
+          onChange={(e) => setAgreed(e.target.checked)}
+          disabled={isLoading}
+        />
+        <label htmlFor="terms">
+          {t('auth.agreePrefix')}{' '}
+          <Link to="/offer" target="_blank" rel="noreferrer">
+            {t('auth.terms')}
+          </Link>{' '}
+          {t('auth.and')}{' '}
+          <Link to="/privacy" target="_blank" rel="noreferrer">
+            {t('auth.privacy')}
+          </Link>
+        </label>
+      </div>
+
+      {error && <div className="error-message">{error}</div>}
+
+      <button type="submit" disabled={isLoading} className="auth-button">
+        {isLoading ? t('auth.registering') : t('auth.submitRegister')}
+      </button>
+
+      {onSwitchToLogin && (
+        <p className="auth-switch">
+          {t('auth.hasAccount')}{' '}
+          <button type="button" onClick={onSwitchToLogin}>
+            {t('auth.signIn')}
+          </button>
+        </p>
       )}
-    </>
+    </form>
   );
 };
 

@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { profilePath } from '../utils/routes';
+import { artistTypesApi, type ArtistType } from '../utils/artistTypesApi';
+import { notificationsApi, type AdminNotification } from '../utils/notificationsApi';
+import { homePostsApi, type HomePost, type HomePostKind } from '../utils/homePostsApi';
+import { useAuth } from '../hooks/useAuth';
 import './Admin.css';
 import { tokenStorage } from '../utils/tokenStorage';
-import { getUploadsUrl } from '../utils/urls';
+import { getApiBaseUrl, getUploadsUrl } from '../utils/urls';
 
 interface User {
   id: number;
@@ -13,6 +18,8 @@ interface User {
   total_size?: number;
   is_banned?: boolean;
   ban_reason?: string;
+  plan_slug?: string;
+  plan_ends_at?: string | null;
 }
 
 interface Loop {
@@ -49,6 +56,11 @@ interface AdminStats {
     totalUsers: number;
     totalLoops: number;
     totalStorage: number;
+    totalPacks?: number;
+    activeNotifications?: number;
+    downloadsToday?: number;
+    downloadsTotal?: number;
+    uniqueDownloadersToday?: number;
   };
   recentUsers: User[];
   recentLoops: Loop[];
@@ -61,30 +73,45 @@ interface AdminStats {
 }
 
 const Admin: React.FC = () => {
+  const { isAdmin, isManager } = useAuth();
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [loops, setLoops] = useState<Loop[]>([]);
   const [packs, setPacks] = useState<Pack[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'loops' | 'balance' | 'shop' | 'packs'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'loops' | 'balance' | 'shop' | 'packs' | 'types' | 'notifications' | 'home'>(
+    isManager && !isAdmin ? 'loops' : 'overview',
+  );
   const [userPage, setUserPage] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalLoops, setTotalLoops] = useState(0);
   const [totalPacks, setTotalPacks] = useState(0);
+  const [activeNotificationsCount, setActiveNotificationsCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'banned' | 'active'>('all');
   const [packStatusFilter, setPackStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected' | 'deleted'>('all');
   const [playingLoopId, setPlayingLoopId] = useState<number | null>(null);
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
-  const [creditUsername, setCreditUsername] = useState('');
-  const [creditAmount, setCreditAmount] = useState('');
-  const [debitUsername, setDebitUsername] = useState('');
-  const [debitAmount, setDebitAmount] = useState('');
-  const [debitCurrency, setDebitCurrency] = useState('RUB');
   const [balanceUsername, setBalanceUsername] = useState('');
   const [userSuggestions, setUserSuggestions] = useState<{ id: number; username: string }[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [artistTypes, setArtistTypes] = useState<ArtistType[]>([]);
+  const [newArtistName, setNewArtistName] = useState('');
+  const [newArtistSlug, setNewArtistSlug] = useState('');
+  const [newArtistAliases, setNewArtistAliases] = useState('');
+  const [adminNotifications, setAdminNotifications] = useState<AdminNotification[]>([]);
+  const [notifTitle, setNotifTitle] = useState('');
+  const [notifBody, setNotifBody] = useState('');
+  const [notifSending, setNotifSending] = useState(false);
+  const [homePosts, setHomePosts] = useState<HomePost[]>([]);
+  const [homeKind, setHomeKind] = useState<HomePostKind>('news');
+  const [homeTitle, setHomeTitle] = useState('');
+  const [homeBody, setHomeBody] = useState('');
+  const [homeCtaLabel, setHomeCtaLabel] = useState('');
+  const [homeCtaUrl, setHomeCtaUrl] = useState('');
+  const [homeImageUrl, setHomeImageUrl] = useState('');
+  const [homeSending, setHomeSending] = useState(false);
 
   const handlePlayLoop = (loopId: number, filename: string) => {
     if (playingLoopId === loopId) {
@@ -126,10 +153,19 @@ const Admin: React.FC = () => {
       headers['Authorization'] = `Bearer ${token}`;
     }
     
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api${url}`, {
+    const response = await fetch(`${getApiBaseUrl()}${url}`, {
       headers
     });
     if (!response.ok) {
+      if (response.status === 429) {
+        throw new Error('Слишком много запросов. Подождите минуту и обновите страницу.');
+      }
+      if (response.status === 401) {
+        throw new Error('Сессия истекла. Войдите снова.');
+      }
+      if (response.status === 403) {
+        throw new Error('Нет доступа к админ-панели.');
+      }
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     return response.json();
@@ -180,7 +216,7 @@ const Admin: React.FC = () => {
     try {
       setLoading(true);
       const token = tokenStorage.getToken();
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/shop/packs/all?status=${packStatusFilter}`, {
+      const response = await fetch(`${getApiBaseUrl()}/admin/shop/packs/all?status=${packStatusFilter}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -201,7 +237,7 @@ const Admin: React.FC = () => {
 
     try {
       const token = tokenStorage.getToken();
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/shop/packs/${packId}`, {
+      const response = await fetch(`${getApiBaseUrl()}/admin/shop/packs/${packId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -221,7 +257,7 @@ const Admin: React.FC = () => {
   const downloadPack = async (packId: number) => {
     try {
       const token = tokenStorage.getToken();
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/shop/${packId}/download`, {
+      const response = await fetch(`${getApiBaseUrl()}/shop/${packId}/download`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -248,7 +284,7 @@ const Admin: React.FC = () => {
     
     try {
       const token = tokenStorage.getToken();
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/loops/${loopId}`, {
+      const response = await fetch(`${getApiBaseUrl()}/admin/loops/${loopId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -269,7 +305,7 @@ const Admin: React.FC = () => {
   const banUser = async (userId: number, reason: string) => {
     try {
       const token = tokenStorage.getToken();
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}/ban`, {
+      const response = await fetch(`${getApiBaseUrl()}/admin/users/${userId}/ban`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -291,7 +327,7 @@ const Admin: React.FC = () => {
   const unbanUser = async (userId: number) => {
     try {
       const token = tokenStorage.getToken();
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}/unban`, {
+      const response = await fetch(`${getApiBaseUrl()}/admin/users/${userId}/unban`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -308,80 +344,32 @@ const Admin: React.FC = () => {
     }
   };
 
-  const handleManualCreditBalance = async () => {
-    if (!creditUsername || !creditAmount) {
-      alert('Введите имя пользователя и сумму');
-      return;
-    }
-
+  const setUserPlan = async (userId: number, plan: string) => {
     try {
       const token = tokenStorage.getToken();
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/shop/admin/credit-balance`, {
+      const response = await fetch(`${getApiBaseUrl()}/admin/users/${userId}/plan`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username: creditUsername,
-          amount: parseInt(creditAmount)
-        })
+          plan,
+          period: 'yearly',
+          days: plan === 'free' ? undefined : 365,
+        }),
       });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to credit balance');
-      }
-
-      const data = await response.json();
-      alert(`Успешно начислено ${data.credited_amount} коинов пользователю ${data.username}`);
-      setCreditUsername('');
-      setCreditAmount('');
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || 'Failed to set plan');
+      setUsers((prev) =>
+        prev.map((u) =>
+          u.id === userId
+            ? { ...u, plan_slug: plan, plan_ends_at: data.period_end || null }
+            : u,
+        ),
+      );
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Unknown error');
-    }
-  };
-
-  const handleManualDebitBalance = async () => {
-    if (!debitUsername || !debitAmount) {
-      alert('Введите имя пользователя и сумму');
-      return;
-    }
-
-    const amount = parseInt(debitAmount);
-    const commission = Math.round(amount * 0.15);
-    const netAmount = amount - commission;
-
-    if (!confirm(`Списать ${amount} коинов с пользователя ${debitUsername}?\nКомиссия (15%): ${commission} коинов\nК выдаче: ${netAmount} ${debitCurrency}`)) {
-      return;
-    }
-
-    try {
-      const token = tokenStorage.getToken();
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/shop/admin/debit-balance`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          username: debitUsername,
-          amount: amount,
-          currency: debitCurrency
-        })
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to debit balance');
-      }
-
-      const data = await response.json();
-      alert(`Успешно списано ${data.debited_amount} коинов с пользователя ${data.username}\nКомиссия: ${data.commission} коинов\nК выдаче: ${data.net_amount} ${data.currency}`);
-      setDebitUsername('');
-      setDebitAmount('');
-    } catch (err) {
-      alert(err instanceof Error ? err.message : 'Unknown error');
+      alert(err instanceof Error ? err.message : 'Не удалось сменить тариф');
     }
   };
 
@@ -397,7 +385,7 @@ const Admin: React.FC = () => {
 
     try {
       const token = tokenStorage.getToken();
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/shop/admin/search-users?q=${encodeURIComponent(cleanQuery)}`, {
+      const response = await fetch(`${getApiBaseUrl()}/shop/admin/search-users?q=${encodeURIComponent(cleanQuery)}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -420,8 +408,6 @@ const Admin: React.FC = () => {
   };
 
   const handleSelectUser = (username: string) => {
-    setCreditUsername(username);
-    setDebitUsername(username);
     setBalanceUsername(username);
     setShowSuggestions(false);
     setUserSuggestions([]);
@@ -435,7 +421,7 @@ const Admin: React.FC = () => {
 
     try {
       const token = tokenStorage.getToken();
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/shop/admin/balance/${encodeURIComponent(balanceUsername)}`, {
+      const response = await fetch(`${getApiBaseUrl()}/shop/admin/balance/${encodeURIComponent(balanceUsername)}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -447,7 +433,7 @@ const Admin: React.FC = () => {
       }
 
       const data = await response.json();
-      alert(`Баланс пользователя ${data.username}:\n\nДоступно: ${data.available_balance} коинов\nВ ожидании: ${data.pending_balance} коинов\nВсего заработано: ${data.total_earned} коинов\n\nEmail: ${data.email}`);
+      alert(`Баланс пользователя ${data.username}:\n\nДоступно: ${data.available_balance} ₽\nВ ожидании вывода: ${data.pending_balance} ₽\nВсего заработано: ${data.total_earned} ₽\n\nEmail: ${data.email}`);
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Unknown error');
     }
@@ -458,6 +444,10 @@ const Admin: React.FC = () => {
       setLoading(true);
       const data = await apiRequest('/admin/stats');
       setStats(data);
+      setTotalUsers(data.overview?.totalUsers ?? 0);
+      setTotalLoops(data.overview?.totalLoops ?? 0);
+      setTotalPacks(data.overview?.totalPacks ?? 0);
+      setActiveNotificationsCount(data.overview?.activeNotifications ?? 0);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error');
     } finally {
@@ -465,8 +455,166 @@ const Admin: React.FC = () => {
     }
   };
 
+  const fetchArtistTypes = async () => {
+    try {
+      setLoading(true);
+      const token = tokenStorage.getToken();
+      if (!token) return;
+      const data = await artistTypesApi.getAdminArtists(token);
+      setArtistTypes(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreateArtistType = async () => {
+    try {
+      const token = tokenStorage.getToken();
+      if (!token || !newArtistName.trim() || !newArtistSlug.trim()) return;
+      await artistTypesApi.createArtist(token, {
+        name: newArtistName.trim(),
+        slug: newArtistSlug.trim(),
+        aliases: newArtistAliases.split(',').map((item) => item.trim()).filter(Boolean),
+        sort_order: artistTypes.length + 1,
+        is_active: true,
+      });
+      setNewArtistName('');
+      setNewArtistSlug('');
+      setNewArtistAliases('');
+      fetchArtistTypes();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Ошибка создания');
+    }
+  };
+
+  const handleToggleArtistType = async (artist: ArtistType) => {
+    try {
+      const token = tokenStorage.getToken();
+      if (!token) return;
+      await artistTypesApi.updateArtist(token, artist.id, { is_active: !artist.is_active });
+      fetchArtistTypes();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Ошибка обновления');
+    }
+  };
+
+  const handleDeleteArtistType = async (id: number) => {
+    if (!window.confirm('Удалить артиста из онбординга?')) return;
+    try {
+      const token = tokenStorage.getToken();
+      if (!token) return;
+      await artistTypesApi.deleteArtist(token, id);
+      fetchArtistTypes();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Ошибка удаления');
+    }
+  };
+
+  const fetchAdminNotifications = async () => {
+    try {
+      const data = await notificationsApi.adminList();
+      const list = data.notifications || [];
+      setAdminNotifications(list);
+      setActiveNotificationsCount(list.filter((n) => n.is_active).length);
+    } catch (err) {
+      console.error(err);
+      setError(err instanceof Error ? err.message : 'Ошибка загрузки уведомлений');
+    }
+  };
+
+  const handleCreateNotification = async () => {
+    if (!notifTitle.trim() || !notifBody.trim()) {
+      alert('Заполните заголовок и текст');
+      return;
+    }
+    setNotifSending(true);
+    try {
+      await notificationsApi.create(notifTitle.trim(), notifBody.trim());
+      setNotifTitle('');
+      setNotifBody('');
+      await fetchAdminNotifications();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Ошибка создания уведомления');
+    } finally {
+      setNotifSending(false);
+    }
+  };
+
+  const handleDeleteNotification = async (id: number) => {
+    if (!window.confirm('Скрыть это уведомление из ленты?')) return;
+    try {
+      await notificationsApi.remove(id);
+      await fetchAdminNotifications();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Ошибка удаления');
+    }
+  };
+
+  const fetchHomePosts = async () => {
+    try {
+      const data = await homePostsApi.adminList();
+      setHomePosts(data.posts || []);
+    } catch (err) {
+      console.error(err);
+      setError(err instanceof Error ? err.message : 'Ошибка загрузки публикаций');
+    }
+  };
+
+  const handleCreateHomePost = async () => {
+    if (!homeTitle.trim() || !homeBody.trim()) {
+      alert('Заполните заголовок и текст');
+      return;
+    }
+    setHomeSending(true);
+    try {
+      await homePostsApi.create({
+        kind: homeKind,
+        title: homeTitle.trim(),
+        body: homeBody.trim(),
+        cta_label: homeCtaLabel.trim() || undefined,
+        cta_url: homeCtaUrl.trim() || undefined,
+        image_url: homeImageUrl.trim() || undefined,
+      });
+      setHomeTitle('');
+      setHomeBody('');
+      setHomeCtaLabel('');
+      setHomeCtaUrl('');
+      setHomeImageUrl('');
+      setHomeKind('news');
+      await fetchHomePosts();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Ошибка публикации');
+    } finally {
+      setHomeSending(false);
+    }
+  };
+
+  const handleToggleHomePost = async (post: HomePost) => {
+    try {
+      await homePostsApi.update(post.id, { is_active: !post.is_active });
+      await fetchHomePosts();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Ошибка обновления');
+    }
+  };
+
+  const handleHideHomePost = async (id: number) => {
+    if (!window.confirm('Скрыть публикацию с главной?')) return;
+    try {
+      await homePostsApi.remove(id);
+      await fetchHomePosts();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Ошибка удаления');
+    }
+  };
+
   useEffect(() => {
     fetchStats();
+    if (isAdmin) {
+      fetchArtistTypes().catch(() => undefined);
+    }
   }, []);
 
   useEffect(() => {
@@ -476,6 +624,12 @@ const Admin: React.FC = () => {
       fetchLoops();
     } else if (activeTab === 'packs') {
       fetchPacks();
+    } else if (activeTab === 'types') {
+      fetchArtistTypes();
+    } else if (activeTab === 'notifications') {
+      fetchAdminNotifications();
+    } else if (activeTab === 'home') {
+      fetchHomePosts();
     }
   }, [activeTab, userPage, searchQuery, filterStatus, packStatusFilter]);
 
@@ -490,26 +644,45 @@ const Admin: React.FC = () => {
   }
 
   if (error) {
+    const isAuthError = error.includes('401') || error.toLowerCase().includes('сессия') || error.toLowerCase().includes('авториз');
+    const isRateLimit = error.includes('429') || error.toLowerCase().includes('слишком много запросов');
+
     return (
       <div className="admin-container">
         <div className="error-container">
           <div className="error-message">
             <p>{error}</p>
           </div>
-          <div className="error-warning">
-            <p>Требуется повторная авторизация</p>
-            <p>Пожалуйста, выйдите из системы и войдите снова, чтобы получить права администратора.</p>
-            <button
-              onClick={() => {
-                tokenStorage.removeToken();
-                tokenStorage.removeUser();
-                window.location.reload();
-              }}
-              className="btn-logout"
-            >
-              Выйти и обновить
-            </button>
-          </div>
+          {isRateLimit ? (
+            <div className="error-warning">
+              <p>Сервер временно ограничил запросы</p>
+              <p>Подождите 1–2 минуты и обновите страницу. Авторизация не сброшена.</p>
+              <button onClick={() => window.location.reload()} className="btn-logout">
+                Обновить
+              </button>
+            </div>
+          ) : isAuthError ? (
+            <div className="error-warning">
+              <p>Требуется повторная авторизация</p>
+              <p>Пожалуйста, выйдите из системы и войдите снова, чтобы получить права администратора.</p>
+              <button
+                onClick={() => {
+                  tokenStorage.removeToken();
+                  tokenStorage.removeUser();
+                  window.location.reload();
+                }}
+                className="btn-logout"
+              >
+                Выйти и обновить
+              </button>
+            </div>
+          ) : (
+            <div className="error-warning">
+              <button onClick={() => window.location.reload()} className="btn-logout">
+                Попробовать снова
+              </button>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -532,12 +705,13 @@ const Admin: React.FC = () => {
         <div className="max-w-7xl">
           <div className="flex">
             <div>
-              <h1 className="gradient-text">Панель администратора</h1>
-              <p>Управление платформой Loopera</p>
+              <h1 className="gradient-text">
+                {isAdmin ? 'Админ' : 'Менеджер'}
+              </h1>
             </div>
             <div className="system-indicator">
               <div className="system-indicator-dot"></div>
-              <span>Система активна</span>
+              <span>Online</span>
             </div>
           </div>
         </div>
@@ -556,6 +730,7 @@ const Admin: React.FC = () => {
               </svg>
               <span>Обзор</span>
             </button>
+            {isAdmin && (
             <button
               className={`tab-button ${activeTab === 'users' ? 'active' : ''}`}
               onClick={() => setActiveTab('users')}
@@ -566,6 +741,7 @@ const Admin: React.FC = () => {
               <span>Пользователи</span>
               <span className="tab-count">{totalUsers}</span>
             </button>
+            )}
             <button
               className={`tab-button ${activeTab === 'loops' ? 'active' : ''}`}
               onClick={() => setActiveTab('loops')}
@@ -576,6 +752,7 @@ const Admin: React.FC = () => {
               <span>Лупы</span>
               <span className="tab-count">{totalLoops}</span>
             </button>
+            {isAdmin && (
             <button
               className={`tab-button ${activeTab === 'balance' ? 'active' : ''}`}
               onClick={() => setActiveTab('balance')}
@@ -585,6 +762,7 @@ const Admin: React.FC = () => {
               </svg>
               <span>Баланс</span>
             </button>
+            )}
             <button
               className={`tab-button ${activeTab === 'shop' ? 'active' : ''}`}
               onClick={() => window.location.href = '/admin/shop'}
@@ -604,6 +782,38 @@ const Admin: React.FC = () => {
               <span>Паки</span>
               <span className="tab-count">{totalPacks}</span>
             </button>
+            <button
+              className={`tab-button ${activeTab === 'notifications' ? 'active' : ''}`}
+              onClick={() => setActiveTab('notifications')}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 10-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+              <span>Уведомления</span>
+              <span className="tab-count">{activeNotificationsCount}</span>
+            </button>
+            <button
+              className={`tab-button ${activeTab === 'home' ? 'active' : ''}`}
+              onClick={() => setActiveTab('home')}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V9a2 2 0 012-2h2a2 2 0 012 2v9a2 2 0 01-2 2h-2z" />
+              </svg>
+              <span>Главная</span>
+              <span className="tab-count">{homePosts.filter((p) => p.is_active).length}</span>
+            </button>
+            {isAdmin && (
+            <button
+              className={`tab-button ${activeTab === 'types' ? 'active' : ''}`}
+              onClick={() => setActiveTab('types')}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+              </svg>
+              <span>Тайпы</span>
+              <span className="tab-count">{artistTypes.length}</span>
+            </button>
+            )}
           </div>
         </div>
 
@@ -617,7 +827,6 @@ const Admin: React.FC = () => {
                   <div className="stats-info">
                     <p>Всего пользователей</p>
                     <p className="stats-value">{stats.overview.totalUsers}</p>
-                    <p className="stats-trend">+12% за месяц</p>
                   </div>
                   <div className="stats-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -632,7 +841,6 @@ const Admin: React.FC = () => {
                   <div className="stats-info">
                     <p>Всего лупов</p>
                     <p className="stats-value">{stats.overview.totalLoops}</p>
-                    <p className="stats-trend">+25% за месяц</p>
                   </div>
                   <div className="stats-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -647,11 +855,27 @@ const Admin: React.FC = () => {
                   <div className="stats-info">
                     <p>Объем хранилища</p>
                     <p className="stats-value">{formatBytes(stats.overview.totalStorage)}</p>
-                    <p className="stats-trend">+8% за месяц</p>
                   </div>
                   <div className="stats-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <div className="stats-card">
+                <div className="stats-card-content">
+                  <div className="stats-info">
+                    <p>Скачиваний за день</p>
+                    <p className="stats-value">{stats.overview.downloadsToday ?? 0}</p>
+                    <p className="stats-trend">
+                      {stats.overview.uniqueDownloadersToday ?? 0} чел. · всего {stats.overview.downloadsTotal ?? 0}
+                    </p>
+                  </div>
+                  <div className="stats-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
                     </svg>
                   </div>
                 </div>
@@ -673,7 +897,7 @@ const Admin: React.FC = () => {
                   <thead>
                     <tr>
                       <th>Имя пользователя</th>
-                      <th>Email</th>
+                      {isAdmin && <th>Email</th>}
                       <th>Дата регистрации</th>
                     </tr>
                   </thead>
@@ -691,9 +915,11 @@ const Admin: React.FC = () => {
                             </div>
                           </div>
                         </td>
-                        <td>
-                          <p>{user.email}</p>
-                        </td>
+                        {isAdmin && (
+                          <td>
+                            <p>{user.email}</p>
+                          </td>
+                        )}
                         <td>
                           <p>{formatDate(user.created_at)}</p>
                         </td>
@@ -719,7 +945,7 @@ const Admin: React.FC = () => {
                   <thead>
                     <tr>
                       <th>Пользователь</th>
-                      <th>Email</th>
+                      {isAdmin && <th>Email</th>}
                       <th>Лупов</th>
                       <th>Объем</th>
                     </tr>
@@ -729,7 +955,7 @@ const Admin: React.FC = () => {
                       <tr key={user.id}>
                         <td>
                           <Link
-                            to={`/profile/${user.username}`}
+                            to={profilePath(user.username)}
                             className="user-link"
                           >
                             <div className="user-info">
@@ -743,9 +969,11 @@ const Admin: React.FC = () => {
                             </div>
                           </Link>
                         </td>
-                        <td>
-                          <p>{user.email}</p>
-                        </td>
+                        {isAdmin && (
+                          <td>
+                            <p>{user.email}</p>
+                          </td>
+                        )}
                         <td>
                           <p className="loop-count">{user.loop_count}</p>
                         </td>
@@ -812,6 +1040,7 @@ const Admin: React.FC = () => {
                     <th>Пользователь</th>
                     <th>Email</th>
                     <th>Лупов</th>
+                    <th>Тариф</th>
                     <th>Статус</th>
                     <th>Действия</th>
                   </tr>
@@ -835,6 +1064,23 @@ const Admin: React.FC = () => {
                       </td>
                       <td>
                         <p className="loop-count">{user.loop_count}</p>
+                      </td>
+                      <td>
+                        <select
+                          className="plan-select"
+                          value={(user.plan_slug || 'free').toLowerCase()}
+                          onChange={(e) => setUserPlan(user.id, e.target.value)}
+                          title={
+                            user.plan_ends_at
+                              ? `До ${new Date(user.plan_ends_at).toLocaleDateString('ru-RU')}`
+                              : 'Тариф'
+                          }
+                        >
+                          <option value="free">Free</option>
+                          <option value="basic">Basic</option>
+                          <option value="pro">Pro</option>
+                          <option value="business">Business</option>
+                        </select>
                       </td>
                       <td>
                         {user.is_banned ? (
@@ -976,7 +1222,9 @@ const Admin: React.FC = () => {
                       <td>
                         <div>
                           <p className="artist-name">{loop.artist_name}</p>
-                          <p className="artist-email">{loop.artist_email}</p>
+                          {isAdmin && (
+                            <p className="artist-email">{loop.artist_email}</p>
+                          )}
                         </div>
                       </td>
                       <td>
@@ -1013,123 +1261,8 @@ const Admin: React.FC = () => {
               </h3>
             </div>
 
-            {/* Credit Form */}
             <div className="balance-section">
-              <h4>Начислить баланс</h4>
-              <div className="balance-credit-form">
-                <div className="form-group">
-                  <label>Имя пользователя:</label>
-                  <div className="autocomplete-wrapper">
-                    <input
-                      type="text"
-                      value={creditUsername}
-                      onChange={(e) => {
-                        setCreditUsername(e.target.value);
-                        handleSearchUsers(e.target.value);
-                      }}
-                      placeholder="Введите имя пользователя"
-                      autoComplete="off"
-                    />
-                    {showSuggestions && userSuggestions.length > 0 && (
-                      <div className="suggestions-list">
-                        {userSuggestions.map((user) => (
-                          <div
-                            key={user.id}
-                            className="suggestion-item"
-                            onClick={() => handleSelectUser(user.username)}
-                          >
-                            {user.username}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="form-group">
-                  <label>Сумма в коинах:</label>
-                  <input
-                    type="number"
-                    min="1"
-                    value={creditAmount}
-                    onChange={(e) => setCreditAmount(e.target.value)}
-                    placeholder="Введите сумму"
-                  />
-                </div>
-                <button onClick={handleManualCreditBalance} className="btn-credit">
-                  Начислить баланс
-                </button>
-              </div>
-            </div>
-
-            {/* Debit Form */}
-            <div className="balance-section">
-              <h4>Списать баланс (вывод средств)</h4>
-              <div className="balance-credit-form">
-                <div className="form-group">
-                  <label>Имя пользователя:</label>
-                  <div className="autocomplete-wrapper">
-                    <input
-                      type="text"
-                      value={debitUsername}
-                      onChange={(e) => {
-                        setDebitUsername(e.target.value);
-                        handleSearchUsers(e.target.value);
-                      }}
-                      placeholder="Введите имя пользователя"
-                      autoComplete="off"
-                    />
-                    {showSuggestions && userSuggestions.length > 0 && (
-                      <div className="suggestions-list">
-                        {userSuggestions.map((user) => (
-                          <div
-                            key={user.id}
-                            className="suggestion-item"
-                            onClick={() => handleSelectUser(user.username)}
-                          >
-                            {user.username}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="form-group">
-                  <label>Сумма в коинах:</label>
-                  <input
-                    type="number"
-                    min="1"
-                    value={debitAmount}
-                    onChange={(e) => setDebitAmount(e.target.value)}
-                    placeholder="Введите сумму"
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Валюта:</label>
-                  <select
-                    value={debitCurrency}
-                    onChange={(e) => setDebitCurrency(e.target.value)}
-                  >
-                    <option value="RUB">🇷🇺 Российский рубль (RUB)</option>
-                    <option value="USD">🇺🇸 Доллар США (USD)</option>
-                    <option value="EUR">🇪🇺 Евро (EUR)</option>
-                    <option value="GBP">🇬🇧 Британский фунт (GBP)</option>
-                  </select>
-                </div>
-                {debitAmount && parseInt(debitAmount) > 0 && (
-                  <div className="commission-info">
-                    <p>Комиссия (15%): {Math.round(parseInt(debitAmount) * 0.15)} коинов</p>
-                    <p>К выдаче: {parseInt(debitAmount) - Math.round(parseInt(debitAmount) * 0.15)} {debitCurrency}</p>
-                  </div>
-                )}
-                <button onClick={handleManualDebitBalance} className="btn-credit" style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)' }}>
-                  Списать баланс
-                </button>
-              </div>
-            </div>
-
-            {/* View Balance Form */}
-            <div className="balance-section">
-              <h4>Просмотреть баланс</h4>
+              <h4>Баланс продавца (₽)</h4>
               <div className="balance-credit-form">
                 <div className="form-group">
                   <label>Имя пользователя:</label>
@@ -1166,13 +1299,11 @@ const Admin: React.FC = () => {
             </div>
 
             <div className="balance-info">
-              <p>💡 Инструкция:</p>
+              <p>Маркетплейс Loopera</p>
               <ul>
-                <li>Пользователь отправляет запрос на пополнение/вывод через профиль</li>
-                <li>Администратор получает уведомление в Telegram</li>
-                <li>Для пополнения: Администратор предоставляет реквизиты, пользователь платит, админ начисляет баланс</li>
-                <li>Для вывода: Администратор списывает баланс с 20% комиссией и отправляет средства</li>
-                <li>Все операции записываются в историю транзакций</li>
+                <li>Покупатели оплачивают паки через ЮKassa (рубли)</li>
+                <li>Продавцу на баланс зачисляется 85% от цены (комиссия платформы 15%)</li>
+                <li>Вывод — заявка в профиле, обработка в разделе «Магазин» админки</li>
               </ul>
             </div>
           </div>
@@ -1196,8 +1327,7 @@ const Admin: React.FC = () => {
                   onChange={(e) => setPackStatusFilter(e.target.value as any)}
                 >
                   <option value="all">Все статусы</option>
-                  <option value="pending">На модерации</option>
-                  <option value="approved">Одобрено</option>
+                  <option value="approved">Опубликовано</option>
                   <option value="rejected">Отклонено</option>
                   <option value="deleted">Удалено</option>
                 </select>
@@ -1230,7 +1360,7 @@ const Admin: React.FC = () => {
                         </div>
                       </td>
                       <td>
-                        <p>{pack.price} coins</p>
+                        <p>{pack.price} ₽</p>
                       </td>
                       <td>
                         <span className={`status-badge ${pack.status}`}>
@@ -1251,10 +1381,301 @@ const Admin: React.FC = () => {
                           >
                             Скачать
                           </button>
+                          {isAdmin && (
                           <button
                             onClick={() => deletePack(pack.id)}
                             className="btn-delete"
                           >
+                            Удалить
+                          </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'home' && (
+          <div className="space-y-8">
+            <div className="balance-section">
+              <h3>Публикация на главную</h3>
+              <p style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 16 }}>
+                Новости и реклама появятся на главной странице. Доступно админу и менеджеру.
+              </p>
+              <div className="balance-form" style={{ display: 'grid', gap: 12 }}>
+                <select
+                  value={homeKind}
+                  onChange={(e) => setHomeKind(e.target.value as HomePostKind)}
+                  style={{
+                    width: '100%',
+                    padding: '12px 14px',
+                    borderRadius: 10,
+                    border: '1px solid rgba(255,255,255,0.12)',
+                    background: 'rgba(255,255,255,0.04)',
+                    color: '#fff',
+                    fontFamily: 'inherit',
+                  }}
+                >
+                  <option value="news">Новость</option>
+                  <option value="ad">Реклама</option>
+                </select>
+                <input
+                  type="text"
+                  placeholder="Заголовок"
+                  value={homeTitle}
+                  onChange={(e) => setHomeTitle(e.target.value)}
+                  maxLength={200}
+                />
+                <textarea
+                  placeholder="Текст"
+                  value={homeBody}
+                  onChange={(e) => setHomeBody(e.target.value)}
+                  rows={4}
+                  maxLength={4000}
+                  style={{
+                    width: '100%',
+                    padding: '12px 14px',
+                    borderRadius: 10,
+                    border: '1px solid rgba(255,255,255,0.12)',
+                    background: 'rgba(255,255,255,0.04)',
+                    color: '#fff',
+                    fontFamily: 'inherit',
+                    resize: 'vertical',
+                  }}
+                />
+                <input
+                  type="text"
+                  placeholder="Текст кнопки (необязательно)"
+                  value={homeCtaLabel}
+                  onChange={(e) => setHomeCtaLabel(e.target.value)}
+                  maxLength={80}
+                />
+                <input
+                  type="text"
+                  placeholder="Ссылка кнопки — /loops или https://..."
+                  value={homeCtaUrl}
+                  onChange={(e) => setHomeCtaUrl(e.target.value)}
+                  maxLength={500}
+                />
+                <input
+                  type="text"
+                  placeholder="URL картинки (необязательно)"
+                  value={homeImageUrl}
+                  onChange={(e) => setHomeImageUrl(e.target.value)}
+                  maxLength={500}
+                />
+                <button
+                  className="admin-action-btn"
+                  onClick={handleCreateHomePost}
+                  disabled={homeSending}
+                >
+                  {homeSending ? 'Публикация...' : 'Опубликовать на главную'}
+                </button>
+              </div>
+            </div>
+
+            <div className="table-container">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Тип</th>
+                    <th>Заголовок</th>
+                    <th>Текст</th>
+                    <th>Автор</th>
+                    <th>Статус</th>
+                    <th>Дата</th>
+                    <th>Действия</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {homePosts.length === 0 ? (
+                    <tr>
+                      <td colSpan={7}>Пока нет публикаций</td>
+                    </tr>
+                  ) : (
+                    homePosts.map((p) => (
+                      <tr key={p.id} style={{ opacity: p.is_active ? 1 : 0.45 }}>
+                        <td>{p.kind === 'ad' ? 'Реклама' : 'Новость'}</td>
+                        <td>{p.title}</td>
+                        <td style={{ maxWidth: 260, whiteSpace: 'pre-wrap' }}>{p.body}</td>
+                        <td>{p.author_name || '—'}</td>
+                        <td>{p.is_active ? 'На главной' : 'Скрыто'}</td>
+                        <td>{new Date(p.created_at).toLocaleString('ru-RU')}</td>
+                        <td style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                          <button
+                            className="admin-action-btn"
+                            onClick={() => handleToggleHomePost(p)}
+                          >
+                            {p.is_active ? 'Скрыть' : 'Показать'}
+                          </button>
+                          {p.is_active && (
+                            <button
+                              className="admin-action-btn danger"
+                              onClick={() => handleHideHomePost(p.id)}
+                            >
+                              Снять
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'notifications' && (
+          <div className="space-y-8">
+            <div className="balance-section">
+              <h3>Новое уведомление</h3>
+              <p style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 16 }}>
+                Текст увидят все пользователи в колокольчике рядом с поиском. Доступно админу и менеджеру.
+              </p>
+              <div className="balance-form" style={{ display: 'grid', gap: 12 }}>
+                <input
+                  type="text"
+                  placeholder="Заголовок"
+                  value={notifTitle}
+                  onChange={(e) => setNotifTitle(e.target.value)}
+                  maxLength={200}
+                />
+                <textarea
+                  placeholder="Текст уведомления"
+                  value={notifBody}
+                  onChange={(e) => setNotifBody(e.target.value)}
+                  rows={4}
+                  maxLength={4000}
+                  style={{
+                    width: '100%',
+                    padding: '12px 14px',
+                    borderRadius: 10,
+                    border: '1px solid rgba(255,255,255,0.12)',
+                    background: 'rgba(255,255,255,0.04)',
+                    color: '#fff',
+                    fontFamily: 'inherit',
+                    resize: 'vertical',
+                  }}
+                />
+                <button
+                  className="admin-action-btn"
+                  onClick={handleCreateNotification}
+                  disabled={notifSending}
+                >
+                  {notifSending ? 'Отправка...' : 'Опубликовать'}
+                </button>
+              </div>
+            </div>
+
+            <div className="table-container">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Заголовок</th>
+                    <th>Текст</th>
+                    <th>Автор</th>
+                    <th>Просмотры</th>
+                    <th>Статус</th>
+                    <th>Дата</th>
+                    <th>Действия</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {adminNotifications.length === 0 ? (
+                    <tr>
+                      <td colSpan={7}>Пока нет уведомлений</td>
+                    </tr>
+                  ) : (
+                    adminNotifications.map((n) => (
+                      <tr key={n.id} style={{ opacity: n.is_active ? 1 : 0.45 }}>
+                        <td>{n.title}</td>
+                        <td style={{ maxWidth: 280, whiteSpace: 'pre-wrap' }}>{n.body}</td>
+                        <td>{n.author_name || '—'}</td>
+                        <td>{n.reads_count ?? 0}</td>
+                        <td>{n.is_active ? 'Активно' : 'Скрыто'}</td>
+                        <td>{new Date(n.created_at).toLocaleString('ru-RU')}</td>
+                        <td>
+                          {n.is_active && (
+                            <button
+                              className="admin-action-btn danger"
+                              onClick={() => handleDeleteNotification(n.id)}
+                            >
+                              Скрыть
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'types' && (
+          <div className="space-y-8">
+            <div className="balance-section">
+              <h3>Тайпы артистов для онбординга</h3>
+              <p style={{ color: 'rgba(255,255,255,0.65)', marginBottom: 16 }}>
+                Эти артисты показываются при регистрации и влияют на персональную ленту
+              </p>
+              <div className="balance-form" style={{ display: 'grid', gap: 12, gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
+                <input
+                  type="text"
+                  placeholder="Название (Ken Carson)"
+                  value={newArtistName}
+                  onChange={(e) => setNewArtistName(e.target.value)}
+                />
+                <input
+                  type="text"
+                  placeholder="Slug (kencarson)"
+                  value={newArtistSlug}
+                  onChange={(e) => setNewArtistSlug(e.target.value)}
+                />
+                <input
+                  type="text"
+                  placeholder="Алиасы через запятую"
+                  value={newArtistAliases}
+                  onChange={(e) => setNewArtistAliases(e.target.value)}
+                />
+                <button className="admin-action-btn" onClick={handleCreateArtistType}>
+                  Добавить артиста
+                </button>
+              </div>
+            </div>
+
+            <div className="table-container">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Название</th>
+                    <th>Slug</th>
+                    <th>Алиасы</th>
+                    <th>Порядок</th>
+                    <th>Статус</th>
+                    <th>Действия</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {artistTypes.map((artist) => (
+                    <tr key={artist.id}>
+                      <td>{artist.name}</td>
+                      <td>{artist.slug}</td>
+                      <td>{(artist.aliases || []).join(', ') || '—'}</td>
+                      <td>{artist.sort_order ?? '—'}</td>
+                      <td>{artist.is_active ? 'Активен' : 'Скрыт'}</td>
+                      <td>
+                        <div className="action-buttons">
+                          <button className="admin-action-btn" onClick={() => handleToggleArtistType(artist)}>
+                            {artist.is_active ? 'Скрыть' : 'Показать'}
+                          </button>
+                          <button className="admin-action-btn danger" onClick={() => handleDeleteArtistType(artist.id)}>
                             Удалить
                           </button>
                         </div>

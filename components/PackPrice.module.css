@@ -1,0 +1,58 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.price,
+.final {
+  font-weight: 600;
+  color: var(--text-primary, #fff);
+}
+
+.final {
+  color: #ff4d6d;
+}
+
+.original {
+  font-size: 0.85em;
+  color: rgba(255, 255, 255, 0.45);
+  text-decoration: line-through;
+}
+
+.badge {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 0.15rem 0.45rem;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #ff2a55, #ff6b35);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.sm .final,
+.sm.price {
+  font-size: 1rem;
+}
+
+.md .final,
+.md.price {
+  font-size: 1.1rem;
+}
+
+.lg .final,
+.lg.price {
+  font-size: 1.5rem;
+}
+
+.lg .original {
+  font-size: 1rem;
+}

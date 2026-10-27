@@ -1,21 +1,32 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { getUploadsUrl } from '../utils/urls';
+import { useAuthGate } from '../hooks/useAuthGate';
+import { useI18n } from '../i18n/useI18n';
+import { getAssetUrl, getUploadsUrl } from '../utils/urls';
+import { profilePath, packSharePath, parsePackId } from '../utils/routes';
+import { buildShareUrl } from '../utils/share';
+import { LOOP_COVER_COLORS } from '../utils/loopCover';
 import Modal from '../components/Modal';
+import PackPurchaseModal from '../components/PackPurchaseModal';
+import { getPackChargePrice } from '../components/PackPrice';
+import { downloadPurchasedPack } from '../utils/shopDownload';
 import styles from './Pack.module.css';
 
-interface Pack {
+interface PackData {
   id: string;
   title: string;
   description?: string;
   price: number;
+  original_price?: number;
+  final_price?: number;
+  discount_percent?: number;
+  has_discount?: boolean;
   preview_url?: string;
   preview_url_2?: string;
   voice_tag?: string;
   hashtag?: string;
   username?: string;
-  avatar_url?: string;
   cover_url?: string;
   user_id?: number;
   avg_rating: number;
@@ -23,419 +34,491 @@ interface Pack {
   sales_count?: number;
   created_at: string;
   loops_count?: number;
-  status?: string;
 }
 
-interface Loop {
+interface LoopItem {
   id: number;
   title: string;
   filename: string;
   original_name: string;
-  file_size: number;
   bpm?: number;
   key?: string;
   genre?: string;
-  tags?: string[];
-  user_id: number;
-  author?: string;
-  created_at: string;
 }
 
-const Pack: React.FC = () => {
-  const { packId } = useParams<{ packId: string }>();
+const formatPublished = (iso?: string) => {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '—';
+  const months = ['Янв.', 'Фев.', 'Мар.', 'Апр.', 'Мая', 'Июн.', 'Июл.', 'Авг.', 'Сен.', 'Окт.', 'Ноя.', 'Дек.'];
+  return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+};
+
+const coverColor = (id: string | number) => {
+  const n = typeof id === 'number' ? id : Number(id) || 0;
+  return LOOP_COVER_COLORS[Math.abs(Math.trunc(n)) % LOOP_COVER_COLORS.length];
+};
+
+const Pack = () => {
+  const { packId: rawPackId } = useParams<{ packId: string }>();
+  const packId = parsePackId(rawPackId);
   const navigate = useNavigate();
   const { user: currentUser } = useAuth();
-  const [pack, setPack] = useState<Pack | null>(null);
-  const [loops, setLoops] = useState<Loop[]>([]);
+  const { requireAuth } = useAuthGate();
+  const { t } = useI18n();
+
+  const [pack, setPack] = useState<PackData | null>(null);
+  const [loops, setLoops] = useState<LoopItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [userBalance, setUserBalance] = useState(0);
   const [isPurchased, setIsPurchased] = useState(false);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [audioLoading, setAudioLoading] = useState<number | null>(null);
+  const [previewPlaying, setPreviewPlaying] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const [buyModalOpen, setBuyModalOpen] = useState(false);
-  const [buyModalMessage, setBuyModalMessage] = useState('');
+  const [buyBusy, setBuyBusy] = useState(false);
+  const [buyError, setBuyError] = useState<string | null>(null);
+  const [infoModalOpen, setInfoModalOpen] = useState(false);
+  const [infoModalMessage, setInfoModalMessage] = useState('');
   const [ratingModalOpen, setRatingModalOpen] = useState(false);
   const [selectedRating, setSelectedRating] = useState(0);
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const getHeaders = () => {
     const token = localStorage.getItem('token');
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (token) headers.Authorization = `Bearer ${token}`;
     return headers;
   };
 
-  useEffect(() => {
-    fetchPack();
-    fetchUserBalance();
-  }, [packId]);
-
   const fetchPack = async () => {
+    if (!packId) {
+      setError(t('packPage.notFound'));
+      setLoading(false);
+      return;
+    }
     try {
       setLoading(true);
-      const response = await fetch(`https://loopera-lpr.vercel.app/api/shop/${packId}`, {
-        headers: getHeaders()
-      });
+      setError(null);
+      const response = await fetch(`/api/shop/${packId}`, { headers: getHeaders() });
       const data = await response.json();
+      if (!response.ok) throw new Error(data.error || data.message || 'Не удалось загрузить пак');
       setPack(data);
       setLoops(data.loops || []);
-      
-      // Check if user has purchased this pack
+
       if (currentUser) {
-        const purchaseResponse = await fetch(`https://loopera-lpr.vercel.app/api/shop/user-packs`, {
-          headers: getHeaders()
-        });
-        const purchaseData = await purchaseResponse.json();
-        const userPacks = purchaseData.packs || [];
-        setIsPurchased(userPacks.some((p: Pack) => p.id === packId));
+        const purchaseResponse = await fetch('/api/shop/my/packs', { headers: getHeaders() });
+        if (purchaseResponse.ok) {
+          const purchaseData = await purchaseResponse.json();
+          setIsPurchased((purchaseData.packs || []).some((p: PackData) => String(p.id) === String(packId)));
+        }
       }
     } catch (err) {
-      console.error('Error fetching pack:', err);
-      setError('Failed to load pack');
+      setError(err instanceof Error ? err.message : 'Не удалось загрузить пак');
+      setPack(null);
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchUserBalance = async () => {
+  useEffect(() => {
+    if (rawPackId && packId && rawPackId !== packId) {
+      navigate(`/shop/pack/${packId}`, { replace: true });
+      return;
+    }
+    void fetchPack();
+    return () => {
+      audioRef.current?.pause();
+    };
+  }, [rawPackId, packId, currentUser?.id]);
+
+  const stopAudio = () => {
+    audioRef.current?.pause();
+    audioRef.current = null;
+    setIsPlaying(false);
+    setCurrentlyPlaying(null);
+    setPreviewPlaying(false);
+  };
+
+  const playPreview = () => {
+    if (!pack?.preview_url) return;
+    if (previewPlaying) {
+      stopAudio();
+      return;
+    }
+    stopAudio();
+    const audio = new Audio(pack.preview_url);
+    audioRef.current = audio;
+    audio.onended = () => setPreviewPlaying(false);
+    void audio.play();
+    setPreviewPlaying(true);
+  };
+
+  const handlePlayLoop = async (loop: LoopItem) => {
+    if (currentlyPlaying === loop.id && isPlaying) {
+      audioRef.current?.pause();
+      setIsPlaying(false);
+      return;
+    }
+    stopAudio();
+    setCurrentlyPlaying(loop.id);
+    setIsPlaying(true);
+    const audio = new Audio(getUploadsUrl(loop.filename));
+    audioRef.current = audio;
+    audio.onended = () => {
+      setIsPlaying(false);
+      setCurrentlyPlaying(null);
+    };
     try {
-      const response = await fetch('https://loopera-lpr.vercel.app/api/shop/balance/my', {
-        headers: getHeaders()
-      });
-      const data = await response.json();
-      setUserBalance(data.available_balance || 0);
-    } catch (err) {
-      console.error('Error fetching balance:', err);
+      await audio.play();
+    } catch {
+      setIsPlaying(false);
+      setCurrentlyPlaying(null);
     }
   };
 
   const handleBuyPack = () => {
-    if (!currentUser) {
-      setBuyModalMessage('Пожалуйста, войдите в систему для покупки паков');
+    if (isPurchased) return;
+    requireAuth(() => {
+      setBuyError(null);
       setBuyModalOpen(true);
-      return;
-    }
-
-    if (isPurchased) {
-      setBuyModalMessage('Вы уже владеете этим паком');
-      setBuyModalOpen(true);
-      return;
-    }
-
-    if (userBalance < (pack?.price || 0)) {
-      setBuyModalMessage(`Недостаточно средств. У вас ${userBalance} коинов, нужно ${pack?.price} коинов`);
-      setBuyModalOpen(true);
-      return;
-    }
-
-    setBuyModalMessage(`Купить "${pack?.title}" за ${pack?.price} коинов?`);
-    setBuyModalOpen(true);
+    }, 'buy');
   };
 
-  const handleConfirmBuy = async () => {
-    setBuyModalOpen(false);
+  const handleConfirmBuy = async (method: 'card' | 'balance') => {
+    if (!packId) return;
+    setBuyBusy(true);
+    setBuyError(null);
     try {
-      const response = await fetch(`https://loopera-lpr.vercel.app/api/shop/${packId}/buy`, {
+      const response = await fetch(`/api/shop/${packId}/buy`, {
         method: 'POST',
-        headers: getHeaders()
+        headers: getHeaders(),
+        body: JSON.stringify({ payment_method: method }),
       });
       const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to purchase pack');
+      if (!response.ok) throw new Error(data.error || 'Failed to purchase pack');
+      if (data.confirmation_url) {
+        localStorage.setItem('pending_payment_id', data.payment_id || '');
+        window.location.href = data.confirmation_url;
+        return;
       }
+      setBuyModalOpen(false);
       setIsPurchased(true);
-      fetchUserBalance();
-      // Открываем модальное окно для оценки
+      try {
+        const token = localStorage.getItem('token');
+        await downloadPurchasedPack(packId, {
+          token,
+          fallbackTitle: pack?.title,
+        });
+      } catch {
+        /* ignore */
+      }
       setRatingModalOpen(true);
-    } catch (err: any) {
-      console.error('Error buying pack:', err);
-      setBuyModalMessage(err.message || 'Не удалось купить пак');
-      setBuyModalOpen(true);
+    } catch (err: unknown) {
+      setBuyError(err instanceof Error ? err.message : t('shopPage.paymentError'));
+    } finally {
+      setBuyBusy(false);
     }
   };
 
   const handleRatePack = async () => {
-    if (selectedRating === 0) {
-      alert('Пожалуйста, выберите оценку');
-      return;
-    }
-
+    if (selectedRating === 0) return;
     try {
-      const response = await fetch(`https://loopera-lpr.vercel.app/api/shop/${packId}/rate`, {
+      const response = await fetch(`/api/shop/${packId}/rate`, {
         method: 'POST',
         headers: getHeaders(),
-        body: JSON.stringify({ rating: selectedRating })
+        body: JSON.stringify({ rating: selectedRating }),
       });
       const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to rate pack');
-      }
+      if (!response.ok) throw new Error(data.error || 'Failed to rate pack');
       setRatingModalOpen(false);
       setSelectedRating(0);
-      setBuyModalMessage('Спасибо за вашу оценку!');
-      setBuyModalOpen(true);
+      setInfoModalMessage('Спасибо за вашу оценку!');
+      setInfoModalOpen(true);
     } catch (err: any) {
-      console.error('Error rating pack:', err);
       alert(err.message || 'Не удалось оценить пак');
     }
   };
 
-  const handlePlay = async (loop: Loop) => {
+  const copyLink = async () => {
+    if (!pack) return;
     try {
-      if (currentlyPlaying === loop.id && isPlaying) {
-        // Pause if clicking the same loop
-        if (audioRef.current) {
-          audioRef.current.pause();
-          setIsPlaying(false);
-        }
-        return;
-      }
-
-      setAudioLoading(loop.id);
-      setCurrentlyPlaying(loop.id);
-      setIsPlaying(true);
-
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
-
-      const audio = new Audio(getUploadsUrl(loop.filename));
-      audioRef.current = audio;
-
-      audio.onended = () => {
-        setIsPlaying(false);
-        setCurrentlyPlaying(null);
-      };
-
-      audio.onerror = () => {
-        setAudioLoading(null);
-        setIsPlaying(false);
-        alert('Error playing audio');
-      };
-
-      await audio.play();
-      setAudioLoading(null);
-    } catch (err) {
-      console.error('Error playing audio:', err);
-      setAudioLoading(null);
-      setIsPlaying(false);
-      alert('Error playing audio');
+      await navigator.clipboard.writeText(buildShareUrl(packSharePath(pack.id)));
+      setMenuOpen(false);
+    } catch {
+      /* ignore */
     }
   };
 
   if (loading) {
-    return <div className={styles.loading}>Loading...</div>;
+    return (
+      <div className={styles.page}>
+        <p className={styles.muted}>Загрузка…</p>
+      </div>
+    );
   }
 
   if (error || !pack) {
-    return <div className={styles.error}>{error || 'Pack not found'}</div>;
+    return (
+      <div className={styles.page}>
+        <button type="button" className={styles.backLink} onClick={() => navigate('/shop')}>
+          ← К маркетплейсу
+        </button>
+        <p className={styles.error}>{error || t('packPage.notFound')}</p>
+      </div>
+    );
   }
 
+  const coverUrl = pack.cover_url ? getAssetUrl(pack.cover_url) : null;
+  const tags = [pack.voice_tag, pack.hashtag].filter(Boolean) as string[];
+  const price = getPackChargePrice(pack);
+  const sales = Number(pack.sales_count || 0);
+  const rating = Number(pack.avg_rating || 0);
+
   return (
-    <div className={styles.packContainer}>
-      {/* Header */}
-      <div className={styles.header}>
-        <button className={styles.backBtn} onClick={() => navigate('/shop')}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-          </svg>
-          Back to Shop
-        </button>
-        <div className={styles.packInfo}>
-          <h1 className={styles.packTitle}>{pack.title}</h1>
-          {pack.voice_tag && (
-            <span className={styles.voiceTag}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                <line x1="12" y1="19" x2="12" y2="23"></line>
-                <line x1="8" y1="23" x2="16" y2="23"></line>
-              </svg>
-              {pack.voice_tag}
+    <div className={styles.page}>
+      <header className={styles.pageHead}>
+        <h1 className={styles.pageTitle}>Маркетплейс</h1>
+      </header>
+
+      <section className={styles.hero}>
+        <button
+          type="button"
+          className={styles.coverWrap}
+          onClick={pack.preview_url ? playPreview : undefined}
+          aria-label={previewPlaying ? 'Пауза' : 'Превью'}
+        >
+          <div
+            className={styles.cover}
+            style={
+              coverUrl
+                ? { backgroundImage: `url(${coverUrl})` }
+                : { backgroundColor: coverColor(pack.id) }
+            }
+          />
+          <div className={styles.coverFade} />
+          <div className={styles.coverMeta}>
+            <span className={styles.coverTitle}>{pack.title}</span>
+            <Link
+              to={profilePath(pack.username)}
+              className={styles.coverAuthor}
+              onClick={(e) => e.stopPropagation()}
+            >
+              @{pack.username || pack.hashtag || 'loopera'}
+            </Link>
+          </div>
+          {pack.preview_url && (
+            <span className={styles.coverPlay}>
+              {previewPlaying ? (
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <rect x="6" y="5" width="4" height="14" rx="1" />
+                  <rect x="14" y="5" width="4" height="14" rx="1" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              )}
             </span>
           )}
-        </div>
-        <div className={styles.author}>
-          <span>by </span>
-          <span 
-            className={styles.authorLink}
-            onClick={() => pack.user_id && navigate(`/profile/${pack.user_id}`)}
-          >
-            {pack.username || pack.hashtag || 'Unknown'}
-          </span>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className={styles.content}>
-        {/* Left Column - Pack Details */}
-        <div className={styles.details}>
-          {pack.cover_url && (
-            <div className={styles.coverDisplay}>
-              <img src={`https://loopera-lpr.vercel.app${pack.cover_url}`} alt={pack.title} />
-            </div>
+          {(pack.has_discount || (pack.discount_percent ?? 0) > 0) && (
+            <span className={styles.discount}>-{pack.discount_percent}%</span>
           )}
-          
+        </button>
+
+        <div className={styles.heroBody}>
+          <div className={styles.blockLabel}>Описание</div>
+          <p className={styles.description}>
+            {pack.description || 'Саунд-пак для битов на Loopera.'}
+          </p>
+
+          {tags.length > 0 && (
+            <>
+              <div className={styles.blockLabel}>Теги</div>
+              <div className={styles.tags}>
+                {tags.map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    className={styles.tag}
+                    onClick={() => navigate(`/shop?search=${encodeURIComponent(tag)}`)}
+                  >
+                    #{tag.replace(/^#/, '')}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
 
           <div className={styles.stats}>
             <div className={styles.stat}>
-              <span className={styles.statLabel}>Цена</span>
-              <span className={styles.statValue}>{pack.price} коинов</span>
+              <strong>{price} ₽</strong>
+              <span>Цена</span>
             </div>
-            {pack.loops_count && (
-              <div className={styles.stat}>
-                <span className={styles.statLabel}>Лупов</span>
-                <span className={styles.statValue}>{pack.loops_count}</span>
-              </div>
-            )}
             <div className={styles.stat}>
-              <span className={styles.statLabel}>Создан</span>
-              <span className={styles.statValue}>
-                {new Date(pack.created_at).toLocaleDateString('ru-RU', { 
-                  day: 'numeric', 
-                  month: 'short', 
-                  year: 'numeric' 
-                })}
-              </span>
+              <strong>{loops.length || pack.loops_count || 0}</strong>
+              <span>Лупов</span>
+            </div>
+            <div className={styles.stat}>
+              <strong>{sales}</strong>
+              <span>Продаж</span>
+            </div>
+            <div className={styles.stat}>
+              <strong>{rating > 0 ? rating.toFixed(1) : '—'}</strong>
+              <span>Рейтинг</span>
             </div>
           </div>
 
-          {pack.preview_url && (
-            <div className={styles.preview}>
-              <h3>Preview</h3>
-              <button
-                className={styles.previewBtn}
-                onClick={() => {
-                  if (audioRef.current) {
-                    audioRef.current.pause();
-                  }
-                  const audio = new Audio(pack.preview_url);
-                  audioRef.current = audio;
-                  audio.play();
-                }}
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                </svg>
-                Play Preview
+          <div className={styles.metaLine}>
+            <span>Опубликован {formatPublished(pack.created_at)}</span>
+          </div>
+
+          <div className={styles.heroActions}>
+            {isPurchased ? (
+              <div className={styles.owned}>Куплено</div>
+            ) : (
+              <button type="button" className={styles.buyBtn} onClick={handleBuyPack}>
+                Купить за {price} ₽
               </button>
+            )}
+
+            <div className={styles.moreWrap}>
+              <button
+                type="button"
+                className={styles.iconBtn}
+                aria-label="Ещё"
+                aria-expanded={menuOpen}
+                onClick={() => setMenuOpen((v) => !v)}
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="5" r="1.6" />
+                  <circle cx="12" cy="12" r="1.6" />
+                  <circle cx="12" cy="19" r="1.6" />
+                </svg>
+              </button>
+              {menuOpen && (
+                <div className={styles.menu}>
+                  <button type="button" onClick={copyLink}>Копировать ссылку</button>
+                  <Link to={profilePath(pack.username)} onClick={() => setMenuOpen(false)}>
+                    Профиль автора
+                  </Link>
+                  {isPurchased && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMenuOpen(false);
+                        setRatingModalOpen(true);
+                      }}
+                    >
+                      Оценить пак
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
-          )}
-
-          {!isPurchased && (
-            <button className={styles.buyBtn} onClick={handleBuyPack}>
-              Купить за {pack.price} коинов
-            </button>
-          )}
-
-          {isPurchased && (
-            <div className={styles.owned}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-              Вы владеете этим паком
-            </div>
-          )}
+          </div>
         </div>
+      </section>
 
-        {/* Right Column - Description */}
-        <div className={styles.loopsSection}>
-          <h3 className={styles.loopsTitle}>ОПИСАНИЕ ТОВАРА</h3>
-          {pack.description ? (
-            <p className={styles.descriptionText}>{pack.description}</p>
-          ) : (
-            <p className={styles.noLoops}>Описание отсутствует</p>
-          )}
-        </div>
+      {loops.length > 0 && (
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Лупы в паке</h2>
+          <div className={styles.loopsBox}>
+            {loops.map((loop, i) => {
+              const playing = currentlyPlaying === loop.id && isPlaying;
+              const meta = [loop.bpm ? `${loop.bpm}bpm` : null, loop.key || null, loop.genre || null]
+                .filter(Boolean)
+                .join(' ');
+              return (
+                <div key={loop.id} className={`${styles.loopRow} ${playing ? styles.loopPlaying : ''}`}>
+                  <button
+                    type="button"
+                    className={styles.loopIndex}
+                    onClick={() => void handlePlayLoop(loop)}
+                    aria-label={playing ? 'Пауза' : 'Играть'}
+                  >
+                    {playing ? (
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <rect x="6" y="5" width="4" height="14" rx="1" />
+                        <rect x="14" y="5" width="4" height="14" rx="1" />
+                      </svg>
+                    ) : (
+                      <>
+                        <span className={styles.loopNum}>{i + 1}</span>
+                        <svg viewBox="0 0 24 24" fill="currentColor" className={styles.loopPlayIcon}>
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </>
+                    )}
+                  </button>
 
-        {/* Loops Section */}
-        {loops.length > 0 && (
-          <div className={styles.loopsSection}>
-            <h3 className={styles.loopsTitle}>
-              {isPurchased ? 'Лупы для скачивания' : 'Включенные лупы'}
-            </h3>
-            <div className={styles.loopsList}>
-              {loops.map((loop) => (
-                <div key={loop.id} className={styles.loopItem}>
+                  <div
+                    className={styles.loopCover}
+                    style={{ backgroundColor: coverColor(loop.id) }}
+                    aria-hidden
+                  />
+
                   <div className={styles.loopInfo}>
                     <span className={styles.loopTitle}>{loop.title}</span>
-                    {loop.bpm && <span className={styles.loopBpm}>{loop.bpm} BPM</span>}
-                    {loop.key && <span className={styles.loopKey}>{loop.key}</span>}
-                    {loop.genre && <span className={styles.loopGenre}>{loop.genre}</span>}
+                    {meta && <span className={styles.loopMeta}>{meta}</span>}
                   </div>
+
                   {isPurchased ? (
                     <a
+                      className={styles.loopDownload}
                       href={getUploadsUrl(loop.filename)}
                       download={loop.original_name}
-                      className={styles.downloadLink}
                     >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                      </svg>
                       Скачать
                     </a>
                   ) : (
                     <button
-                      className={styles.playBtn}
-                      onClick={() => handlePlay(loop)}
-                      disabled={audioLoading === loop.id}
+                      type="button"
+                      className={styles.loopPlayBtn}
+                      onClick={() => void handlePlayLoop(loop)}
                     >
-                      {audioLoading === loop.id ? (
-                        '...'
-                      ) : currentlyPlaying === loop.id && isPlaying ? (
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                          <rect x="6" y="4" width="4" height="16"></rect>
-                          <rect x="14" y="4" width="4" height="16"></rect>
-                        </svg>
-                      ) : (
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                          <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                        </svg>
-                      )}
+                      {playing ? 'Пауза' : 'Слушать'}
                     </button>
                   )}
                 </div>
-              ))}
-            </div>
+              );
+            })}
           </div>
-        )}
-      </div>
+        </section>
+      )}
 
-      <Modal
-        isOpen={buyModalOpen}
-        onClose={() => setBuyModalOpen(false)}
-        title={buyModalMessage.includes('Купить') ? 'Подтверждение покупки' : 'Уведомление'}
-        onConfirm={buyModalMessage.includes('Купить') ? handleConfirmBuy : undefined}
-        confirmText={buyModalMessage.includes('Купить') ? 'Купить' : undefined}
-        cancelText="Отмена"
-      >
-        <p>{buyModalMessage}</p>
+      <PackPurchaseModal
+        open={buyModalOpen}
+        pack={pack}
+        onClose={() => !buyBusy && setBuyModalOpen(false)}
+        onPay={handleConfirmBuy}
+        busy={buyBusy}
+        error={buyError}
+      />
+
+      <Modal isOpen={infoModalOpen} onClose={() => setInfoModalOpen(false)}>
+        <p>{infoModalMessage}</p>
       </Modal>
 
       <Modal
         isOpen={ratingModalOpen}
         onClose={() => setRatingModalOpen(false)}
-        title="Оцените пак"
+        title={t('packPage.ratingTitle')}
         onConfirm={handleRatePack}
-        confirmText="Отправить оценку"
-        cancelText="Пропустить"
+        confirmText={t('verification.confirm')}
+        cancelText={t('shopPage.cancel')}
       >
-        <div className={styles.ratingModalContent}>
-          <p>Как вам пакет? Оцените от 1 до 5 звезд:</p>
-          <div className={styles.ratingStars}>
+        <div className={styles.ratingModal}>
+          <p>Оцените пак от 1 до 5</p>
+          <div className={styles.stars}>
             {[1, 2, 3, 4, 5].map((star) => (
               <button
                 key={star}
-                className={`${styles.ratingStar} ${star <= selectedRating ? styles.active : ''}`}
+                type="button"
+                className={`${styles.star} ${star <= selectedRating ? styles.starOn : ''}`}
                 onClick={() => setSelectedRating(star)}
               >
                 ★

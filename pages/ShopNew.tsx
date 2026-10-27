@@ -42,7 +42,7 @@ const ShopNew: React.FC = () => {
     try {
       setLoading(true);
       const params = new URLSearchParams({ page: page.toString(), limit: '20', sort, order, ...(search && { search }) });
-      const res = await fetch(`https://loopera-lpr.vercel.app/api/shop?${params}`);
+      const res = await fetch(`/api/shop?${params}`);
       if (!res.ok) throw new Error('Failed to fetch packs');
       const data = await res.json();
       setPacks(data.packs || []);
@@ -61,7 +61,7 @@ const ShopNew: React.FC = () => {
     }
 
     try {
-      const res = await fetch(`https://loopera-lpr.vercel.app/api/shop/${packId}/buy`, {
+      const res = await fetch(`/api/shop/${packId}/buy`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,8 +1,9 @@
 import { tokenStorage } from './tokenStorage';
+import { getApiBaseUrl } from './urls';
+import { apiFetch, parseApiJson } from './http';
 
 const getBaseURL = () => {
-  // Жестко задаем URL бэкенда для обхода проблем с env
-  return 'https://loopera-lpr.vercel.app/api';
+  return getApiBaseUrl();
 };
 
 export interface LikeResponse {
@@ -21,6 +22,7 @@ export interface LikedLoop {
   key: string;
   genre: string;
   tags: string[];
+  cover_url?: string | null;
   user_id: number;
   author: string;
   created_at: string;
@@ -41,18 +43,10 @@ class LikeApi {
       ...options,
     };
 
-    const response = await fetch(url, config);
-    
+    const response = await apiFetch(url, config);
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      console.error('LikeApi.request() error:', {
-        status: response.status,
-        statusText: response.statusText,
-        errorData
-      });
-      throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      await parseApiJson(response);
     }
-    
     return response;
   }
 

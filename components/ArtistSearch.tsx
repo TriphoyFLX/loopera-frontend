@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { searchApi, type LoopArtist } from '../utils/searchApi';
+import { useI18n } from '../i18n/useI18n';
 import './ArtistSearch.css';
 
 interface ArtistSearchProps {
@@ -10,9 +11,11 @@ interface ArtistSearchProps {
 
 const ArtistSearch: React.FC<ArtistSearchProps> = ({ 
   onSelect, 
-  placeholder = "Введите имя или хештег артиста...",
+  placeholder,
   disabled = false 
 }) => {
+  const { t, locale } = useI18n();
+  const resolvedPlaceholder = placeholder ?? t('artistSearch.placeholder');
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<LoopArtist[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -22,10 +25,17 @@ const ArtistSearch: React.FC<ArtistSearchProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Поиск артистов
+  const formatLoopsCount = (count: number) => {
+    if (locale === 'ru') {
+      if (count === 1) return t('artistSearch.loopsOne', { count });
+      if (count >= 2 && count <= 4) return t('artistSearch.loopsFew', { count });
+    }
+    return t('artistSearch.loops', { count });
+  };
+
   useEffect(() => {
     const searchArtists = async () => {
-      if (query.length < 2) {
+      if (query.trim().length < 1) {
         setSuggestions([]);
         setIsOpen(false);
         return;
@@ -49,7 +59,6 @@ const ArtistSearch: React.FC<ArtistSearchProps> = ({
     return () => clearTimeout(timeoutId);
   }, [query]);
 
-  // Закрытие дропдауна при клике вне
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -84,7 +93,6 @@ const ArtistSearch: React.FC<ArtistSearchProps> = ({
         if (selectedIndex >= 0) {
           handleSelect(suggestions[selectedIndex]);
         } else if (query.trim()) {
-          // Если ничего не выбрано, но есть текст - создаем нового артиста
           handleSelect({
             id: Date.now(),
             username: query.trim(),
@@ -130,7 +138,7 @@ const ArtistSearch: React.FC<ArtistSearchProps> = ({
             value={query}
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
-            placeholder={placeholder}
+            placeholder={resolvedPlaceholder}
             className="artist-search-input"
             disabled={disabled}
             autoComplete="off"
@@ -146,7 +154,7 @@ const ArtistSearch: React.FC<ArtistSearchProps> = ({
           disabled={!query.trim() || disabled}
           className="artist-search-button"
         >
-          Подписаться
+          {t('artistSearch.subscribe')}
         </button>
       </form>
 
@@ -167,7 +175,7 @@ const ArtistSearch: React.FC<ArtistSearchProps> = ({
                 <div className="artist-search-hashtag">#{artist.hashtag}</div>
               </div>
               <div className="artist-search-meta">
-                {artist.loops_count || 0} луп{(artist.loops_count || 0) === 1 ? '' : (artist.loops_count || 0) < 4 ? 'а' : 'ов'}
+                {formatLoopsCount(artist.loops_count || 0)}
               </div>
             </div>
           ))}

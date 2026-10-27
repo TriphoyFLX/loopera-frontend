@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../utils/api';
+import { useI18n } from '../i18n/useI18n';
 import './PopularHashtags.css';
 
 interface Hashtag {
@@ -9,6 +10,7 @@ interface Hashtag {
 }
 
 const PopularHashtags: React.FC = () => {
+  const { t } = useI18n();
   const [hashtags, setHashtags] = useState<Hashtag[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -28,7 +30,7 @@ const PopularHashtags: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <div className="hashtags-loading">Загрузка...</div>;
+    return <div className="hashtags-loading">{t('popularHashtags.loading')}</div>;
   }
 
   return (
@@ -42,7 +44,7 @@ const PopularHashtags: React.FC = () => {
           >
             <span className="hashtag-rank">#{index + 1}</span>
             <span className="hashtag-name">#{hashtag.tag}</span>
-            <span className="hashtag-count">{hashtag.count} лупов</span>
+            <span className="hashtag-count">{t('popularHashtags.loops', { count: hashtag.count })}</span>
           </Link>
         ))}
       </div>

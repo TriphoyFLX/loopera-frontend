@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useI18n } from '../i18n/useI18n';
 import styles from './Add.module.css';
 
 const Add: React.FC = () => {
+  const { t } = useI18n();
   const [visible, setVisible] = useState(true);
 
   if (!visible) return null;
@@ -13,7 +15,7 @@ const Add: React.FC = () => {
         <div className={styles.topRow}>
           <div className={styles.badge}>
             <span className={styles.badgeDot} />
-            Реклама
+            {t('add.ad')}
           </div>
           <button
             className={styles.closeBtn}
@@ -40,12 +42,12 @@ const Add: React.FC = () => {
         <div className={styles.divider} />
 
         <div className={styles.contacts}>
-          <a className={styles.contactLink} href="mailto:ads@loopera.com">
+          <a className={styles.contactLink} href="mailto:partners@loopera.ru">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <rect x="2" y="4" width="20" height="16" rx="2" />
               <polyline points="22,6 12,13 2,6" />
             </svg>
-            triphoyprod@gmail.com
+            partners@loopera.ru
           </a>
           
         </div>
@@ -57,7 +59,7 @@ const Add: React.FC = () => {
       window.open('https://t.me/triphoyprod', '_blank');
     }}
   >
-    Разместить рекламу
+    {t('add.placeAd')}
     <span className={styles.ctaArrow}>
       <svg
         width="11"
@@ -75,7 +77,7 @@ const Add: React.FC = () => {
     </span>
   </button>
 
-  <span className={styles.partner}>Партнёрская программа</span>
+  <span className={styles.partner}>{t('add.partner')}</span>
 </div>
 
       </div>

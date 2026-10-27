@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { api } from '../utils/api';
+import { useI18n } from '../i18n/useI18n';
 
 interface ForgotPasswordFormProps {
   onBack: () => void;
 }
 
 const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onBack }) => {
+  const { t } = useI18n();
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -19,14 +21,16 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onBack }) => {
     try {
       await api.forgotPassword(email);
       setIsCodeSent(true);
-      setMessage('✅ Код для сброса пароля отправлен на вашу почту');
+      setMessage(t('forgotPassword.success'));
     } catch (error) {
       console.error('Forgot password error:', error);
-      setMessage(error instanceof Error ? error.message : 'Ошибка при отправке кода');
+      setMessage(error instanceof Error ? error.message : t('forgotPassword.error'));
     } finally {
       setIsLoading(false);
     }
   };
+
+  const isSuccessMessage = message === t('forgotPassword.success');
 
   return (
     <div style={{
@@ -43,79 +47,72 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onBack }) => {
         marginBottom: '20px',
         color: '#333'
       }}>
-        🔐 Восстановление пароля
+        {t('forgotPassword.title')}
       </h2>
 
       {!isCodeSent ? (
-        <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '15px' }}>
-            <label style={{
-              display: 'block',
-              marginBottom: '5px',
-              color: '#333',
-              fontWeight: '500'
-            }}>
-              Email адрес
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              placeholder="Введите ваш email"
+        <>
+          <p style={{ textAlign: 'center', color: '#666', marginBottom: '20px' }}>
+            {t('forgotPassword.subtitle')}
+          </p>
+          <form onSubmit={handleSubmit}>
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{
+                display: 'block',
+                marginBottom: '5px',
+                color: '#333',
+                fontWeight: '500'
+              }}>
+                {t('forgotPassword.email')}
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder={t('forgotPassword.email')}
+                disabled={isLoading}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  border: '2px solid #e1e5e9',
+                  borderRadius: '6px',
+                  fontSize: '16px'
+                }}
+              />
+            </div>
+
+            <button
+              type="submit"
               disabled={isLoading}
               style={{
                 width: '100%',
                 padding: '12px',
-                border: '2px solid #e1e5e9',
+                backgroundColor: '#007bff',
+                color: 'white',
+                border: 'none',
                 borderRadius: '6px',
-                fontSize: '16px'
+                fontSize: '16px',
+                fontWeight: '600',
+                cursor: isLoading ? 'not-allowed' : 'pointer'
               }}
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            style={{
-              width: '100%',
-              padding: '12px',
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: isLoading ? 'not-allowed' : 'pointer'
-            }}
-          >
-            {isLoading ? '⏳ Отправка...' : '📧 Отправить код'}
-          </button>
-        </form>
+            >
+              {isLoading ? t('forgotPassword.sending') : t('forgotPassword.submit')}
+            </button>
+          </form>
+        </>
       ) : (
         <div style={{ textAlign: 'center' }}>
-          <div style={{
-            backgroundColor: '#d4edda',
-            color: '#155724',
-            padding: '15px',
-            borderRadius: '6px',
-            marginBottom: '15px'
-          }}>
-            ✅ Код отправлен!
-          </div>
           <p style={{ color: '#666', fontSize: '14px' }}>
-            Проверьте вашу почту <strong>{email}</strong> и введите код из письма.
-          </p>
-          <p style={{ color: '#666', fontSize: '12px', marginTop: '10px' }}>
-            Если письмо не пришло в течение 5 минут, проверьте папку "Спам".
+            {t('forgotPassword.success')}
           </p>
         </div>
       )}
 
-      {message && (
+      {message && !isCodeSent && (
         <div style={{
-          backgroundColor: message.includes('✅') ? '#d4edda' : '#f8d7da',
-          color: message.includes('✅') ? '#155724' : '#721c24',
+          backgroundColor: isSuccessMessage ? '#d4edda' : '#f8d7da',
+          color: isSuccessMessage ? '#155724' : '#721c24',
           padding: '12px',
           borderRadius: '6px',
           marginTop: '15px',
@@ -140,7 +137,7 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onBack }) => {
             cursor: 'pointer'
           }}
         >
-          ⬅️ Назад
+          {t('forgotPassword.back')}
         </button>
       </div>
     </div>

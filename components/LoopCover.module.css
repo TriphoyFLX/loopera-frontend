@@ -1,0 +1,34 @@
+.cover {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.solid {
+  background-size: cover;
+}
+
+.md {
+  border-radius: var(--lp-r-md, 16px);
+}
+
+.lg {
+  border-radius: var(--lp-r-lg, 20px);
+}
+
+.xl {
+  border-radius: var(--lp-r-xl, 24px);
+}
+
+.full {
+  border-radius: 50%;
+}

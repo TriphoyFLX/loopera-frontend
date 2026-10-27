@@ -1,0 +1,116 @@
+.section {
+  margin: 4px 0 28px;
+}
+
+.head {
+  margin-bottom: 16px;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--lp-font-display, Manrope, sans-serif);
+  font-size: clamp(1.65rem, 3vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: #fff;
+  line-height: 1.1;
+}
+
+.bleed {
+  max-width: 100%;
+  overflow: visible;
+}
+
+@media (max-width: 767px) {
+  .bleed {
+    overflow: hidden;
+  }
+
+  .row {
+    overscroll-behavior-x: contain;
+    touch-action: pan-x;
+  }
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.item {
+  min-width: 0;
+  animation: cardIn 0.4s ease both;
+}
+
+.skeletonCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.skeletonCover {
+  aspect-ratio: 1;
+  border-radius: 22px;
+  background: linear-gradient(90deg, #171717 25%, #222 50%, #171717 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+.skeletonLine,
+.skeletonLineSm {
+  height: 12px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.skeletonLine {
+  width: 72%;
+}
+
+.skeletonLineSm {
+  width: 48%;
+  height: 10px;
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@media (max-width: 1100px) {
+  .row {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .item {
+    flex: 0 0 min(200px, 42vw);
+    scroll-snap-align: start;
+  }
+}
+
+@media (max-width: 640px) {
+  .item {
+    flex-basis: min(168px, 58vw);
+  }
+}

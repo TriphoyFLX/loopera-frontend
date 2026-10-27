@@ -70,7 +70,7 @@ const CreatePackNew: React.FC = () => {
       }
       formData.append('textFile', textFile);
 
-      const response = await fetch('https://loopera-lpr.vercel.app/api/shop', {
+      const response = await fetch('/api/shop', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`

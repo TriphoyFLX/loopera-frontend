@@ -41,13 +41,13 @@ const ProfileNew: React.FC = () => {
       setLoading(true);
 
       const [packsRes, createdRes, balanceRes] = await Promise.all([
-        fetch('https://loopera-lpr.vercel.app/api/shop/my/packs', {
+        fetch('/api/shop/my/packs', {
           headers: { 'Authorization': `Bearer ${token}` }
         }),
-        fetch('https://loopera-lpr.vercel.app/api/shop/my/created-packs', {
+        fetch('/api/shop/my/created-packs', {
           headers: { 'Authorization': `Bearer ${token}` }
         }),
-        fetch('https://loopera-lpr.vercel.app/api/shop/balance/my', {
+        fetch('/api/shop/balance/my', {
           headers: { 'Authorization': `Bearer ${token}` }
         })
       ]);
@@ -71,7 +71,7 @@ const ProfileNew: React.FC = () => {
     if (!token) return;
 
     try {
-      const res = await fetch(`https://loopera-lpr.vercel.app/api/shop/${packId}/download`, {
+      const res = await fetch(`/api/shop/${packId}/download`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 

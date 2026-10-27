@@ -100,7 +100,7 @@ const HomeHero = () => {
         <div className={styles.fade} aria-hidden="true" />
 
         <div className={styles.copy}>
-          <h2 className={styles.headline}>Найди бит</h2>
+          <h2 className={styles.headline}>Найди мелодию</h2>
 
           <form className={styles.search} onSubmit={handleSearch}>
             <span className={styles.searchIcon} aria-hidden="true">

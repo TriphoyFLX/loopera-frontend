@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { api } from '../utils/api';
@@ -15,34 +15,46 @@ type FeaturedLoop = {
   cover_url?: string | null;
 };
 
+const ROTATE_MS = 3500;
+const POOL_SIZE = 12;
+
 const HomeHero = () => {
   const navigate = useNavigate();
   const { token, isAuthenticated } = useAuth();
   const [query, setQuery] = useState('');
-  const [loop, setLoop] = useState<FeaturedLoop | null>(null);
+  const [loops, setLoops] = useState<FeaturedLoop[]>([]);
+  const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const playingRef = useRef(false);
+
+  useEffect(() => {
+    playingRef.current = playing;
+  }, [playing]);
 
   useEffect(() => {
     let cancelled = false;
 
     const load = async () => {
       try {
+        let list: FeaturedLoop[] = [];
+
         if (isAuthenticated && token) {
-          const data = await api.getForYouLoops(1, 1, token);
-          if (!cancelled && data?.loops?.[0]) {
-            setLoop(data.loops[0]);
-            return;
-          }
+          const data = await api.getForYouLoops(1, POOL_SIZE, token);
+          if (data?.loops?.length) list = data.loops;
         }
-        const trending = await api.getAllLoops(1, 1, token || undefined, 'trending');
-        if (!cancelled && trending?.loops?.[0]) {
-          setLoop(trending.loops[0]);
-          return;
+        if (!list.length) {
+          const trending = await api.getAllLoops(1, POOL_SIZE, token || undefined, 'trending');
+          if (trending?.loops?.length) list = trending.loops;
         }
-        const fresh = await api.getAllLoops(1, 1, token || undefined, 'created_at');
-        if (!cancelled && fresh?.loops?.[0]) {
-          setLoop(fresh.loops[0]);
+        if (!list.length) {
+          const fresh = await api.getAllLoops(1, POOL_SIZE, token || undefined, 'created_at');
+          if (fresh?.loops?.length) list = fresh.loops;
+        }
+
+        if (!cancelled && list.length) {
+          setLoops(list);
+          setIndex(0);
         }
       } catch {
         /* empty hero media */
@@ -55,10 +67,36 @@ const HomeHero = () => {
     };
   }, [isAuthenticated, token]);
 
-  useEffect(() => () => {
-    audio?.pause();
-  }, [audio]);
+  useEffect(() => {
+    if (loops.length < 2) return;
 
+    const id = window.setInterval(() => {
+      if (playingRef.current) return;
+      setIndex((i) => (i + 1) % loops.length);
+    }, ROTATE_MS);
+
+    return () => window.clearInterval(id);
+  }, [loops.length]);
+
+  useEffect(() => {
+    // Stop playback when featured loop changes
+    const audio = audioRef.current;
+    if (audio) {
+      audio.pause();
+      audioRef.current = null;
+    }
+    setPlaying(false);
+  }, [index]);
+
+  useEffect(
+    () => () => {
+      audioRef.current?.pause();
+      audioRef.current = null;
+    },
+    [],
+  );
+
+  const loop = loops[index] ?? null;
   const coverUrl = useMemo(() => (loop ? getLoopCoverUrl(loop) : null), [loop]);
   const coverColor = useMemo(() => getLoopCoverColor(loop?.id ?? 1), [loop?.id]);
 
@@ -71,17 +109,15 @@ const HomeHero = () => {
 
   const togglePlay = () => {
     if (!loop) return;
-    if (playing && audio) {
-      audio.pause();
+    if (playing && audioRef.current) {
+      audioRef.current.pause();
       setPlaying(false);
       return;
     }
 
-    const next = audio ?? new Audio(getUploadsUrl(loop.filename));
-    if (!audio) {
-      next.addEventListener('ended', () => setPlaying(false));
-      setAudio(next);
-    }
+    const next = new Audio(getUploadsUrl(loop.filename));
+    next.addEventListener('ended', () => setPlaying(false));
+    audioRef.current = next;
     void next.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
   };
 
@@ -89,6 +125,7 @@ const HomeHero = () => {
     <section className={styles.hero}>
       <div className={styles.banner}>
         <div
+          key={loop?.id ?? 'empty'}
           className={styles.media}
           style={
             coverUrl
@@ -121,7 +158,7 @@ const HomeHero = () => {
         </div>
 
         {loop && (
-          <div className={styles.featured}>
+          <div className={styles.featured} key={`meta-${loop.id}`}>
             <button
               type="button"
               className={styles.meta}

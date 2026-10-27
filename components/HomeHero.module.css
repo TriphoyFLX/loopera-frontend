@@ -46,6 +46,18 @@
     rgba(0, 0, 0, 0.85) 68%,
     #000 88%
   );
+  animation: heroMediaIn 0.7s var(--lp-ease, ease) both;
+}
+
+@keyframes heroMediaIn {
+  from {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* Soft tint so the cut into the fill isn't harsh */
@@ -154,6 +166,18 @@
   align-items: center;
   gap: 14px;
   max-width: min(380px, calc(100% - 48px));
+  animation: heroMetaIn 0.45s var(--lp-ease, ease) both;
+}
+
+@keyframes heroMetaIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .meta {

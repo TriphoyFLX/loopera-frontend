@@ -8,8 +8,8 @@ class API {
     this.baseURL = getApiBaseUrl();
   }
 
-  private async handleResponse(response: Response): Promise<any> {
-    return parseApiJson(response);
+  private async handleResponse<T = any>(response: Response): Promise<T> {
+    return parseApiJson<T>(response);
   }
 
   private getHeaders(token?: string) {

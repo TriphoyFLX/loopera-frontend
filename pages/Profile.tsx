@@ -10,8 +10,9 @@ import ArtistPreferencesPicker from '../components/ArtistPreferencesPicker'
 import Modal from '../components/Modal'
 import { artistTypesApi } from '../utils/artistTypesApi'
 import { downloadPurchasedPack } from '../utils/shopDownload'
-import { getAssetUrl, getUploadsUrl } from '../utils/urls'
+import { getAssetUrl } from '../utils/urls'
 import { LOOP_COVER_COLORS } from '../utils/loopCover'
+import { useLoopPlayerOptional } from '../hooks/useLoopPlayer'
 import { useI18n } from '../i18n/useI18n'
 import {
   canEditAccent,
@@ -68,6 +69,7 @@ const Profile = () => {
   const { t } = useI18n()
   const { user, logout, token, updateUser } = useAuth()
   const navigate = useNavigate()
+  const player = useLoopPlayerOptional()
   const [userLoops, setUserLoops] = useState<UserLoop[]>([])
   const [isLoadingLoops, setIsLoadingLoops] = useState(true)
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([])
@@ -100,78 +102,11 @@ const Profile = () => {
   const [themeSaving, setThemeSaving] = useState(false)
   const [themeMsg, setThemeMsg] = useState('')
   const [billingLoading, setBillingLoading] = useState(true)
-  const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [audioLoading, setAudioLoading] = useState<number | null>(null)
   const [avatarUploading, setAvatarUploading] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [settingsTab, setSettingsTab] = useState<'plan' | 'theme' | 'types' | 'history'>('plan')
   const [contentTab, setContentTab] = useState<'loops' | 'purchases' | 'packs' | 'liked'>('loops')
-  const audioRef = useRef<HTMLAudioElement | null>(null)
   const avatarInputRef = useRef<HTMLInputElement | null>(null)
-
-  useEffect(() => {
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause()
-        audioRef.current.src = ''
-      }
-    }
-  }, [])
-
-  const handlePlay = async (loop: UserLoop) => {
-    try {
-      if (currentlyPlaying === loop.id && isPlaying) {
-        audioRef.current?.pause()
-        setIsPlaying(false)
-        return
-      }
-
-      if (audioRef.current) {
-        audioRef.current.pause()
-        audioRef.current.src = ''
-      }
-
-      if (!loop.filename) {
-        setModalMessage(t('profilePage.playError'))
-        setModalOpen(true)
-        return
-      }
-
-      setAudioLoading(loop.id)
-      const audio = new Audio(getUploadsUrl(loop.filename))
-      audioRef.current = audio
-
-      const onCanPlay = () => {
-        void audio.play()
-        setCurrentlyPlaying(loop.id)
-        setIsPlaying(true)
-        setAudioLoading(null)
-      }
-      const onEnded = () => {
-        setCurrentlyPlaying(null)
-        setIsPlaying(false)
-        setAudioLoading(null)
-      }
-      const onError = () => {
-        setCurrentlyPlaying(null)
-        setIsPlaying(false)
-        setAudioLoading(null)
-        setModalMessage(t('profilePage.audioError'))
-        setModalOpen(true)
-      }
-
-      audio.addEventListener('canplay', onCanPlay)
-      audio.addEventListener('ended', onEnded)
-      audio.addEventListener('error', onError)
-      audio.load()
-    } catch (error) {
-      console.error('Error playing loop:', error)
-      setAudioLoading(null)
-      setModalMessage(t('profilePage.playError'))
-      setModalOpen(true)
-    }
-  }
 
   const handleTopUp = async () => {
     const amount = parseInt(topUpAmount, 10)
@@ -458,6 +393,22 @@ const Profile = () => {
     if (Number(b.id) === pinned) return 1
     return 0
   })
+
+  const handlePlay = (loop: UserLoop) => {
+    const queue = sortedUserLoops.map((item) => ({
+      ...item,
+      author: user?.username || 'Unknown',
+      user_id: user?.id || item.user_id,
+    }))
+    player?.play(
+      {
+        ...loop,
+        author: user?.username || 'Unknown',
+        user_id: user?.id || loop.user_id,
+      },
+      queue,
+    )
+  }
 
   const handleLogout = () => {
     logout()
@@ -753,8 +704,7 @@ const Profile = () => {
                       onPin={handlePinLoop}
                       isPinned={Number(profileTheme.featured_loop_id) === Number(loop.id)}
                       onPlay={handlePlay}
-                      isPlaying={currentlyPlaying === loop.id && isPlaying}
-                      isLoading={audioLoading === loop.id}
+                      queue={sortedUserLoops}
                       showLike={true}
                     />
                   ))}

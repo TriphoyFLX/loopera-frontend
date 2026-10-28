@@ -39,6 +39,7 @@ interface Loop {
   key?: string;
   genre?: string;
   tags?: string[];
+  cover_url?: string | null;
   user_id: number;
   author?: string;
   created_at: string;

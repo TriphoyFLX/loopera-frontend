@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { searchApi } from '../utils/searchApi';
-import { getUploadsUrl } from '../utils/urls';
+import { getAssetUrl, getUploadsUrl } from '../utils/urls';
+import { LOOP_COVER_COLORS } from '../utils/loopCover';
 import { profilePath } from '../utils/routes';
 import { useI18n } from '../i18n/useI18n';
 import LoopCard from '../components/LoopCard';
@@ -17,6 +18,7 @@ interface Loop {
   key?: string;
   genre?: string;
   tags?: string[];
+  cover_url?: string | null;
   user_id: number;
   author?: string;
   author_id?: number;
@@ -26,6 +28,7 @@ interface Loop {
 interface User {
   id: number;
   username: string;
+  avatar_url?: string | null;
   created_at?: string;
   loop_count?: number;
 }
@@ -79,7 +82,9 @@ const Search: React.FC = () => {
             (response.artists || []).map((artist) => ({
               id: artist.id,
               username: artist.username,
+              avatar_url: artist.avatar_url ?? null,
               loop_count: artist.loops_count,
+              created_at: artist.created_at,
             })),
           );
           setLoops([]);
@@ -250,20 +255,34 @@ const Search: React.FC = () => {
               {t('searchPage.foundUsers')} · {users.length}
             </div>
             <div className={styles.usersGrid}>
-              {users.map((user) => (
-                <Link key={user.id} to={profilePath(user.username)} className={styles.userCard}>
-                  <span className={styles.avatar}>{(user.username[0] || '?').toUpperCase()}</span>
-                  <span className={styles.userBody}>
-                    <span className={styles.userName}>{user.username}</span>
-                    <span className={styles.userMeta}>
-                      {t('searchPage.loopsCount', { count: user.loop_count || 0 })}
-                      {user.created_at
-                        ? ` · ${new Date(user.created_at).toLocaleDateString(dateLocale)}`
-                        : ''}
+              {users.map((user) => {
+                const avatarSrc = user.avatar_url ? getAssetUrl(user.avatar_url) : '';
+                const fallback =
+                  LOOP_COVER_COLORS[Math.abs(user.id) % LOOP_COVER_COLORS.length];
+                return (
+                  <Link key={user.id} to={profilePath(user.username)} className={styles.userCard}>
+                    <span
+                      className={styles.avatar}
+                      style={
+                        avatarSrc
+                          ? { backgroundImage: `url(${avatarSrc})` }
+                          : { backgroundColor: fallback }
+                      }
+                    >
+                      {!avatarSrc && (user.username[0] || '?').toUpperCase()}
                     </span>
-                  </span>
-                </Link>
-              ))}
+                    <span className={styles.userBody}>
+                      <span className={styles.userName}>{user.username}</span>
+                      <span className={styles.userMeta}>
+                        {t('searchPage.loopsCount', { count: user.loop_count || 0 })}
+                        {user.created_at
+                          ? ` · ${new Date(user.created_at).toLocaleDateString(dateLocale)}`
+                          : ''}
+                      </span>
+                    </span>
+                  </Link>
+                );
+              })}
             </div>
           </>
         )}

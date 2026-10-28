@@ -11,6 +11,8 @@ export interface LoopArtist {
   username: string;
   hashtag: string;
   loops_count: number;
+  avatar_url?: string | null;
+  created_at?: string;
 }
 
 class SearchApi {

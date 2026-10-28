@@ -282,6 +282,9 @@ const Shop = () => {
             filterTo="/shop"
             onSubmitQuery={(q) => applySearch(q)}
           />
+          <Link to="/create-pack" className={styles.mobileCreateBtn}>
+            Создать пак
+          </Link>
           {!loading && packs.length > 0 && (
             <>
               {renderMobileCarousel('Drum Kits', drumPacks)}
@@ -292,9 +295,7 @@ const Shop = () => {
         </div>
 
         <header className={styles.head}>
-          <div>
-            <h1 className={styles.title}>Маркетплейс</h1>
-          </div>
+          <h1 className={styles.title}>Маркетплейс</h1>
           <Link to="/create-pack" className={styles.createBtn}>
             Создать пак
           </Link>
@@ -372,8 +373,8 @@ const Shop = () => {
               onClick={() => setView('list')}
               aria-label="Список"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M4 7h16M4 12h16M4 17h16" />
               </svg>
             </button>
             <button
@@ -383,10 +384,10 @@ const Shop = () => {
               aria-label="Сетка"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="3" width="7" height="7" rx="1" />
-                <rect x="14" y="3" width="7" height="7" rx="1" />
-                <rect x="3" y="14" width="7" height="7" rx="1" />
-                <rect x="14" y="14" width="7" height="7" rx="1" />
+                <rect x="4" y="4" width="6" height="6" rx="1" />
+                <rect x="14" y="4" width="6" height="6" rx="1" />
+                <rect x="4" y="14" width="6" height="6" rx="1" />
+                <rect x="14" y="14" width="6" height="6" rx="1" />
               </svg>
             </button>
           </div>

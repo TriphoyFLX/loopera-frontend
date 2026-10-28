@@ -131,6 +131,7 @@
 .loops-view-toggle {
   margin-left: auto;
   display: inline-flex;
+  align-items: center;
   gap: 4px;
   padding: 4px;
   border-radius: 12px;
@@ -139,20 +140,27 @@
 }
 
 .loops-view-toggle button {
+  box-sizing: border-box;
   width: 36px;
   height: 32px;
   border: 0;
   border-radius: 8px;
   background: transparent;
   color: var(--lp-label-3);
-  display: grid;
-  place-items: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  padding: 0;
+  margin: 0;
+  line-height: 0;
 }
 
 .loops-view-toggle button svg {
+  display: block;
   width: 16px;
   height: 16px;
+  flex-shrink: 0;
 }
 
 .loops-view-toggle button.active {

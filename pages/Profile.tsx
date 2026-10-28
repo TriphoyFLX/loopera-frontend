@@ -705,7 +705,6 @@ const Profile = () => {
                       isPinned={Number(profileTheme.featured_loop_id) === Number(loop.id)}
                       onPlay={handlePlay}
                       queue={sortedUserLoops}
-                      showLike={true}
                     />
                   ))}
                 </div>

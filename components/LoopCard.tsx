@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useAuthGate } from '../hooks/useAuthGate';
 import { useLoopPlayerOptional } from '../hooks/useLoopPlayer';
 import { api } from '../utils/api';
-import { likeApi } from '../utils/likeApi';
 import { profilePath, loopDetailPath } from '../utils/routes';
 import DownloadRulesModal from './DownloadRulesModal';
 import PaywallModal, { isPlanLimitError, type PaywallAction } from './PaywallModal';
@@ -21,7 +20,6 @@ interface LoopCardProps {
   onPlay?: (loop: any) => void;
   isPlaying?: boolean;
   isLoading?: boolean;
-  showLike?: boolean;
   queue?: any[];
 }
 
@@ -34,7 +32,6 @@ const LoopCard: React.FC<LoopCardProps> = ({
   onPlay,
   isPlaying: isPlayingProp,
   isLoading: isLoadingProp,
-  showLike = true,
   queue,
 }) => {
   const { t } = useI18n();
@@ -42,7 +39,6 @@ const LoopCard: React.FC<LoopCardProps> = ({
   const { token } = useAuth();
   const { requireAuth } = useAuthGate();
   const player = useLoopPlayerOptional();
-  const [isLiked, setIsLiked] = useState(false);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [paywallOpen, setPaywallOpen] = useState(false);
   const [paywallAction, setPaywallAction] = useState<PaywallAction>('download');
@@ -57,20 +53,6 @@ const LoopCard: React.FC<LoopCardProps> = ({
     typeof isLoadingProp === 'boolean'
       ? isLoadingProp
       : Boolean(player?.isCurrent(loop.id) && player.isLoading);
-
-  useEffect(() => {
-    const loadLikeStatus = async () => {
-      if (currentUserId && showLike) {
-        try {
-          const status = await likeApi.getLikeStatus(loop.id);
-          setIsLiked(status.liked);
-        } catch {
-          /* ignore */
-        }
-      }
-    };
-    void loadLikeStatus();
-  }, [loop.id, currentUserId, showLike]);
 
   const handlePlay = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -190,7 +172,7 @@ const LoopCard: React.FC<LoopCardProps> = ({
           <span className="loop-card-meta">{metaBits.join(' ') || '—'}</span>
         </div>
 
-        {(showLike && currentUserId) || (isOwner && (onDelete || onPin)) || isPinned ? (
+        {(isOwner && (onDelete || onPin)) || isPinned ? (
           <div className="loop-card-extra">
             {(isPinned || (isOwner && onPin)) && (
               <button
@@ -207,26 +189,6 @@ const LoopCard: React.FC<LoopCardProps> = ({
                 <svg viewBox="0 0 24 24" fill={isPinned ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
                   <path d="M12 17v5" strokeLinecap="round" />
                   <path d="M9 2h6l-1 7h4l-6 7-6-7h4L9 2z" strokeLinejoin="round" />
-                </svg>
-              </button>
-            )}
-            {showLike && currentUserId && (
-              <button
-                type="button"
-                className={`loop-card-icon ${isLiked ? 'liked' : ''}`}
-                onClick={async (e) => {
-                  e.stopPropagation();
-                  try {
-                    const response = await likeApi.toggleLike(loop.id);
-                    setIsLiked(response.liked);
-                  } catch {
-                    /* ignore */
-                  }
-                }}
-                aria-label={isLiked ? t('loopCard.unlike') : t('loopCard.like')}
-              >
-                <svg viewBox="0 0 24 24" fill={isLiked ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                 </svg>
               </button>
             )}

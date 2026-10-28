@@ -568,7 +568,6 @@ const UserProfile: React.FC = () => {
                     onPin={isOwnProfile ? handlePinLoop : undefined}
                     isPinned={Number(profileTheme.featured_loop_id) === Number(loop.id)}
                     queue={sortedLoops}
-                    showLike={true}
                   />
                 ))}
               </div>
@@ -613,7 +612,6 @@ const UserProfile: React.FC = () => {
                     currentUserId={currentUser?.id}
                     onPlay={handlePlay}
                     queue={likedLoops}
-                    showLike={true}
                   />
                 ))}
               </div>

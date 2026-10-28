@@ -274,10 +274,6 @@
   transform: none;
 }
 
-.loop-card-icon.liked {
-  color: #ff215c;
-}
-
 .loop-card-icon.delete:hover {
   background: rgba(220, 38, 38, 0.18);
   color: #f87171;

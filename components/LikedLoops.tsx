@@ -85,7 +85,6 @@ const LikedLoops = ({ limit = 12, showAllButton = true }: Props) => {
             key={loop.id}
             loop={loop}
             currentUserId={user?.id}
-            showLike
             queue={loops}
           />
         ))}

@@ -26,6 +26,14 @@ const IconShop = () => (
   </svg>
 )
 
+const IconBeats = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M9 18V5l12-2v13" />
+    <circle cx="6" cy="18" r="3" />
+    <circle cx="18" cy="16" r="3" />
+  </svg>
+)
+
 const IconStats = () => (
   <svg viewBox="0 0 24 24" aria-hidden="true">
     <path d="M4 19V9M10 19V5M16 19v-7M22 19H2" />
@@ -109,6 +117,17 @@ const Sidebar = () => {
           {contentItems.map((item) => (
             <NavLink key={item.path} item={item} pathname={location.pathname} />
           ))}
+          <a
+            href="https://beatyan.ru"
+            className={styles.item}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span className={styles.itemIcon}>
+              <IconBeats />
+            </span>
+            <span className={styles.itemLabel}>Биты</span>
+          </a>
         </div>
 
         <div className={styles.section}>

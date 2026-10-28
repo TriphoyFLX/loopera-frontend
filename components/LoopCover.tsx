@@ -20,10 +20,17 @@ const LoopCover = ({ loop, className, alt = '', rounded = 'lg' }: Props) => {
           ? styles.md
           : styles.lg;
 
+  const adBadge = loop?.is_ad ? (
+    <span className={styles.adBadge} aria-label="Реклама">
+      Ad
+    </span>
+  ) : null;
+
   if (url) {
     return (
       <div className={`${styles.cover} ${radiusClass} ${className ?? ''}`}>
         <img src={url} alt={alt} className={styles.img} loading="lazy" />
+        {adBadge}
       </div>
     );
   }
@@ -35,7 +42,9 @@ const LoopCover = ({ loop, className, alt = '', rounded = 'lg' }: Props) => {
       aria-hidden={alt ? undefined : true}
       role={alt ? 'img' : undefined}
       aria-label={alt || undefined}
-    />
+    >
+      {adBadge}
+    </div>
   );
 };
 

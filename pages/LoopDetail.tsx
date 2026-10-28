@@ -153,6 +153,11 @@ const LoopDetail = () => {
   const [paywallOpen, setPaywallOpen] = useState(false);
   const [paywallAction, setPaywallAction] = useState<PaywallAction>('download');
   const [paywallMessage, setPaywallMessage] = useState<string | undefined>();
+  const [promoteOpen, setPromoteOpen] = useState(false);
+  const [promoteBudget, setPromoteBudget] = useState('100');
+  const [promoteBusy, setPromoteBusy] = useState(false);
+  const [promoteMsg, setPromoteMsg] = useState<string | null>(null);
+  const [adMeta, setAdMeta] = useState<{ cost_per_impression: number; min_budget: number } | null>(null);
 
   const id = Number(loopId);
 
@@ -344,6 +349,50 @@ const LoopDetail = () => {
   }
 
   const plays = Number(loop.download_count || 0);
+  const isOwner = Boolean(
+    user &&
+      (Number(user.id) === Number(loop.user_id) ||
+        Number(user.id) === Number(loop.author_id) ||
+        (user.username && loop.author && user.username === loop.author)),
+  );
+
+  const openPromote = async () => {
+    setPromoteMsg(null);
+    setPromoteOpen(true);
+    try {
+      const meta = await api.getLoopAdsMeta();
+      setAdMeta({
+        cost_per_impression: meta.cost_per_impression,
+        min_budget: meta.min_budget,
+      });
+      setPromoteBudget(String(Math.max(meta.min_budget || 50, 100)));
+    } catch {
+      setAdMeta({ cost_per_impression: 2, min_budget: 50 });
+    }
+  };
+
+  const submitPromote = async () => {
+    if (!loop) return;
+    const budget = parseInt(promoteBudget, 10);
+    if (!Number.isFinite(budget)) {
+      setPromoteMsg('Укажи бюджет');
+      return;
+    }
+    try {
+      setPromoteBusy(true);
+      setPromoteMsg(null);
+      const res = await api.createLoopAd(loop.id, budget);
+      const remaining = res?.remaining ?? budget;
+      const cost = res?.cost_per_impression ?? adMeta?.cost_per_impression ?? 2;
+      setPromoteMsg(
+        `Кампания запущена. ~${Math.floor(remaining / cost)} показов в ленте (Ad).`,
+      );
+    } catch (err) {
+      setPromoteMsg(err instanceof Error ? err.message : 'Не удалось запустить рекламу');
+    } finally {
+      setPromoteBusy(false);
+    }
+  };
 
   return (
     <div className={styles.page}>
@@ -381,6 +430,17 @@ const LoopDetail = () => {
               <Link to={profilePath(loop.author)} onClick={() => setMenuOpen(false)}>
                 Профиль автора
               </Link>
+              {isOwner && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    void openPromote();
+                  }}
+                >
+                  Рекламировать
+                </button>
+              )}
             </div>
           )}
           <button
@@ -566,6 +626,12 @@ const LoopDetail = () => {
               Скачать
             </button>
 
+            {isOwner && (
+              <button type="button" className={styles.promoteBtn} onClick={() => void openPromote()}>
+                Рекламировать
+              </button>
+            )}
+
             <div className={styles.moreWrap}>
               <button
                 type="button"
@@ -723,6 +789,62 @@ const LoopDetail = () => {
         action={paywallAction}
         message={paywallMessage}
       />
+
+      {promoteOpen && (
+        <div
+          className={styles.promoteOverlay}
+          role="presentation"
+          onClick={() => setPromoteOpen(false)}
+        >
+          <div
+            className={styles.promoteModal}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Реклама лупа"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className={styles.promoteTitle}>Рекламировать луп</h3>
+            <p className={styles.promoteText}>
+              Луп будет иногда попадаться в ленте как обычный, с пометкой{' '}
+              <strong>Ad</strong> на обложке.
+            </p>
+            <p className={styles.promoteMeta}>
+              {adMeta?.cost_per_impression ?? 2} ₽ за показ · минимум{' '}
+              {adMeta?.min_budget ?? 50} ₽ · списывается с баланса
+            </p>
+            <label className={styles.promoteLabel}>
+              Бюджет, ₽
+              <input
+                type="number"
+                min={adMeta?.min_budget ?? 50}
+                step={10}
+                value={promoteBudget}
+                onChange={(e) => setPromoteBudget(e.target.value)}
+                disabled={promoteBusy}
+              />
+            </label>
+            {promoteMsg && <p className={styles.promoteMsg}>{promoteMsg}</p>}
+            <div className={styles.promoteActions}>
+              <button
+                type="button"
+                className={styles.promoteCancel}
+                onClick={() => setPromoteOpen(false)}
+                disabled={promoteBusy}
+              >
+                Закрыть
+              </button>
+              <button
+                type="button"
+                className={styles.promoteSubmit}
+                onClick={() => void submitPromote()}
+                disabled={promoteBusy}
+              >
+                {promoteBusy ? 'Запуск…' : 'Запустить'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

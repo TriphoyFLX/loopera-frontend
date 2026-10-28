@@ -5,6 +5,7 @@ export const LOOP_COVER_COLORS = ['#2558CF', '#C30202', '#FF215C', '#25CF83'] as
 export type LoopLike = {
   id?: number | string | null;
   cover_url?: string | null;
+  is_ad?: boolean | null;
 };
 
 export function getLoopCoverColor(id?: number | string | null): string {

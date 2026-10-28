@@ -700,6 +700,51 @@ class API {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }
+
+  async getLoopAdsMeta() {
+    const response = await apiFetch(`${this.baseURL}/loop-ads/meta`, {
+      method: 'GET',
+      headers: this.getHeaders(),
+    });
+    return await this.handleResponse<{
+      cost_per_impression: number;
+      min_budget: number;
+      currency: string;
+    }>(response);
+  }
+
+  async getMyLoopAds() {
+    const response = await apiFetch(`${this.baseURL}/loop-ads/mine`, {
+      method: 'GET',
+      headers: this.getHeaders(),
+    });
+    return await this.handleResponse<{ ads: any[] }>(response);
+  }
+
+  async createLoopAd(loopId: number, budget: number) {
+    const response = await apiFetch(`${this.baseURL}/loop-ads`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+      body: JSON.stringify({ loop_id: loopId, budget }),
+    });
+    return await this.handleResponse(response);
+  }
+
+  async pauseLoopAd(adId: number) {
+    const response = await apiFetch(`${this.baseURL}/loop-ads/${adId}/pause`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+    });
+    return await this.handleResponse(response);
+  }
+
+  async resumeLoopAd(adId: number) {
+    const response = await apiFetch(`${this.baseURL}/loop-ads/${adId}/resume`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+    });
+    return await this.handleResponse(response);
+  }
 }
 
 export const api = new API();

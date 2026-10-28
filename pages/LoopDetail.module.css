@@ -292,6 +292,125 @@
   cursor: default;
 }
 
+.promoteBtn {
+  height: 42px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.promoteBtn:hover {
+  background: #242424;
+  transform: none;
+}
+
+.promoteOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 12000;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.promoteModal {
+  width: min(400px, 100%);
+  background: #161616;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+}
+
+.promoteTitle {
+  margin: 0 0 8px;
+  font-size: 1.15rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+}
+
+.promoteText {
+  margin: 0 0 10px;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.promoteMeta {
+  margin: 0 0 16px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.8rem;
+}
+
+.promoteLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.promoteLabel input {
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #111;
+  color: #fff;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.promoteMsg {
+  margin: 12px 0 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.4;
+}
+
+.promoteActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.promoteCancel,
+.promoteSubmit {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-weight: 650;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.promoteCancel {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.promoteSubmit {
+  border: 0;
+  background: #8b1538;
+  color: #fff;
+}
+
+.promoteSubmit:disabled,
+.promoteCancel:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
 .moreWrap {
   position: relative;
   margin-left: auto;

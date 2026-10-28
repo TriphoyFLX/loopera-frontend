@@ -36,8 +36,6 @@ const LoopUpload = () => {
     genre: '',
     mood: '',
     tags: '',
-    instagram: '',
-    telegram: '',
   });
   const [file, setFile] = useState<File | null>(null);
   const [coverFile, setCoverFile] = useState<File | null>(null);
@@ -139,9 +137,6 @@ const LoopUpload = () => {
           uploadFormData.append('tags', JSON.stringify(tagsArray));
         }
       }
-      if (formData.instagram) uploadFormData.append('instagram', formData.instagram);
-      if (formData.telegram) uploadFormData.append('telegram', formData.telegram);
-
       const progressInterval = window.setInterval(() => {
         setUploadProgress((prev) => {
           if (prev >= 90) {
@@ -164,8 +159,6 @@ const LoopUpload = () => {
         genre: '',
         mood: '',
         tags: '',
-        instagram: '',
-        telegram: '',
       });
       setFile(null);
       setCoverFile(null);
@@ -410,31 +403,6 @@ const LoopUpload = () => {
               disabled={isLoading}
             />
           </label>
-
-          <div className={styles.row}>
-            <label className={styles.field}>
-              <span>{t('uploadPage.instagramOptional')}</span>
-              <input
-                type="url"
-                name="instagram"
-                value={formData.instagram}
-                onChange={handleInputChange}
-                placeholder={t('uploadPage.instagramPlaceholder')}
-                disabled={isLoading}
-              />
-            </label>
-            <label className={styles.field}>
-              <span>{t('uploadPage.telegramOptional')}</span>
-              <input
-                type="url"
-                name="telegram"
-                value={formData.telegram}
-                onChange={handleInputChange}
-                placeholder={t('uploadPage.telegramPlaceholder')}
-                disabled={isLoading}
-              />
-            </label>
-          </div>
 
           {error && <div className={styles.error}>{error}</div>}
           {success && <div className={styles.success}>{success}</div>}

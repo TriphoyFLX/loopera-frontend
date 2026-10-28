@@ -13,6 +13,7 @@ import { LOOP_COVER_COLORS } from '../utils/loopCover';
 import { profilePath } from '../utils/routes';
 import { buildShareUrl } from '../utils/share';
 import { normalizePlanSlug, planDisplayName } from '../utils/plans';
+import VerifiedBadge from '../components/VerifiedBadge';
 import LoopCard from '../components/LoopCard';
 import ShareButton from '../components/ShareButton';
 import './UserProfile.css';
@@ -366,13 +367,7 @@ const UserProfile: React.FC = () => {
             <div className="user-profile-name-row">
               <h1 className="user-profile-name">{user.username}</h1>
               {authorBadge !== 'none' && (
-                <span
-                  className={`user-plan-badge user-plan-badge--${
-                    authorBadge === 'business' ? 'elite' : authorBadge
-                  }`}
-                >
-                  {planDisplayName(authorBadge)}
-                </span>
+                <VerifiedBadge plan={authorBadge} title={planDisplayName(authorBadge)} />
               )}
             </div>
             {profileTheme.bio && <p className="user-profile-bio">{profileTheme.bio}</p>}
@@ -479,7 +474,8 @@ const UserProfile: React.FC = () => {
       </div>
 
       {authorPlan === 'business' && profileTheme.featured_loop_id && (() => {
-        const featured = loops.find((l) => l.id === profileTheme.featured_loop_id);
+        const featuredId = Number(profileTheme.featured_loop_id);
+        const featured = loops.find((l) => Number(l.id) === featuredId);
         if (!featured) return null;
         return (
           <div className="user-profile-featured">

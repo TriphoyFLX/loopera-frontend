@@ -4,6 +4,8 @@ import { profilePath } from '../utils/routes';
 import { getAssetUrl } from '../utils/urls';
 import { LOOP_COVER_COLORS } from '../utils/loopCover';
 import { topUsersApi, type TopUser } from '../utils/topUsersApi';
+import VerifiedBadge from './VerifiedBadge';
+import { isPaidPlan } from '../utils/plans';
 import styles from './TopLoopmakers.module.css';
 
 type Props = {
@@ -76,9 +78,8 @@ const TopLoopmakers = ({ limit = 8 }: Props) => {
 
   return (
     <div className={styles.row}>
-      {users.map((user, index) => {
+      {users.map((user) => {
         const avatar = user.avatar_url ? getAssetUrl(user.avatar_url) : '';
-        const verified = index === 0 && (user.total_likes || 0) > 0;
         const subtitle = user.hashtag
           ? `@${user.hashtag}`
           : formatLoops(user.loops_count);
@@ -101,23 +102,7 @@ const TopLoopmakers = ({ limit = 8 }: Props) => {
             </div>
             <div className={styles.nameRow}>
               <span className={styles.name}>{user.username}</span>
-              {verified && (
-                <svg
-                  className={styles.verified}
-                  viewBox="0 0 24 24"
-                  aria-label="Топ"
-                >
-                  <circle cx="12" cy="12" r="10" fill="currentColor" />
-                  <path
-                    d="M7.5 12.5l3 3 6-6"
-                    fill="none"
-                    stroke="#0a0a0a"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              )}
+              {isPaidPlan(user.plan_slug) && <VerifiedBadge plan={user.plan_slug} />}
             </div>
             <p className={styles.sub}>{subtitle}</p>
           </Link>

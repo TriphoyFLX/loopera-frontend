@@ -13,6 +13,7 @@ export interface TopUser {
   created_at: string;
   loops_count: number;
   total_likes: number;
+  plan_slug?: string | null;
   avg_rating?: number;
 }
 

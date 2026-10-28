@@ -6,6 +6,8 @@ import { LOOP_COVER_COLORS } from '../utils/loopCover';
 import { profilePath } from '../utils/routes';
 import { useI18n } from '../i18n/useI18n';
 import LoopCard from '../components/LoopCard';
+import VerifiedBadge from '../components/VerifiedBadge';
+import { isPaidPlan } from '../utils/plans';
 import styles from './Search.module.css';
 
 interface Loop {
@@ -31,6 +33,7 @@ interface User {
   avatar_url?: string | null;
   created_at?: string;
   loop_count?: number;
+  plan_slug?: string | null;
 }
 
 const Search: React.FC = () => {
@@ -85,6 +88,7 @@ const Search: React.FC = () => {
               avatar_url: artist.avatar_url ?? null,
               loop_count: artist.loops_count,
               created_at: artist.created_at,
+              plan_slug: artist.plan_slug ?? null,
             })),
           );
           setLoops([]);
@@ -272,7 +276,10 @@ const Search: React.FC = () => {
                       {!avatarSrc && (user.username[0] || '?').toUpperCase()}
                     </span>
                     <span className={styles.userBody}>
-                      <span className={styles.userName}>{user.username}</span>
+                      <span className={styles.userName}>
+                        {user.username}
+                        {isPaidPlan(user.plan_slug) && <VerifiedBadge plan={user.plan_slug} />}
+                      </span>
                       <span className={styles.userMeta}>
                         {t('searchPage.loopsCount', { count: user.loop_count || 0 })}
                         {user.created_at

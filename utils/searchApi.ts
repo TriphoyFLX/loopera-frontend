@@ -13,6 +13,7 @@ export interface LoopArtist {
   loops_count: number;
   avatar_url?: string | null;
   created_at?: string;
+  plan_slug?: string | null;
 }
 
 class SearchApi {

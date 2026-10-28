@@ -15,11 +15,13 @@ import { useI18n } from '../i18n/useI18n'
 import {
   canEditAccent,
   canEditFullTheme,
+  isPaidPlan,
   normalizePlanSlug,
   planDisplayName,
 } from '../utils/plans'
 import { profilePath } from '../utils/routes'
 import MobilePageHeader from '../components/MobilePageHeader'
+import VerifiedBadge from '../components/VerifiedBadge'
 import styles from './Profile.module.css'
 
 type BillingUsage = {
@@ -610,6 +612,9 @@ const Profile = () => {
             <div className={styles.info}>
               <div className={styles.nameRow}>
                 <h1 className={styles.username}>{user.username}</h1>
+                {isPaidPlan(planSlug) && (
+                  <VerifiedBadge plan={planSlug} title={planDisplayName(planSlug)} />
+                )}
                 <span
                   className={`${styles.planChip} ${
                     planSlug === 'business'

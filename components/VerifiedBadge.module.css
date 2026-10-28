@@ -1,0 +1,16 @@
+.badge {
+  width: 1.05em;
+  height: 1.05em;
+  min-width: 15px;
+  min-height: 15px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.blue {
+  color: #3b82f6;
+}
+
+.gold {
+  color: #d9b26a;
+}

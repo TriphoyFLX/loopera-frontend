@@ -75,7 +75,9 @@ const UserProfile: React.FC = () => {
     featured_loop_id?: number | null;
   }>({});
 
-  const isOwnProfile = Boolean(currentUser && user && currentUser.id === user.id);
+  const isOwnProfile = Boolean(
+    currentUser && user && Number(currentUser.id) === Number(user.id),
+  );
 
   const handleStartChat = async () => {
     try {
@@ -135,10 +137,33 @@ const UserProfile: React.FC = () => {
     try {
       await api.deleteLoop(loopId, token);
       setLoops((prev) => prev.filter((l) => l.id !== loopId));
+      if (Number(profileTheme.featured_loop_id) === Number(loopId)) {
+        setProfileTheme((prev) => ({ ...prev, featured_loop_id: null }));
+      }
     } catch (err) {
       alert(err instanceof Error ? err.message : t('profilePage.deleteLoopError'));
     }
   };
+
+  const handlePinLoop = async (loopId: number) => {
+    if (!token) return;
+    const currentlyPinned = Number(profileTheme.featured_loop_id) === Number(loopId);
+    const nextId = currentlyPinned ? null : loopId;
+    try {
+      const result = await api.updateProfileTheme({ featured_loop_id: nextId }, token);
+      setProfileTheme((result.profile_theme || { ...profileTheme, featured_loop_id: nextId }) as typeof profileTheme);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Не удалось закрепить луп');
+    }
+  };
+
+  const sortedLoops = [...loops].sort((a, b) => {
+    const pinned = Number(profileTheme.featured_loop_id);
+    if (!Number.isFinite(pinned)) return 0;
+    if (Number(a.id) === pinned) return -1;
+    if (Number(b.id) === pinned) return 1;
+    return 0;
+  });
 
   useEffect(() => {
     const targetUserId = nickname || currentUser?.username;
@@ -485,22 +510,6 @@ const UserProfile: React.FC = () => {
         </div>
       </div>
 
-      {authorPlan === 'business' && profileTheme.featured_loop_id && (() => {
-        const featuredId = Number(profileTheme.featured_loop_id);
-        const featured = loops.find((l) => Number(l.id) === featuredId);
-        if (!featured) return null;
-        return (
-          <div className="user-profile-featured">
-            <LoopCard
-              loop={featured}
-              currentUserId={currentUser?.id}
-              onPlay={handlePlay}
-              queue={loops}
-            />
-          </div>
-        );
-      })()}
-
       <div className="user-profile-content">
         <div className="user-profile-tabs">
           <button 
@@ -544,7 +553,7 @@ const UserProfile: React.FC = () => {
               </div>
             ) : (
               <div className="user-loops-grid">
-                {loops.map((loop) => (
+                {sortedLoops.map((loop) => (
                   <LoopCard
                     key={loop.id}
                     loop={{
@@ -555,12 +564,10 @@ const UserProfile: React.FC = () => {
                     }}
                     currentUserId={currentUser?.id}
                     onPlay={handlePlay}
-                    onDelete={
-                      currentUser && user && Number(currentUser.id) === Number(user.id)
-                        ? handleDeleteLoop
-                        : undefined
-                    }
-                    queue={loops}
+                    onDelete={isOwnProfile ? handleDeleteLoop : undefined}
+                    onPin={isOwnProfile ? handlePinLoop : undefined}
+                    isPinned={Number(profileTheme.featured_loop_id) === Number(loop.id)}
+                    queue={sortedLoops}
                     showLike={true}
                   />
                 ))}

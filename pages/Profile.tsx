@@ -428,12 +428,36 @@ const Profile = () => {
         const response = await api.getUserLoops(token)
         setUserLoops(response.loops)
       }
+      if (Number(profileTheme.featured_loop_id) === Number(loopId)) {
+        setProfileTheme((prev) => ({ ...prev, featured_loop_id: null }))
+      }
     } catch (error) {
       console.error('Error deleting loop:', error)
       setModalMessage(error instanceof Error ? error.message : t('profilePage.deleteLoopError'))
       setModalOpen(true)
     }
   }
+
+  const handlePinLoop = async (loopId: number) => {
+    if (!token) return
+    const currentlyPinned = Number(profileTheme.featured_loop_id) === Number(loopId)
+    const nextId = currentlyPinned ? null : loopId
+    try {
+      const result = await api.updateProfileTheme({ featured_loop_id: nextId }, token)
+      setProfileTheme((result.profile_theme || { ...profileTheme, featured_loop_id: nextId }) as ProfileTheme)
+    } catch (error) {
+      setModalMessage(error instanceof Error ? error.message : 'Не удалось закрепить луп')
+      setModalOpen(true)
+    }
+  }
+
+  const sortedUserLoops = [...userLoops].sort((a, b) => {
+    const pinned = Number(profileTheme.featured_loop_id)
+    if (!Number.isFinite(pinned)) return 0
+    if (Number(a.id) === pinned) return -1
+    if (Number(b.id) === pinned) return 1
+    return 0
+  })
 
   const handleLogout = () => {
     logout()
@@ -714,7 +738,7 @@ const Profile = () => {
                 <div className={styles.emptyState}><p>{t('profilePage.loading')}</p></div>
               ) : userLoops.length > 0 ? (
                 <div className={styles.loopsGrid}>
-                  {userLoops.map((loop) => (
+                  {sortedUserLoops.map((loop) => (
                     <LoopCard
                       key={loop.id}
                       loop={{
@@ -726,6 +750,8 @@ const Profile = () => {
                       }}
                       currentUserId={user?.id}
                       onDelete={handleDeleteLoop}
+                      onPin={handlePinLoop}
+                      isPinned={Number(profileTheme.featured_loop_id) === Number(loop.id)}
                       onPlay={handlePlay}
                       isPlaying={currentlyPlaying === loop.id && isPlaying}
                       isLoading={audioLoading === loop.id}
@@ -1149,29 +1175,6 @@ const Profile = () => {
                               />
                               {t('billingSection.showStats')}
                             </label>
-                            {userLoops.length > 0 && (
-                              <label className={styles.themeField}>
-                                Featured loop
-                                <select
-                                  value={profileTheme.featured_loop_id ?? ''}
-                                  onChange={(e) =>
-                                    setProfileTheme((prev) => ({
-                                      ...prev,
-                                      featured_loop_id: e.target.value
-                                        ? parseInt(e.target.value, 10)
-                                        : null,
-                                    }))
-                                  }
-                                >
-                                  <option value="">—</option>
-                                  {userLoops.map((loop) => (
-                                    <option key={loop.id} value={loop.id}>
-                                      {loop.title}
-                                    </option>
-                                  ))}
-                                </select>
-                              </label>
-                            )}
                           </>
                         )}
                         <button

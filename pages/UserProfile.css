@@ -417,14 +417,6 @@
   color: var(--lp-gold, #d9b26a);
 }
 
-.user-profile-featured {
-  max-width: 1080px;
-  margin: 28px auto 0;
-  padding: 0 60px;
-  position: relative;
-  z-index: 2;
-}
-
 /* Адаптивность */
 
 @media (max-width: 768px) {
@@ -449,10 +441,6 @@
 
   .user-profile-content {
     padding: 28px 20px 48px;
-  }
-
-  .user-profile-featured {
-    padding: 0 20px;
   }
 
   .user-loops-grid {

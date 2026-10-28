@@ -283,6 +283,19 @@
   color: #f87171;
 }
 
+.loop-card-icon.pin.pinned {
+  color: #f5c542;
+}
+
+.loop-card-icon.pin:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
+.loop-card-icon.pin:not(:disabled):hover {
+  color: #f5c542;
+}
+
 @media (hover: none) and (min-width: 768px) {
   .loop-card-play {
     opacity: 1;

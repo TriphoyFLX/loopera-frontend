@@ -16,6 +16,8 @@ interface LoopCardProps {
   loop: any;
   currentUserId?: number;
   onDelete?: (id: number) => void;
+  onPin?: (id: number) => void;
+  isPinned?: boolean;
   onPlay?: (loop: any) => void;
   isPlaying?: boolean;
   isLoading?: boolean;
@@ -27,6 +29,8 @@ const LoopCard: React.FC<LoopCardProps> = ({
   loop,
   currentUserId,
   onDelete,
+  onPin,
+  isPinned = false,
   onPlay,
   isPlaying: isPlayingProp,
   isLoading: isLoadingProp,
@@ -186,8 +190,26 @@ const LoopCard: React.FC<LoopCardProps> = ({
           <span className="loop-card-meta">{metaBits.join(' ') || '—'}</span>
         </div>
 
-        {(showLike && currentUserId) || (isOwner && onDelete) ? (
+        {(showLike && currentUserId) || (isOwner && (onDelete || onPin)) || isPinned ? (
           <div className="loop-card-extra">
+            {(isPinned || (isOwner && onPin)) && (
+              <button
+                type="button"
+                className={`loop-card-icon pin ${isPinned ? 'pinned' : ''}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (isOwner && onPin) onPin(loop.id);
+                }}
+                aria-label={isPinned ? 'Открепить' : 'Закрепить'}
+                disabled={!isOwner || !onPin}
+                title={isPinned ? 'Закреплён' : 'Закрепить'}
+              >
+                <svg viewBox="0 0 24 24" fill={isPinned ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
+                  <path d="M12 17v5" strokeLinecap="round" />
+                  <path d="M9 2h6l-1 7h4l-6 7-6-7h4L9 2z" strokeLinejoin="round" />
+                </svg>
+              </button>
+            )}
             {showLike && currentUserId && (
               <button
                 type="button"

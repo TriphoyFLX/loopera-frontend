@@ -146,9 +146,10 @@
   color: var(--lp-label-3, rgba(235, 235, 245, 0.32));
 }
 
-.loopsGrid {
-  display: grid;
-  gap: 12px;
+.loopsList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .usersGrid {

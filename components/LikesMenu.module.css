@@ -67,22 +67,37 @@
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px;
-  border: 0;
+  gap: 4px;
+  padding: 4px;
   border-radius: 12px;
+}
+
+.item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.playHit {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px;
+  border: 0;
+  border-radius: 10px;
   background: transparent;
   color: #fff;
   text-align: left;
   cursor: pointer;
 }
 
-.item:hover {
-  background: rgba(255, 255, 255, 0.05);
+.playHit:hover {
+  background: transparent;
   transform: none;
 }
 
 .cover {
+  position: relative;
   width: 40px;
   height: 40px;
   border-radius: 10px;
@@ -90,9 +105,30 @@
   flex-shrink: 0;
 }
 
-.cover > * {
+.cover > *:first-child {
   width: 100%;
   height: 100%;
+}
+
+.playIcon {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.playHit:hover .playIcon,
+.item:focus-within .playIcon {
+  opacity: 1;
+}
+
+.playIcon svg {
+  width: 14px;
+  height: 14px;
 }
 
 .meta {
@@ -100,6 +136,31 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+}
+
+.openBtn {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.35);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.openBtn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  transform: none;
+}
+
+.openBtn svg {
+  width: 16px;
+  height: 16px;
 }
 
 .itemTitle {

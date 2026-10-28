@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { searchApi } from '../utils/searchApi';
-import { getAssetUrl, getUploadsUrl } from '../utils/urls';
+import { getAssetUrl } from '../utils/urls';
 import { LOOP_COVER_COLORS } from '../utils/loopCover';
 import { profilePath } from '../utils/routes';
 import { useI18n } from '../i18n/useI18n';
-import LoopCard from '../components/LoopCard';
+import LoopListRow from '../components/LoopListRow';
 import VerifiedBadge from '../components/VerifiedBadge';
 import { isPaidPlan } from '../utils/plans';
 import styles from './Search.module.css';
@@ -46,10 +46,6 @@ const Search: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [currentlyPlaying, setCurrentlyPlaying] = useState<number | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [audioLoading, setAudioLoading] = useState<number | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const requestIdRef = useRef(0);
 
   useEffect(() => {
@@ -93,10 +89,9 @@ const Search: React.FC = () => {
           );
           setLoops([]);
         }
-      } catch (err) {
+      } catch {
         if (requestId !== requestIdRef.current) return;
-        console.error('Search error:', err);
-        setError(err instanceof Error ? err.message : 'Ошибка поиска');
+        setError(t('searchPage.error'));
         setLoops([]);
         setUsers([]);
       } finally {
@@ -107,7 +102,7 @@ const Search: React.FC = () => {
     }, 280);
 
     return () => window.clearTimeout(timeoutId);
-  }, [searchQuery, searchType]);
+  }, [searchQuery, searchType, t]);
 
   const updateQuery = (value: string) => {
     setSearchQuery(value);
@@ -118,54 +113,6 @@ const Search: React.FC = () => {
       setSearchParams({}, { replace: true });
     }
   };
-
-  const handlePlay = async (loop: Loop) => {
-    try {
-      if (currentlyPlaying === loop.id && isPlaying) {
-        audioRef.current?.pause();
-        setIsPlaying(false);
-        return;
-      }
-
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.src = '';
-      }
-
-      setAudioLoading(loop.id);
-      const audio = new Audio(getUploadsUrl(loop.filename));
-      audioRef.current = audio;
-
-      audio.addEventListener('canplay', () => {
-        void audio.play();
-        setCurrentlyPlaying(loop.id);
-        setIsPlaying(true);
-        setAudioLoading(null);
-      });
-      audio.addEventListener('ended', () => {
-        setCurrentlyPlaying(null);
-        setIsPlaying(false);
-        setAudioLoading(null);
-      });
-      audio.addEventListener('error', () => {
-        setCurrentlyPlaying(null);
-        setIsPlaying(false);
-        setAudioLoading(null);
-      });
-      audio.load();
-    } catch {
-      setAudioLoading(null);
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.src = '';
-      }
-    };
-  }, []);
 
   const dateLocale = locale === 'ru' ? 'ru-RU' : 'en-US';
   const hasQuery = Boolean(searchQuery.trim());
@@ -180,7 +127,7 @@ const Search: React.FC = () => {
       <header className={styles.hero}>
         <p className={styles.brand}>Loopera</p>
         <h1 className={styles.title}>{t('searchPage.title')}</h1>
-        <p className={styles.subtitle}>{t('searchPage.enterQueryHint')}</p>
+        <p className={styles.subtitle}>{t('searchPage.subtitle')}</p>
       </header>
 
       <div className={styles.panel}>
@@ -239,15 +186,9 @@ const Search: React.FC = () => {
             <div className={styles.resultsHead}>
               {t('searchPage.foundLoops')} · {loops.length}
             </div>
-            <div className={styles.loopsGrid}>
-              {loops.map((loop) => (
-                <LoopCard
-                  key={loop.id}
-                  loop={loop}
-                  onPlay={handlePlay}
-                  isPlaying={currentlyPlaying === loop.id && isPlaying}
-                  isLoading={audioLoading === loop.id}
-                />
+            <div className={styles.loopsList}>
+              {loops.map((loop, i) => (
+                <LoopListRow key={loop.id} loop={loop} index={i + 1} queue={loops} />
               ))}
             </div>
           </>

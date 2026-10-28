@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useAuthGate } from '../hooks/useAuthGate';
+import { useLoopPlayerOptional } from '../hooks/useLoopPlayer';
 import { likeApi, type LikedLoop } from '../utils/likeApi';
 import { loopDetailPath } from '../utils/routes';
 import LoopCover from './LoopCover';
@@ -11,6 +12,7 @@ const LikesMenu = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
   const { requireAuth } = useAuthGate();
+  const player = useLoopPlayerOptional();
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<LikedLoop[]>([]);
   const [loading, setLoading] = useState(false);
@@ -23,7 +25,7 @@ const LikesMenu = () => {
     }
     try {
       setLoading(true);
-      const data = await likeApi.getLikedLoops(1, 6);
+      const data = await likeApi.getLikedLoops(1, 8);
       setItems(data.loops || []);
     } catch {
       setItems([]);
@@ -54,6 +56,11 @@ const LikesMenu = () => {
     setOpen((v) => !v);
   };
 
+  const playLoop = (loop: LikedLoop) => {
+    player?.play(loop, items);
+    setOpen(false);
+  };
+
   return (
     <div className={styles.root} ref={rootRef}>
       <button
@@ -81,25 +88,52 @@ const LikesMenu = () => {
             {!loading && items.length === 0 && (
               <p className={styles.empty}>Пока нет лайков</p>
             )}
-            {items.map((loop) => (
-              <button
-                key={loop.id}
-                type="button"
-                className={styles.item}
-                onClick={() => {
-                  setOpen(false);
-                  navigate(loopDetailPath(loop.id));
-                }}
-              >
-                <div className={styles.cover}>
-                  <LoopCover loop={loop} rounded="md" alt="" />
+            {items.map((loop) => {
+              const playing = Boolean(player?.isCurrent(loop.id) && player.isPlaying);
+              return (
+                <div key={loop.id} className={styles.item}>
+                  <button
+                    type="button"
+                    className={styles.playHit}
+                    onClick={() => playLoop(loop)}
+                    aria-label={playing ? 'Пауза' : `Слушать ${loop.title || 'луп'}`}
+                  >
+                    <div className={styles.cover}>
+                      <LoopCover loop={loop} rounded="md" alt="" />
+                      <span className={styles.playIcon} aria-hidden>
+                        {playing ? (
+                          <svg viewBox="0 0 24 24" fill="currentColor">
+                            <rect x="6" y="5" width="4" height="14" rx="1" />
+                            <rect x="14" y="5" width="4" height="14" rx="1" />
+                          </svg>
+                        ) : (
+                          <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        )}
+                      </span>
+                    </div>
+                    <div className={styles.meta}>
+                      <span className={styles.itemTitle}>{loop.title || 'Untitled'}</span>
+                      <span className={styles.itemAuthor}>{loop.author || 'loopera'}</span>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.openBtn}
+                    onClick={() => {
+                      setOpen(false);
+                      navigate(loopDetailPath(loop.id));
+                    }}
+                    aria-label="Открыть луп"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M9 18l6-6-6-6" />
+                    </svg>
+                  </button>
                 </div>
-                <div className={styles.meta}>
-                  <span className={styles.itemTitle}>{loop.title || 'Untitled'}</span>
-                  <span className={styles.itemAuthor}>{loop.author || 'loopera'}</span>
-                </div>
-              </button>
-            ))}
+              );
+            })}
           </div>
 
           <button

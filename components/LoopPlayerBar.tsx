@@ -1,8 +1,10 @@
+import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useAuthGate } from '../hooks/useAuthGate';
 import { useLoopPlayer } from '../hooks/useLoopPlayer';
 import { likeApi } from '../utils/likeApi';
 import { api } from '../utils/api';
+import { loopDetailPath, profilePath } from '../utils/routes';
 import LoopCover from './LoopCover';
 import DownloadRulesModal from './DownloadRulesModal';
 import PaywallModal, { isPlanLimitError, type PaywallAction } from './PaywallModal';
@@ -43,6 +45,10 @@ const LoopPlayerBar = () => {
   }, [current?.id, user]);
 
   if (!current) return null;
+
+  const authorName = current.author || 'loopera';
+  const loopHref = loopDetailPath(current.id);
+  const authorHref = profilePath(authorName);
 
   const handleLike = async () => {
     if (!requireAuth(() => {}, 'like') || !user) return;
@@ -97,12 +103,16 @@ const LoopPlayerBar = () => {
       >
         <div className={styles.glow} aria-hidden="true" />
         <div className={styles.track}>
-          <div className={styles.cover}>
+          <Link to={loopHref} className={styles.cover} aria-label={current.title || 'Открыть луп'}>
             <LoopCover loop={current} rounded="md" />
-          </div>
+          </Link>
           <div className={styles.meta}>
-            <div className={styles.title}>{current.title || 'Untitled'}</div>
-            <div className={styles.author}>{current.author || 'loopera'}</div>
+            <Link to={loopHref} className={styles.title}>
+              {current.title || 'Untitled'}
+            </Link>
+            <Link to={authorHref} className={styles.author}>
+              {authorName}
+            </Link>
           </div>
         </div>
 

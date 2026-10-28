@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, type ChangeEvent } from 'react'
+import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { api } from '../utils/api'
@@ -974,7 +975,7 @@ const Profile = () => {
           </div>
         )}
 
-        {settingsOpen && (
+        {settingsOpen && createPortal(
           <div className={styles.drawerOverlay} onClick={() => setSettingsOpen(false)} role="presentation">
             <aside
               className={styles.drawer}
@@ -1252,7 +1253,8 @@ const Profile = () => {
                 </button>
               </div>
             </aside>
-          </div>
+          </div>,
+          document.body,
         )}
       </div>
 

@@ -43,24 +43,53 @@
   border-radius: 12px;
   overflow: hidden;
   flex-shrink: 0;
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.cover > * {
+  width: 100%;
+  height: 100%;
 }
 
 .meta {
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .title {
+  display: block;
   font-weight: 700;
   font-size: 0.92rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: #fff;
+  text-decoration: none;
+}
+
+.title:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .author {
-  margin-top: 2px;
+  display: block;
   color: var(--lp-label-2);
   font-size: 0.8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+}
+
+.author:hover {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .controls {

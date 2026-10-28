@@ -243,7 +243,44 @@
 }
 
 .loop-card-extra {
-  display: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.loop-card-icon {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.55);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.loop-card-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.loop-card-icon:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  transform: none;
+}
+
+.loop-card-icon.liked {
+  color: #ff215c;
+}
+
+.loop-card-icon.delete:hover {
+  background: rgba(220, 38, 38, 0.18);
+  color: #f87171;
 }
 
 @media (hover: none) and (min-width: 768px) {

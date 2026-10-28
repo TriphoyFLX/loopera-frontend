@@ -128,6 +128,18 @@ const UserProfile: React.FC = () => {
     player?.play(loop, queue);
   };
 
+  const handleDeleteLoop = async (loopId: number) => {
+    if (!token || !window.confirm(t('profilePage.deleteLoopConfirm'))) {
+      return;
+    }
+    try {
+      await api.deleteLoop(loopId, token);
+      setLoops((prev) => prev.filter((l) => l.id !== loopId));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : t('profilePage.deleteLoopError'));
+    }
+  };
+
   useEffect(() => {
     const targetUserId = nickname || currentUser?.username;
     if (targetUserId) {
@@ -543,6 +555,11 @@ const UserProfile: React.FC = () => {
                     }}
                     currentUserId={currentUser?.id}
                     onPlay={handlePlay}
+                    onDelete={
+                      currentUser && user && Number(currentUser.id) === Number(user.id)
+                        ? handleDeleteLoop
+                        : undefined
+                    }
                     queue={loops}
                     showLike={true}
                   />

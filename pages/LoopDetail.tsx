@@ -394,6 +394,17 @@ const LoopDetail = () => {
     }
   };
 
+  const handleDeleteOwnLoop = async () => {
+    if (!token || !loop) return;
+    if (!window.confirm(t('profilePage.deleteLoopConfirm'))) return;
+    try {
+      await api.deleteLoop(loop.id, token);
+      navigate('/profile', { replace: true });
+    } catch (err) {
+      alert(err instanceof Error ? err.message : t('profilePage.deleteLoopError'));
+    }
+  };
+
   return (
     <div className={styles.page}>
       <header className={styles.pageHead}>
@@ -439,6 +450,17 @@ const LoopDetail = () => {
                   }}
                 >
                   Рекламировать
+                </button>
+              )}
+              {isOwner && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    void handleDeleteOwnLoop();
+                  }}
+                >
+                  Удалить луп
                 </button>
               )}
             </div>
@@ -652,6 +674,11 @@ const LoopDetail = () => {
                   <Link to={profilePath(loop.author)} onClick={() => setMenuOpen(false)}>
                     Профиль автора
                   </Link>
+                  {isOwner && (
+                    <button type="button" onClick={() => void handleDeleteOwnLoop()}>
+                      Удалить луп
+                    </button>
+                  )}
                 </div>
               )}
             </div>

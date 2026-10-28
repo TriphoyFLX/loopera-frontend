@@ -104,7 +104,10 @@ const LoopCard: React.FC<LoopCardProps> = ({
     }
   };
 
-  const isOwner = currentUserId === loop.user_id;
+  const isOwner =
+    currentUserId != null &&
+    loop.user_id != null &&
+    Number(currentUserId) === Number(loop.user_id);
   const metaBits = [
     loop.bpm ? `${loop.bpm}bpm` : null,
     loop.key || null,
